@@ -65,12 +65,9 @@ public final class Resolvers {
                                                      new XYLeaper(3, 0)
         );
 
-
-        resolvers = Stream.concat(
-                Stream.concat(riders.stream(), leapers.stream())
-                        .map(pc -> ops.stream().map(o -> new Resolver(pc, o)))
-                        .flatMap(Function.identity()),
-                ops.stream().map(FirstMoveResolver::new))
+        resolvers = Stream.concat(riders.stream(), leapers.stream())
+                .map(pc -> ops.stream().map(o -> new Resolver(pc, o)))
+                .flatMap(Function.identity())
                 .filter(Resolver::isValid)
                 .sorted(Comparator.comparing(Resolver::getPriority))
                 .collect(Collectors.toList());

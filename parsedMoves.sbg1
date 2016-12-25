@@ -1,0 +1,96 @@
+//like (2,1) leaper with ops: Only Capturelike (1,1) leaper with ops: Forward
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/C_4/gamesG-17.sbgB (-2,1,p)^1 + (-1,1,p)^1 + (-1,2,p)^1 + (1,2,p)^1 + (1,1,p)^1 + (2,1,p)^1 + (-2,-1,p)^1 + (-1,-2,p)^1 + (-1,1,e)^1 + (2,-1,p)^1 + (1,-2,p)^1 + (1,1,e)^1 &
+//like (1,1) leaper with ops: Forwardlike (2,0) leaper with ops: Forward
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/3x10/Cz_3/16/games16-05.sbgB (-1,1,p)^1 + (0,2,p)^1 + (1,1,p)^1 + (-1,1,e)^1 + (0,2,e)^1 + (1,1,e)^1 &
+//like (1,1) leaper with ops: Backwardslike (2,0) leaper with ops: Horizontal
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/B_4/gamesG-40.sbgA (2,0,e)^1 + (1,-1,e)^1 + (-2,0,p)^1 + (-1,-1,p)^1 + (2,0,p)^1 + (1,-1,p)^1 + (-1,-1,e)^1 + (-2,0,e)^1 &
+//like (2,2) leaper with ops: Only Capture
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/A_4/gamesG-36.sbgP (-2,2,p)^1 + (2,2,p)^1 + (-2,-2,p)^1 + (2,-2,p)^1 &
+//like (1,1) leaper with ops: Only Capture
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/4x10/Az_4/01/games01-09.sbgP (-1,1,p)^1 + (-1,-1,p)^1 + (1,1,p)^1 + (1,-1,p)^1 &
+//like (2,0) leaper with ops: Only Capture
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/C_4/gamesG-07.sbgP (-2,0,p)^1 + (0,2,p)^1 + (0,-2,p)^1 + (2,0,p)^1 &
+//like (2,2) leaper with ops: Forward
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/D_4/gamesG-16.sbgP (-2,2,p)^1 + (-2,2,e)^1 + (2,2,p)^1 + (2,2,e)^1 &
+//like (1,1) leaper with ops: Without Capturelike (3,1) leaper with ops: None
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/3x10/Bz_3/00/games00-10.sbgC (-1,3,p)^1 + (-3,-1,p)^1 + (-3,1,p)^1 + (1,3,p)^1 + (-3,1,e)^1 + (-1,3,e)^1 + (-1,-3,p)^1 + (-1,1,e)^1 + (3,-1,e)^1 + (1,3,e)^1 + (1,-3,p)^1 + (-1,-1,e)^1 + (3,1,e)^1 + (1,1,e)^1 + (-3,-1,e)^1 + (-1,-3,e)^1 + (1,-1,e)^1 + (3,-1,p)^1 + (1,-3,e)^1 + (3,1,p)^1 &
+//like (1,1) leaper with ops: Without Capture
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/B_4/gamesG-12.sbgP (1,-1,e)^1 + (-1,1,e)^1 + (-1,-1,e)^1 + (1,1,e)^1 &
+//like (2,0) leaper with ops: Horizontal
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/C_4/gamesG-30.sbgP (2,0,e)^1 + (-2,0,p)^1 + (2,0,p)^1 + (-2,0,e)^1 &
+//like (2,0) leaper with ops: Without Capture
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/B_4/gamesG-29.sbgP (0,-2,e)^1 + (2,0,e)^1 + (0,2,e)^1 + (-2,0,e)^1 &
+//like (2,2) leaper with ops: Backwardslike (2,0) leaper with ops: Orthogonal
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/4x10/Ax_4/16/games16-02.sbgK (0,-2,e)^1 + (2,-2,e)^1 + (0,2,p)^1 + (0,-2,p)^1 + (-2,-2,p)^1 + (0,2,e)^1 + (-2,-2,e)^1 + (2,-2,p)^1 &
+//like (1,1) leaper with ops: Forwardlike (3,0) leaper with ops: Forward, Orthogonal
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/4x16/Am_4/00/games00-10.sbgD (-1,1,p)^1 + (0,3,p)^1 + (1,1,p)^1 + (-1,1,e)^1 + (0,3,e)^1 + (1,1,e)^1 &
+//like (2,0) leaper with ops: None
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/B_4/gamesG-09.sbgB (0,-2,e)^1 + (2,0,e)^1 + (-2,0,p)^1 + (0,2,p)^1 + (0,-2,p)^1 + (2,0,p)^1 + (0,2,e)^1 + (-2,0,e)^1 &
+//like (2,2) leaper with ops: None
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Base/gamesshatranj.sbgE (2,-2,e)^1 + (-2,2,p)^1 + (-2,2,e)^1 + (2,2,p)^1 + (-2,-2,p)^1 + (-2,-2,e)^1 + (2,-2,p)^1 + (2,2,e)^1 &
+//like (1,1) leaper with ops: None
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Base/gamesshatranj.sbgG (1,-1,e)^1 + (-1,1,p)^1 + (-1,-1,p)^1 + (1,1,p)^1 + (1,-1,p)^1 + (-1,1,e)^1 + (-1,-1,e)^1 + (1,1,e)^1 &
+//like (2,0) leaper with ops: Only Capturelike (1,1) leaper with ops: Without Capture, Restricted To One
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/B_4/gamesG-05.sbgK (1,-1,e)^1 + (-2,0,p)^1 + (0,2,p)^1 + (0,-2,p)^1 + (2,0,p)^1 + (-1,1,e)^1 + (-1,-1,e)^1 + (1,1,e)^1 &
+//like (2,2) leaper with ops: Forwardlike (1,1) leaper with ops: Without Capture, Restricted To One
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/4x16/Ak_4/05/games05-04.sbgK (1,-1,e)^1 + (-2,2,p)^1 + (-2,2,e)^1 + (2,2,p)^1 + (-1,1,e)^1 + (-1,-1,e)^1 + (2,2,e)^1 + (1,1,e)^1 &
+//like (2,0) leaper with ops: Forward
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/C_4/gamesG-22.sbgP (0,2,p)^1 + (0,2,e)^1 &
+//like (2,2) leaper with ops: Forwardlike (2,0) leaper with ops: Horizontal
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/3x10/Cz_3/01/games01-01.sbgB (2,0,e)^1 + (-2,0,p)^1 + (-2,2,p)^1 + (-2,2,e)^1 + (2,2,p)^1 + (2,0,p)^1 + (2,2,e)^1 + (-2,0,e)^1 &
+//like (3,1) leaper with ops: Only Capture
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/4x16/Cm_4/00/games00-04.sbgB (3,-1,p)^1 + (-1,3,p)^1 + (3,1,p)^1 + (-3,-1,p)^1 + (1,3,p)^1 + (-3,1,p)^1 + (-1,-3,p)^1 + (1,-3,p)^1 &
+//like (2,1) leaper with ops: Only Capture
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/B_4/gamesG-13.sbgE (-2,1,p)^1 + (-1,2,p)^1 + (1,2,p)^1 + (2,1,p)^1 + (-2,-1,p)^1 + (-1,-2,p)^1 + (2,-1,p)^1 + (1,-2,p)^1 &
+//like (2,0) leaper with ops: Nonelike (1,1) leaper with ops: Backwards
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/4x10/Cy_4/00/games00-04.sbgC (0,-2,e)^1 + (1,-1,e)^1 + (2,0,e)^1 + (-2,0,p)^1 + (0,2,p)^1 + (-1,-1,p)^1 + (0,-2,p)^1 + (1,-1,p)^1 + (2,0,p)^1 + (0,2,e)^1 + (-1,-1,e)^1 + (-2,0,e)^1 &
+//like (1,1) leaper with ops: Backwardslike (2,0) leaper with ops: Forward
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/B_4/gamesG-41.sbgK (1,-1,e)^1 + (0,2,p)^1 + (-1,-1,p)^1 + (1,-1,p)^1 + (0,2,e)^1 + (-1,-1,e)^1 &
+//like (1,1) leaper with ops: Nonelike (2,0) leaper with ops: Forward
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/4x10/Bz_4/16/games16-02.sbgB (1,-1,e)^1 + (0,2,p)^1 + (-1,1,p)^1 + (-1,-1,p)^1 + (1,1,p)^1 + (1,-1,p)^1 + (0,2,e)^1 + (-1,1,e)^1 + (-1,-1,e)^1 + (1,1,e)^1 &
+//like (3,0) leaper with ops: Forwardlike (1,1) leaper with ops: None
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/3x10/By_3/00/games00-04.sbgC (1,-1,e)^1 + (-1,1,p)^1 + (0,3,p)^1 + (-1,-1,p)^1 + (1,1,p)^1 + (1,-1,p)^1 + (-1,1,e)^1 + (0,3,e)^1 + (-1,-1,e)^1 + (1,1,e)^1 &
+//like (3,0) leaper with ops: Horizontallike (2,2) leaper with ops: Nonelike (1,1) leaper with ops: Forward, Restricted To One
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/4x16/Ak_4/00/games00-14.sbgC (-3,0,p)^1 + (-1,1,p)^1 + (-2,2,p)^1 + (1,1,p)^1 + (-2,2,e)^1 + (2,2,p)^1 + (-2,-2,p)^1 + (-1,1,e)^1 + (-2,-2,e)^1 + (2,-2,p)^1 + (3,0,e)^1 + (-3,0,e)^1 + (1,1,e)^1 + (2,2,e)^1 + (2,-2,e)^1 + (3,0,p)^1 &
+//like (2,2) leaper with ops: Nonelike (2,1) leaper with ops: None
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Base/gamesdeacon.sbgA (-2,1,p)^1 + (-1,2,p)^1 + (-2,2,p)^1 + (1,2,p)^1 + (-2,2,e)^1 + (2,2,p)^1 + (2,1,p)^1 + (-2,-1,p)^1 + (-1,-2,p)^1 + (-2,-2,p)^1 + (-2,-1,e)^1 + (2,-1,p)^1 + (1,-2,p)^1 + (-1,2,e)^1 + (-2,-2,e)^1 + (2,-2,p)^1 + (-2,1,e)^1 + (1,2,e)^1 + (2,2,e)^1 + (2,1,e)^1 + (-1,-2,e)^1 + (2,-1,e)^1 + (1,-2,e)^1 + (2,-2,e)^1 &
+//like (1,1) rider with ops: Without Capture
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/A_4/gamesG-15.sbgP (1,-1,e)^2 + (-1,-1,e)^7 + (1,1,e)^7 + (1,-1,e)^7 + (-1,-1,e)^3 + (1,1,e)^3 + (-1,1,e)^7 + (1,-1,e)^3 + (-1,1,e)^3 + (1,-1,e)^1 + (1,-1,e)^4 + (1,1,e)^4 + (-1,-1,e)^4 + (-1,1,e)^4 + (-1,1,e)^5 + (-1,-1,e)^5 + (1,1,e)^5 + (1,-1,e)^5 + (-1,1,e)^1 + (-1,-1,e)^1 + (1,1,e)^1 + (1,1,e)^6 + (-1,-1,e)^6 + (-1,1,e)^6 + (1,-1,e)^6 + (1,1,e)^2 + (-1,-1,e)^2 + (-1,1,e)^2 &
+//like (2,1) leaper with ops: Without Capture
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/3x10/Dz_3/01/games01-01.sbgA (2,1,e)^1 + (-1,-2,e)^1 + (1,-2,e)^1 + (2,-1,e)^1 + (-2,-1,e)^1 + (-1,2,e)^1 + (-2,1,e)^1 + (1,2,e)^1 &
+//like (2,0) leaper with ops: Backwards
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/3x10/Ax_3/02/games02-08.sbgP (0,-2,e)^1 + (0,-2,p)^1 &
+//like (1,1) leaper with ops: Forward
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Base/games6x6_P4.sbgP (-1,1,p)^1 + (1,1,p)^1 + (-1,1,e)^1 + (1,1,e)^1 &
+//like (1,1) leaper with ops: Backwards
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/A_4/gamesG-45.sbgP (1,-1,e)^1 + (-1,-1,p)^1 + (1,-1,p)^1 + (-1,-1,e)^1 &
+//like (0,1) rider with ops: Without Capture
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/4x16/Ck_4/16/games16-06.sbgP (0,1,e)^5 + (0,1,e)^7 + (0,-1,e)^5 + (0,-1,e)^7 + (0,1,e)^3 + (0,-1,e)^3 + (0,1,e)^1 + (0,-1,e)^1 + (0,-1,e)^6 + (0,1,e)^6 + (0,-1,e)^4 + (0,1,e)^4 + (0,-1,e)^2 + (0,1,e)^2 &
+//like (2,0) leaper with ops: Without Capturelike (1,1) leaper with ops: None
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/4x16/Dm_4/01/games01-07.sbgC (0,-2,e)^1 + (2,0,e)^1 + (1,-1,e)^1 + (-1,1,p)^1 + (-1,-1,p)^1 + (1,1,p)^1 + (1,-1,p)^1 + (0,2,e)^1 + (-1,1,e)^1 + (-1,-1,e)^1 + (-2,0,e)^1 + (1,1,e)^1 &
+//like (1,1) leaper with ops: Only Capturelike (2,0) leaper with ops: Forward
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/C_4/gamesG-14.sbgB (-1,1,p)^1 + (0,2,p)^1 + (-1,-1,p)^1 + (1,1,p)^1 + (1,-1,p)^1 + (0,2,e)^1 &
+//like (1,1) leaper with ops: Nonelike (2,2) leaper with ops: Over Enemy Piece Instead
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/4x10/Az_4/13/games13-08.sbgK (1,-1,e)^1 + (-1,1,p)^1 + (-2,2,p)^1 + (-1,-1,p)^1 + (2,2,p)^1 + (1,1,p)^1 + (-2,-2,p)^1 + (1,-1,p)^1 + (-1,1,e)^1 + (2,-2,p)^1 + (-1,-1,e)^1 + (1,1,e)^1 &
+//like (2,0) leaper with ops: Horizontallike (2,0) leaper with ops: Forward, Orthogonal
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/B_4/gamesG-32.sbgA (2,0,e)^1 + (-2,0,p)^1 + (0,2,p)^1 + (2,0,p)^1 + (0,2,e)^1 + (-2,0,e)^1 &
+//like (2,2) leaper with ops: Forwardlike (2,1) leaper with ops: Without Capture
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/3x10/Ax_3/00/games00-05.sbgA (2,1,e)^1 + (-1,-2,e)^1 + (1,-2,e)^1 + (2,-1,e)^1 + (-2,2,p)^1 + (-2,2,e)^1 + (2,2,p)^1 + (-2,-1,e)^1 + (-1,2,e)^1 + (-2,1,e)^1 + (1,2,e)^1 + (2,2,e)^1 &
+//like (1,1) leaper with ops: Forwardlike (2,2) leaper with ops: Forward
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/D_4/gamesG-34.sbgB (-1,1,p)^1 + (-2,2,p)^1 + (-2,2,e)^1 + (2,2,p)^1 + (1,1,p)^1 + (-1,1,e)^1 + (2,2,e)^1 + (1,1,e)^1 &
+//like (1,1) leaper with ops: Without Capturelike (2,0) leaper with ops: Forward
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/A_4/gamesG-33.sbgA (1,-1,e)^1 + (0,2,p)^1 + (-1,1,e)^1 + (0,2,e)^1 + (-1,-1,e)^1 + (1,1,e)^1 &
+//like (1,1) leaper with ops: Forwardlike (2,2) leaper with ops: Only Capture, Over Enemy Piece Instead
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/3x10/Ax_3/00/games00-10.sbgK (-1,1,p)^1 + (-2,2,p)^1 + (2,2,p)^1 + (1,1,p)^1 + (-2,-2,p)^1 + (-1,1,e)^1 + (2,-2,p)^1 + (1,1,e)^1 &
+//like (3,0) leaper with ops: Forward
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/4x10/Cz_4/04/games04-03.sbgP (0,3,p)^1 + (0,3,e)^1 &
+//like (2,2) leaper with ops: Forwardlike (1,1) leaper with ops: Backwards, Restricted To One
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/D_4/gamesG-24.sbgD (1,-1,e)^1 + (-2,2,p)^1 + (-1,-1,p)^1 + (-2,2,e)^1 + (2,2,p)^1 + (1,-1,p)^1 + (-1,-1,e)^1 + (2,2,e)^1 &
+//like (2,1) leaper with ops: None
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Base/gamesshatranj.sbgN (-2,1,p)^1 + (-1,2,p)^1 + (1,2,p)^1 + (2,1,p)^1 + (-2,-1,p)^1 + (-1,-2,p)^1 + (-2,-1,e)^1 + (2,-1,p)^1 + (1,-2,p)^1 + (-1,2,e)^1 + (-2,1,e)^1 + (1,2,e)^1 + (2,1,e)^1 + (-1,-2,e)^1 + (2,-1,e)^1 + (1,-2,e)^1 &
+//like (1,1) leaper with ops: Forwardlike (2,0) leaper with ops: Horizontal
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Generation/D_4/gamesG-16.sbgE (2,0,e)^1 + (-2,0,p)^1 + (-1,1,p)^1 + (1,1,p)^1 + (2,0,p)^1 + (-1,1,e)^1 + (1,1,e)^1 + (-2,0,e)^1 &
+//like (2,0) leaper with ops: Horizontallike (1,1) leaper with ops: Forwardlike (2,0) leaper with ops: Forward
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/4x16/Bl_4/16/games16-00.sbgA (2,0,e)^1 + (-2,0,p)^1 + (-1,1,p)^1 + (0,2,p)^1 + (1,1,p)^1 + (2,0,p)^1 + (-1,1,e)^1 + (0,2,e)^1 + (1,1,e)^1 + (-2,0,e)^1 &
+//like (3,1) leaper with ops: None
+/home/lukasz/Documents/mgr/xxxya/ggp_sbgRAPP/Fitness^1/Evolution/4x16/Ak_4/18/games18-13.sbgD (-1,3,p)^1 + (-3,-1,p)^1 + (1,3,p)^1 + (-3,1,p)^1 + (-3,1,e)^1 + (-1,3,e)^1 + (-1,-3,p)^1 + (3,-1,e)^1 + (1,3,e)^1 + (1,-3,p)^1 + (3,1,e)^1 + (-3,-1,e)^1 + (-1,-3,e)^1 + (3,-1,p)^1 + (1,-3,e)^1 + (3,1,p)^1 &

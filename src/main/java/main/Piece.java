@@ -66,6 +66,25 @@ public class Piece {
     @Override public String toString() {
         return String.format("%s %s &", name,
                              moves.stream().map(OneMove::toString)
+                                     .filter(StringUtils::isNoneEmpty)
                                      .collect(Collectors.joining(" + ")));
+    }
+
+    @Override public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Piece piece = (Piece) o;
+
+        return getMoves().equals(piece.getMoves());
+
+    }
+
+    @Override public int hashCode() {
+        return getMoves().hashCode();
     }
 }
