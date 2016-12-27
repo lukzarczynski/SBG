@@ -15,8 +15,7 @@ public class Move {
     private Integer power = 1;
     private Integer dx = 0;
     private Integer dy = 0;
-    private Boolean piece = false;
-    private Boolean ownPiece = false;
+    private MoveType moveType;
 
     public Move(int power) {
         this.power = power;
@@ -39,7 +38,7 @@ public class Move {
             } else if (pow.contains("{")) {
                 moves.addAll(
                         Arrays.stream(pow.substring(1, pow.indexOf("}"))
-                                              .split(","))
+                                .split(","))
                                 .map(Integer::parseInt)
                                 .map(Move::new).collect(Collectors.toSet()));
             } else {
@@ -53,8 +52,7 @@ public class Move {
         moves.forEach(move -> {
             move.setDx(Integer.parseInt(ss[0]));
             move.setDy(Integer.parseInt(ss[1]));
-            move.setPiece(Objects.equals(ss[2], "p"));
-            move.setOwnPiece(Objects.equals(ss[2], "w"));
+            move.setMoveType(MoveType.byCode(ss[2]));
         });
         return moves;
     }
@@ -63,7 +61,7 @@ public class Move {
         final Move move = new Move(power);
         move.setDx(this.getDx());
         move.setDy(this.getDy());
-        move.setPiece(this.getPiece());
+        move.setMoveType(this.getMoveType());
         return move;
     }
 
@@ -91,13 +89,6 @@ public class Move {
         this.dy = dy;
     }
 
-    public Boolean getPiece() {
-        return piece;
-    }
-
-    public void setPiece(Boolean piece) {
-        this.piece = piece;
-    }
 
     public Integer getPower() {
         return power;
@@ -107,21 +98,20 @@ public class Move {
         this.power = power;
     }
 
-
-    public Boolean getOwnPiece() {
-        return ownPiece;
+    public MoveType getMoveType() {
+        return moveType;
     }
 
-    public void setOwnPiece(Boolean ownPiece) {
-        this.ownPiece = ownPiece;
+    public void setMoveType(MoveType moveType) {
+        this.moveType = moveType;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int result = power.hashCode();
         result = 31 * result + getDx().hashCode();
         result = 31 * result + getDy().hashCode();
-        result = 31 * result + getPiece().hashCode();
-        result = 31 * result + getOwnPiece().hashCode();
+        result = 31 * result + getMoveType().hashCode();
         return result;
     }
 
@@ -139,14 +129,13 @@ public class Move {
         return power.equals(move.getPower())
                 && getDx().equals(move.getDx())
                 && getDy().equals(move.getDy())
-                && getPiece().equals(move.getPiece())
-                && getOwnPiece().equals(move.getOwnPiece());
+                && getMoveType().equals(move.getMoveType());
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return String.format("(%s,%s,%s)^%s",
-                             dx, dy, (piece ? "p" : "e"),
-                             power);
+                dx, dy, moveType.getCode(), power);
     }
 
 }

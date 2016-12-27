@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import main.operator.Backwards;
 import main.operator.Diagonal;
 import main.operator.Forward;
@@ -37,8 +38,8 @@ public final class Resolvers {
                 new Operator[]{None.instance(0)},
                 new Operator[]{Forward.instance(1)},
                 new Operator[]{Backwards.instance(1)},
-                new Operator[]{Left.instance(1)},
-                new Operator[]{Right.instance(1)},
+//                new Operator[]{Left.instance(1)},
+//                new Operator[]{Right.instance(1)},
                 new Operator[]{Diagonal.instance(2)},
                 new Operator[]{Horizontal.instance(2)},
                 new Operator[]{Orthogonal.instance(2)},
@@ -56,13 +57,20 @@ public final class Resolvers {
             }
         }
 
-        final List<XYRider> riders = Arrays.asList(new XYRider(1, 1), new XYRider(0, 1));
-        final List<XYLeaper> leapers = Arrays.asList(new XYLeaper(2, 1),
-                                                     new XYLeaper(3, 1),
-                                                     new XYLeaper(2, 2),
-                                                     new XYLeaper(1, 1),
-                                                     new XYLeaper(2, 0),
-                                                     new XYLeaper(3, 0)
+        final List<XYRider> riders = Arrays.asList(
+                new XYRider(1, 1),
+                new XYRider(0, 1),
+                new XYRider(1, 0),
+                new XYRider(2, 1),
+                new XYRider(1, 2)
+        );
+        final List<XYLeaper> leapers = Arrays.asList(
+                new XYLeaper(2, 1),
+                new XYLeaper(3, 1),
+                new XYLeaper(1, 1),
+                new XYLeaper(2, 2),
+                new XYLeaper(2, 0),
+                new XYLeaper(3, 0)
         );
 
         resolvers = Stream.concat(riders.stream(), leapers.stream())
@@ -70,6 +78,7 @@ public final class Resolvers {
                 .flatMap(Function.identity())
                 .filter(Resolver::isValid)
                 .sorted(Comparator.comparing(Resolver::getPriority))
+                .distinct()
                 .collect(Collectors.toList());
     }
 

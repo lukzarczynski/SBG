@@ -54,18 +54,19 @@ public class FirstMoveResolver extends Resolver {
     }
 
     @Override
-    public Set<OneMove> apply(Set<OneMove> moves) {
+    public ResolveResult apply(Set<OneMove> moves) {
         final Set<Move> oneMoves = pieceClass.filterMoves(operators).stream()
                 .map(om -> om.getMoves().get(0))
                 .collect(Collectors.toSet());
-        return moves.stream()
-                .filter(m -> m.getMoves().size() > 1)
-                .filter(m -> {
-                    final Move move = m.getMoves().get(0);
-                    return oneMoves.contains(move);
-                })
-                .map(om -> OneMove.of(om.getMoves().subList(1, om.getMoves().size())))
-                .collect(Collectors.toSet());
+        return null;
+//        return moves.stream()
+//                .filter(m -> m.getMoves().size() > 1)
+//                .filter(m -> {
+//                    final Move move = m.getMoves().get(0);
+//                    return oneMoves.contains(move);
+//                })
+//                .map(om -> OneMove.of(om.getMoves().subList(1, om.getMoves().size())))
+//                .collect(Collectors.toSet());
     }
 
     @Override

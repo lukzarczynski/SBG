@@ -8,6 +8,6 @@ import main.Piece;
 public class Root extends Node {
 
     public Root(Piece piece) {
-        super(piece, piece.getMoves());
+        super(piece);
     }
 }

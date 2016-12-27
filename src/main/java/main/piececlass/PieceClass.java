@@ -56,4 +56,18 @@ public abstract class PieceClass {
                 .collect(Collectors.toSet());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PieceClass that = (PieceClass) o;
+
+        return moves.equals(that.moves);
+    }
+
+    @Override
+    public int hashCode() {
+        return moves.hashCode();
+    }
 }

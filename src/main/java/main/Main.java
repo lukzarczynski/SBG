@@ -34,9 +34,30 @@ public class Main {
 
         System.out.println("Scanned");
 
-        final File allMovesFile = new File("allMoves.sbg1");
+        final File allMovesFile = new File("src/main/resources/allMoves.sbg1");
 
+        final Set<Piece> pieces = loadPieces(allMovesFile);
 
+        System.out.println("Loaded");
+
+        StringBuilder parsed = new StringBuilder();
+        StringBuilder failed = new StringBuilder();
+
+        resolve(pieces, parsed, failed);
+
+        File parsedFile = new File("src/main/resources/parsedMoves.sbg1");
+        File failedFile = new File("src/main/resources/failedMoves.sbg1");
+
+        FileOutputStream parsedFOS = new FileOutputStream(parsedFile, false);
+        FileOutputStream failedFOS = new FileOutputStream(failedFile, false);
+
+        parsedFOS.write(parsed.toString().getBytes());
+        failedFOS.write(failed.toString().getBytes());
+
+        System.out.println("Finished");
+    }
+
+    public static Set<Piece> loadPieces(File allMovesFile) throws FileNotFoundException {
         final Set<Piece> pieces = new HashSet<>();
 
         final Scanner scanner = new Scanner(allMovesFile);
@@ -46,16 +67,13 @@ public class Main {
                 pieces.add(Piece.parse(pieceString));
             }
         }
+        return pieces;
+    }
 
-        System.out.println("Loaded");
-
-        StringBuilder parsed = new StringBuilder();
-        StringBuilder failed = new StringBuilder();
-
+    public static void resolve(Set<Piece> pieces, StringBuilder parsed, StringBuilder failed) {
         final AtomicInteger index = new AtomicInteger(0);
 
-
-        ExecutorService es = Executors.newCachedThreadPool();
+        ExecutorService es = Executors.newFixedThreadPool(10);
 
         final List<Pair<Piece, ? extends Future<?>>> collect = pieces.stream()
                 .map(pa -> Pair.of(pa, es.submit(() -> {
@@ -63,13 +81,20 @@ public class Main {
                         final String resolve = PieceResolver.resolve(pa);
                         parsed.append("//").append(resolve).append("\n");
                         parsed.append(pa.toString()).append("\n");
+
+//                        System.out.println(String.format("%s: Parsed %s\n%s%s",
+//                                Thread.currentThread().getName(),
+//                                index.getAndIncrement(),
+//                                resolve, pa.toString()));
                     } catch (PieceResolverException e) {
                         failed.append(pa.toString()).append("\n");
+
+//                        System.out.println(e.getMessage());
+//                        System.out.println(String.format("%s: Failed %s",
+//                                Thread.currentThread().getName(),
+//                                index.getAndIncrement()));
                     }
 
-                    System.out.println(String.format("%s: Parsed %s",
-                                                     Thread.currentThread().getName(),
-                                                     index.getAndIncrement()));
                 }))).collect(Collectors.toList());
 
         collect.forEach(f -> {
@@ -82,17 +107,6 @@ public class Main {
 
 
         System.out.println("Resolved");
-
-        File parsedFile = new File("parsedMoves.sbg1");
-        File failedFile = new File("failedMoves.sbg1");
-
-        FileOutputStream parsedFOS = new FileOutputStream(parsedFile, false);
-        FileOutputStream failedFOS = new FileOutputStream(failedFile, false);
-
-        parsedFOS.write(parsed.toString().getBytes());
-        failedFOS.write(failed.toString().getBytes());
-
-        System.out.println("Finished");
     }
 
     private static void scanDirectory() throws IOException {

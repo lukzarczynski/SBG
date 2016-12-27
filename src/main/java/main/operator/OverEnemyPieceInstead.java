@@ -4,6 +4,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import main.Move;
+import main.MoveType;
 import main.OneMove;
 
 /**
@@ -22,7 +23,7 @@ public class OverEnemyPieceInstead extends Operator {
 
     @Override
     public Predicate<OneMove> matches() {
-        return move -> move.getMoves().stream().anyMatch(Move::getPiece);
+        return move -> move.getMoves().stream().anyMatch(m -> MoveType.PIECE.equals(m.getMoveType()));
     }
 
     @Override public Function<OneMove, OneMove> map() {
@@ -30,8 +31,8 @@ public class OverEnemyPieceInstead extends Operator {
             OneMove om = new OneMove();
             om.setMoves(move.getMoves().stream().map(m -> {
                 final Move copy = m.copy();
-                if (!copy.getPiece()) {
-                    copy.setPiece(true);
+                if (!copy.getMoveType().equals(MoveType.PIECE)) {
+                    copy.setMoveType(MoveType.PIECE);
                 }
                 return copy;
             }).collect(Collectors.toList()));

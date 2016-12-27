@@ -31,6 +31,13 @@ public final class MoveUtil {
         return a.stream().filter(b::contains).collect(Collectors.toSet());
     }
 
+    /**
+     * a - b
+     *
+     * @param a
+     * @param b
+     * @return a - b
+     */
     public static Set<OneMove> subtract(Set<OneMove> a, Set<OneMove> b) {
         return a.stream().filter(m -> !b.contains(m)).collect(Collectors.toSet());
     }

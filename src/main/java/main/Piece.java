@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -23,9 +24,10 @@ public class Piece {
 
         piece.setName(pieceName);
         piece.setMoves(Arrays.stream(movesArray)
-                               .map(OneMove::parse)
-                               .flatMap(Collection::stream)
-                               .collect(Collectors.toSet()));
+                .map(OneMove::parse)
+                .flatMap(Collection::stream)
+                .filter(om -> StringUtils.isNoneEmpty(om.toString()))
+                .collect(Collectors.toSet()));
 
         return piece;
     }
@@ -46,7 +48,6 @@ public class Piece {
         this.moves = moves;
     }
 
-
     public boolean containsAll(Set<OneMove> p) {
         return MoveUtil.containsAll(getMoves(), p);
     }
@@ -63,14 +64,16 @@ public class Piece {
         return MoveUtil.subtract(getMoves(), p);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return String.format("%s %s &", name,
-                             moves.stream().map(OneMove::toString)
-                                     .filter(StringUtils::isNoneEmpty)
-                                     .collect(Collectors.joining(" + ")));
+                moves.stream().map(OneMove::toString)
+                        .filter(StringUtils::isNoneEmpty)
+                        .collect(Collectors.joining(" + ")));
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -84,7 +87,8 @@ public class Piece {
 
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return getMoves().hashCode();
     }
 }

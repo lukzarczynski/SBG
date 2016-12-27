@@ -13,7 +13,6 @@ public abstract class Operator {
 
     public int priority;
 
-
     public abstract Predicate<OneMove> matches();
 
     public Function<OneMove, OneMove> map() {
@@ -26,5 +25,18 @@ public abstract class Operator {
 
     public abstract String getDescription();
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Operator operator = (Operator) o;
+
+        return getDescription() == operator.getDescription();
+    }
+
+    @Override
+    public int hashCode() {
+        return getDescription().hashCode();
+    }
 }

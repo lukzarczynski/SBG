@@ -4,9 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import main.MoveUtil;
 import main.OneMove;
 import main.operator.Operator;
 import main.piececlass.PieceClass;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Created by lukasz on 07.12.16.
@@ -17,9 +20,6 @@ public class Resolver {
     protected List<Operator> operators;
     protected boolean valid = true;
     protected int priority;
-
-    public Resolver() {
-    }
 
     public Resolver(PieceClass pieceClass, Operator... ops) {
         this.pieceClass = pieceClass;
@@ -32,24 +32,24 @@ public class Resolver {
         valid = !allFilteredMoves.isEmpty();
         if (valid) {
             valid = this.operators.stream()
-                    .anyMatch(op -> {
-                        final List<Operator> collect = this.operators.stream()
+                    .noneMatch(op -> {
+                        final List<Operator> allExceptOp = this.operators.stream()
                                 .filter(a -> a != op)
                                 .collect(Collectors.toList());
-                        pieceClass.filterMoves(collect.toArray(new Operator[collect.size()]));
-                        final Set<OneMove> oneMoves = pieceClass.filterMoves(new Operator[]{op});
+                        final Set<OneMove> oneMoves =
+                                pieceClass.filterMoves(allExceptOp.toArray(new Operator[allExceptOp.size()]));
                         return oneMoves.size() == allFilteredMoves.size();
                     });
         }
     }
 
-
     public boolean matches(Set<OneMove> moves) {
         return pieceClass.matches(moves, operators);
     }
 
-    public Set<OneMove> apply(Set<OneMove> moves) {
-        return pieceClass.apply(moves, operators);
+    public ResolveResult apply(Set<OneMove> moves) {
+        Set<OneMove> apply = pieceClass.apply(moves, operators);
+        return new ResolveResult(apply, MoveUtil.subtract(moves, apply));
     }
 
 
@@ -61,11 +61,27 @@ public class Resolver {
         return valid;
     }
 
-
     public String getDescription() {
-        return String.format("like %s with ops: %s",
-                             pieceClass.getDescription(),
-                             operators.stream().map(Operator::getDescription).collect(Collectors.joining(", ")));
+        return String.format(" | %s : %s | ",
+                pieceClass.getDescription(),
+                operators.stream().map(Operator::getDescription).collect(Collectors.joining(", ")));
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Resolver resolver = (Resolver) o;
+
+        if (!pieceClass.equals(resolver.pieceClass)) return false;
+        return operators.equals(resolver.operators);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = pieceClass.hashCode();
+        result = 31 * result + operators.hashCode();
+        return result;
     }
 }
