@@ -11,7 +11,7 @@ import main.OneMove;
  */
 public abstract class Operator {
 
-    public int priority;
+    public int priority = 0;
 
     public abstract Predicate<OneMove> matches();
 

@@ -10,17 +10,18 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import main.operator.Backwards;
+import main.operator.BackwardsOrHorizontal;
 import main.operator.Diagonal;
 import main.operator.Forward;
+import main.operator.ForwardOrHorizontal;
 import main.operator.Horizontal;
-import main.operator.Left;
 import main.operator.None;
 import main.operator.OnlyCapture;
 import main.operator.Operator;
 import main.operator.Orthogonal;
 import main.operator.OverEnemyPieceInstead;
 import main.operator.RestrictedToOne;
-import main.operator.Right;
+import main.operator.Sideways;
 import main.operator.WithoutCapture;
 import main.piececlass.XYLeaper;
 import main.piececlass.XYRider;
@@ -35,18 +36,19 @@ public final class Resolvers {
 
     static {
         ops = newArrayList(
-                new Operator[]{None.instance(0)},
-                new Operator[]{Forward.instance(1)},
-                new Operator[]{Backwards.instance(1)},
-//                new Operator[]{Left.instance(1)},
-//                new Operator[]{Right.instance(1)},
-                new Operator[]{Diagonal.instance(2)},
-                new Operator[]{Horizontal.instance(2)},
-                new Operator[]{Orthogonal.instance(2)},
-                new Operator[]{OnlyCapture.instance(3)},
-                new Operator[]{WithoutCapture.instance(3)},
-                new Operator[]{RestrictedToOne.instance(6)},
-                new Operator[]{OverEnemyPieceInstead.instance(8)}
+//                new Operator[]{None.instance(0)},
+//                new Operator[]{Forward.instance(1)},
+//                new Operator[]{Backwards.instance(1)},
+//                new Operator[]{Sideways.instance(2)},
+//                new Operator[]{Diagonal.instance(2)},
+//                new Operator[]{Horizontal.instance(2)},
+//                new Operator[]{Orthogonal.instance(2)},
+                new Operator[]{BackwardsOrHorizontal.instance(2)},
+                new Operator[]{ForwardOrHorizontal.instance(2)},
+//                new Operator[]{OnlyCapture.instance(3)},
+//                new Operator[]{WithoutCapture.instance(3)},
+                new Operator[]{RestrictedToOne.instance(6)}
+//                new Operator[]{OverEnemyPieceInstead.instance(8)}
         );
         final int singleOps = ops.size();
         for (int i = 1; i < singleOps; i++) {
@@ -58,19 +60,19 @@ public final class Resolvers {
         }
 
         final List<XYRider> riders = Arrays.asList(
-                new XYRider(1, 1),
+//                new XYRider(1, 1),
                 new XYRider(0, 1),
                 new XYRider(1, 0),
-                new XYRider(2, 1),
+//                new XYRider(2, 1),
                 new XYRider(1, 2)
         );
         final List<XYLeaper> leapers = Arrays.asList(
-                new XYLeaper(2, 1),
-                new XYLeaper(3, 1),
-                new XYLeaper(1, 1),
-                new XYLeaper(2, 2),
-                new XYLeaper(2, 0),
-                new XYLeaper(3, 0)
+//                new XYLeaper(2, 1),
+//                new XYLeaper(3, 1),
+//                new XYLeaper(1, 1),
+//                new XYLeaper(2, 2),
+//                new XYLeaper(2, 0),
+//                new XYLeaper(3, 0)
         );
 
         resolvers = Stream.concat(riders.stream(), leapers.stream())
