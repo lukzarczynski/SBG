@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * <p>
  * Created by lukasz on 06.12.16.
  */
-public class OverEnemyPieceInstead extends Operator {
+public class OverOwnPieceInstead extends Operator {
 
 
     @Override
@@ -28,7 +28,7 @@ public class OverEnemyPieceInstead extends Operator {
             om.setMoves(move.getMoves().stream().map(m -> {
                 final Move copy = m.copy();
                 if (copy.getMoveType().equals(MoveType.EMPTY)) {
-                    copy.setMoveType(MoveType.PIECE);
+                    copy.setMoveType(MoveType.OWN);
                 }
                 return copy;
             }).collect(Collectors.toList()));
@@ -38,6 +38,6 @@ public class OverEnemyPieceInstead extends Operator {
 
     @Override
     public String getDescription() {
-        return "Over Enemy Piece Instead of empty";
+        return "Over Own Piece Instead of empty";
     }
 }

@@ -5,17 +5,17 @@ import main.OneMove;
 import java.util.function.Predicate;
 
 /**
- * Created by lukasz on 06.12.16.
+ * Created by lukza on 28.12.2016.
  */
-public class None extends Operator {
+public class OnlyOdd extends Operator {
 
     @Override
     public Predicate<OneMove> matches() {
-        return move -> true;
+        return new OnlyEven().matches().negate();
     }
 
     @Override
     public String getDescription() {
-        return "None";
+        return "Only odd";
     }
 }

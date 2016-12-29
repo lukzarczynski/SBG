@@ -1,26 +1,31 @@
 package main.operator;
 
-import java.util.Set;
+import main.OneMove;
+
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import main.OneMove;
 
 /**
  * Created by lukasz on 06.12.16.
  */
 public abstract class Operator {
 
-    public int priority = 0;
+    public final int value;
+    private boolean hasMapFunction = true;
+
+    public Operator() {
+        this.value = OperatorValues.getForClass(this.getClass());
+    }
+
+    protected Operator(int value) {
+        this.value = value;
+    }
 
     public abstract Predicate<OneMove> matches();
 
     public Function<OneMove, OneMove> map() {
+        hasMapFunction = false;
         return Function.identity();
-    }
-
-    public Set<OneMove> filter(Set<OneMove> moves) {
-        return moves.stream().filter(matches()).collect(Collectors.toSet());
     }
 
     public abstract String getDescription();
@@ -38,5 +43,13 @@ public abstract class Operator {
     @Override
     public int hashCode() {
         return getDescription().hashCode();
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public boolean isHasMapFunction() {
+        return hasMapFunction;
     }
 }

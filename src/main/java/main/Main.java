@@ -1,26 +1,12 @@
 package main;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
+
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukasz on 26.11.16.
@@ -40,19 +26,16 @@ public class Main {
 
         System.out.println("Loaded");
 
-        StringBuilder parsed = new StringBuilder();
-        StringBuilder failed = new StringBuilder();
 
-        resolve(pieces, parsed, failed);
-
+        new PrintWriter("src/main/resources/parsedMoves.sbg1").close();
+        new PrintWriter("src/main/resources/failedMoves.sbg1").close();
         File parsedFile = new File("src/main/resources/parsedMoves.sbg1");
         File failedFile = new File("src/main/resources/failedMoves.sbg1");
 
-        FileOutputStream parsedFOS = new FileOutputStream(parsedFile, false);
-        FileOutputStream failedFOS = new FileOutputStream(failedFile, false);
+        FileOutputStream parsedFOS = new FileOutputStream(parsedFile, true);
+        FileOutputStream failedFOS = new FileOutputStream(failedFile, true);
 
-        parsedFOS.write(parsed.toString().getBytes());
-        failedFOS.write(failed.toString().getBytes());
+        resolve(pieces, parsedFOS, failedFOS);
 
         System.out.println("Finished");
     }
@@ -70,43 +53,38 @@ public class Main {
         return pieces;
     }
 
-    public static void resolve(Set<Piece> pieces, StringBuilder parsed, StringBuilder failed) {
+    public static void resolve(Set<Piece> pieces, FileOutputStream parsedFOS, FileOutputStream failedFOS) throws IOException {
         final AtomicInteger index = new AtomicInteger(0);
 
-        ExecutorService es = Executors.newFixedThreadPool(10);
-
-        final List<Pair<Piece, ? extends Future<?>>> collect = pieces.stream()
-                .map(pa -> Pair.of(pa, es.submit(() -> {
-                    try {
-                        final String resolve = PieceResolver.resolve(pa);
-                        parsed.append("//").append(resolve).append("\n");
-                        parsed.append(pa.toString()).append("\n");
-
-//                        System.out.println(String.format("%s: Parsed %s\n%s%s",
-//                                Thread.currentThread().getName(),
-//                                index.getAndIncrement(),
-//                                resolve, pa.toString()));
-                    } catch (PieceResolverException e) {
-                        failed.append(pa.toString()).append("\n");
-
-//                        System.out.println(e.getMessage());
-//                        System.out.println(String.format("%s: Failed %s",
-//                                Thread.currentThread().getName(),
-//                                index.getAndIncrement()));
-                    }
-
-                }))).collect(Collectors.toList());
-
-        collect.forEach(f -> {
+        pieces.parallelStream().forEach(pa -> {
             try {
-                f.getRight().get(1, TimeUnit.SECONDS);
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                failed.append(f.getLeft().toString()).append("\n");
+                String text = resolve(pa);
+                synchronized (parsedFOS) {
+                    try {
+                        parsedFOS.write(text.getBytes());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (PieceResolverException e) {
+                String text = pa.toString() + "\n";
+                synchronized (failedFOS) {
+                    try {
+                        failedFOS.write(text.getBytes());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
             }
+            System.out.println("Piece no: " + index.getAndIncrement());
         });
 
-
         System.out.println("Resolved");
+}
+
+    public static String resolve(Piece piece) throws PieceResolverException {
+        final String resolve = PieceResolver.resolve(piece);
+        return "//" + resolve + "\n" + piece.toString() + "\n";
     }
 
     private static void scanDirectory() throws IOException {

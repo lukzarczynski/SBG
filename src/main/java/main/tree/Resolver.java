@@ -1,15 +1,15 @@
 package main.tree;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import main.MoveUtil;
 import main.OneMove;
 import main.operator.Operator;
 import main.piececlass.PieceClass;
-import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukasz on 07.12.16.
@@ -17,16 +17,20 @@ import org.apache.commons.lang3.tuple.Pair;
 public class Resolver {
 
     protected PieceClass pieceClass;
-    protected List<Operator> operators;
+    protected Set<Operator> operators;
     protected boolean valid = true;
     protected int priority;
 
     public Resolver(PieceClass pieceClass, Operator... ops) {
-        this.pieceClass = pieceClass;
-        this.operators = Arrays.asList(ops);
+        this(pieceClass, new HashSet<>(Arrays.asList(ops)));
+    }
 
-        this.priority = this.operators.stream().map(o -> o.priority).reduce(0, Integer::sum);
-        this.priority += (ops.length - 1) * 20;
+    public Resolver(PieceClass pieceClass, Set<Operator> ops) {
+        this.pieceClass = pieceClass;
+        this.operators = ops;
+
+        this.priority = this.operators.stream().map(o -> o.value).reduce(0, Integer::sum);
+        this.priority += (ops.size() - 1) * 20;
 
         final Set<OneMove> allFilteredMoves = pieceClass.filterMoves(ops);
         valid = !allFilteredMoves.isEmpty();

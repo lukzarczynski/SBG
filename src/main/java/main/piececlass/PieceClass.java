@@ -1,14 +1,14 @@
 package main.piececlass;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import main.OneMove;
 import main.operator.None;
 import main.operator.Operator;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukasz on 06.12.16.
@@ -18,7 +18,7 @@ public abstract class PieceClass {
     protected Set<OneMove> moves = new HashSet<>();
 
     public boolean matches(Set<OneMove> moves) {
-        return matches(moves, None.instance(0));
+        return matches(moves, new None());
     }
 
     public boolean matches(Set<OneMove> moves, Collection<Operator> operators) {
@@ -35,15 +35,11 @@ public abstract class PieceClass {
 
     public abstract String getDescription();
 
-    public Set<OneMove> getMoves() {
-        return moves;
-    }
-
     public Set<OneMove> filterMoves(Operator[] op) {
         return filterMoves(Arrays.asList(op));
     }
 
-    public Set<OneMove> filterMoves(List<Operator> op) {
+    public Set<OneMove> filterMoves(Collection<Operator> op) {
         return moves.stream()
                 .filter(m -> op.stream().allMatch(o -> o.matches().test(m)))
                 .map(m -> {

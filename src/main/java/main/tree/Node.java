@@ -1,13 +1,13 @@
 package main.tree;
 
+import main.MoveUtil;
+import main.OneMove;
+import main.Piece;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import main.MoveUtil;
-import main.OneMove;
-import main.Piece;
 
 /**
  * Created by lukasz on 06.12.16.
@@ -22,8 +22,8 @@ public class Node {
     public final Set<OneMove> movesToInterpret;
     public final boolean leaf;
     public final String description;
-    public Resolver resolver;
     public final Set<Resolver> usedResolvers;
+    public Resolver resolver;
 
     Node(Piece piece) {
         this.piece = piece;

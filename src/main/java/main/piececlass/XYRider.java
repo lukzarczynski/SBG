@@ -1,9 +1,10 @@
 package main.piececlass;
 
-import java.util.Set;
 import main.MoveUtil;
 import main.OneMove;
 import main.operator.Operator;
+
+import java.util.Set;
 
 /**
  * Created by lukasz on 06.12.16.
@@ -22,13 +23,13 @@ public class XYRider extends PieceClass {
 
     @Override
     public boolean matches(Set<OneMove> pieceMoves, Operator... op) {
-        final Set<OneMove> b = filterMoves( op);
+        final Set<OneMove> b = filterMoves(op);
         return !b.isEmpty() && MoveUtil.containsAll(pieceMoves, b);
     }
 
     @Override
     public Set<OneMove> apply(Set<OneMove> pieceMoves, Operator... op) {
-        final Set<OneMove> b = filterMoves( op);
+        final Set<OneMove> b = filterMoves(op);
         return b.isEmpty() ? pieceMoves : MoveUtil.subtract(pieceMoves, b);
     }
 

@@ -1,18 +1,14 @@
 package main.operator;
 
-import java.util.function.Predicate;
 import main.Move;
 import main.OneMove;
+
+import java.util.function.Predicate;
 
 /**
  * Created by lukasz on 06.12.16.
  */
 public class Forward extends Operator {
-    private static final Operator instance = new Forward();
-    public static Operator instance(int priority) {
-        instance.priority = priority;
-        return instance;
-    }
     @Override
     public Predicate<OneMove> matches() {
         return move -> {
@@ -21,7 +17,8 @@ public class Forward extends Operator {
         };
     }
 
-    @Override public String getDescription() {
+    @Override
+    public String getDescription() {
         return "Forward";
     }
 }

@@ -1,9 +1,9 @@
 package main.operator;
 
-import java.util.function.Predicate;
-
 import main.MoveType;
 import main.OneMove;
+
+import java.util.function.Predicate;
 
 /**
  * moves that end only without capturing enemy piece
@@ -11,13 +11,6 @@ import main.OneMove;
  * Created by lukasz on 06.12.16.
  */
 public class WithoutCapture extends Operator {
-
-    private static final Operator instance = new WithoutCapture();
-
-    public static Operator instance(int priority) {
-        instance.priority = priority;
-        return instance;
-    }
 
     @Override
     public Predicate<OneMove> matches() {

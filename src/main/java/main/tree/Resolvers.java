@@ -1,92 +1,93 @@
 package main.tree;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import main.operator.*;
 
-import main.operator.Backwards;
-import main.operator.BackwardsOrHorizontal;
-import main.operator.Diagonal;
-import main.operator.Forward;
-import main.operator.ForwardOrHorizontal;
-import main.operator.Horizontal;
-import main.operator.None;
-import main.operator.OnlyCapture;
-import main.operator.Operator;
-import main.operator.Orthogonal;
-import main.operator.OverEnemyPieceInstead;
-import main.operator.RestrictedToOne;
-import main.operator.Sideways;
-import main.operator.WithoutCapture;
-import main.piececlass.XYLeaper;
-import main.piececlass.XYRider;
+import java.util.*;
 
 /**
  * Created by lukasz on 10.12.16.
  */
 public final class Resolvers {
 
-    public static final List<Resolver> resolvers;
-    public static final List<Operator[]> ops;
+    public static final Set<Set<Operator>> ops;
+
+    private static final Map<Class<? extends Operator>, Set<Class<? extends Operator>>> RESTRICTIONS;
 
     static {
-        ops = newArrayList(
-//                new Operator[]{None.instance(0)},
-//                new Operator[]{Forward.instance(1)},
-//                new Operator[]{Backwards.instance(1)},
-//                new Operator[]{Sideways.instance(2)},
-//                new Operator[]{Diagonal.instance(2)},
-//                new Operator[]{Horizontal.instance(2)},
-//                new Operator[]{Orthogonal.instance(2)},
-                new Operator[]{BackwardsOrHorizontal.instance(2)},
-                new Operator[]{ForwardOrHorizontal.instance(2)},
-//                new Operator[]{OnlyCapture.instance(3)},
-//                new Operator[]{WithoutCapture.instance(3)},
-                new Operator[]{RestrictedToOne.instance(6)}
-//                new Operator[]{OverEnemyPieceInstead.instance(8)}
-        );
-        final int singleOps = ops.size();
-        for (int i = 1; i < singleOps; i++) {
-            Operator o1 = ops.get(i)[0];
-            for (int j = i + 1; j < singleOps; j++) {
-                Operator o2 = ops.get(j)[0];
-                ops.add(new Operator[]{o1, o2});
-            }
-        }
+        ops = new HashSet<>();
+        RESTRICTIONS = new HashMap<>();
 
-        final List<XYRider> riders = Arrays.asList(
-//                new XYRider(1, 1),
-                new XYRider(0, 1),
-                new XYRider(1, 0),
-//                new XYRider(2, 1),
-                new XYRider(1, 2)
-        );
-        final List<XYLeaper> leapers = Arrays.asList(
-//                new XYLeaper(2, 1),
-//                new XYLeaper(3, 1),
-//                new XYLeaper(1, 1),
-//                new XYLeaper(2, 2),
-//                new XYLeaper(2, 0),
-//                new XYLeaper(3, 0)
+        Set<Operator> allOperators = setOf(
+                new None(),
+                new Forward(),
+                new Backwards(),
+                new Sideways(),
+                new Diagonal(),
+                new Horizontal(),
+                new Orthogonal(),
+                new Or(new Forward(), new Horizontal()),
+                new Or(new Backwards(), new Horizontal()),
+                new OnlyCapture(),
+                new WithoutCapture(),
+                new OnlyEven(),
+                new OnlyOdd(),
+                new RestrictedToX(1),
+                new RestrictedToX(2),
+                new RestrictedToX(3),
+                new RestrictedToX(4),
+                new RestrictedToX(5),
+                new RestrictedToX(6),
+                new OverEnemyPieceInstead(),
+                new OverOwnPieceInstead(),
+                new SelfCaptureInstead()
         );
 
-        resolvers = Stream.concat(riders.stream(), leapers.stream())
-                .map(pc -> ops.stream().map(o -> new Resolver(pc, o)))
-                .flatMap(Function.identity())
-                .filter(Resolver::isValid)
-                .sorted(Comparator.comparing(Resolver::getPriority))
-                .distinct()
-                .collect(Collectors.toList());
+
+        RESTRICTIONS.put(Forward.class, setOf(None.class, Backwards.class));
+        RESTRICTIONS.put(Backwards.class, setOf(None.class, Forward.class));
+        RESTRICTIONS.put(Sideways.class, setOf(None.class, Orthogonal.class, Horizontal.class));
+        RESTRICTIONS.put(OnlyCapture.class, setOf(None.class, WithoutCapture.class));
+        RESTRICTIONS.put(WithoutCapture.class, setOf(None.class, OnlyCapture.class));
+        RESTRICTIONS.put(Diagonal.class, setOf(None.class, Horizontal.class, Orthogonal.class));
+        RESTRICTIONS.put(Orthogonal.class, setOf(None.class, Sideways.class, Diagonal.class, Horizontal.class));
+        RESTRICTIONS.put(Horizontal.class, setOf(None.class, Sideways.class, Diagonal.class, Orthogonal.class));
+        RESTRICTIONS.put(OnlyEven.class, setOf(None.class, OnlyOdd.class));
+        RESTRICTIONS.put(OnlyOdd.class, setOf(None.class, OnlyEven.class));
+        RESTRICTIONS.put(RestrictedToX.class, setOf(None.class, RestrictedToX.class));
+        RESTRICTIONS.put(OverEnemyPieceInstead.class, setOf(None.class, OverOwnPieceInstead.class));
+        RESTRICTIONS.put(OverOwnPieceInstead.class, setOf(None.class, OverEnemyPieceInstead.class));
+
+        allOperators.forEach(o1 -> {
+            ops.add(setOf(o1));
+
+            final Set<Class<? extends Operator>> r1 = RESTRICTIONS.getOrDefault(o1.getClass(), setOf(o1.getClass()));
+
+            allOperators.stream().filter(o2 -> !r1.contains(o2.getClass())).forEach(o2 -> {
+                ops.add(setOf(o1, o2));
+
+                final Set<Class<? extends Operator>> r2 = RESTRICTIONS.getOrDefault(o2.getClass(), setOf(o2.getClass()));
+
+                allOperators.stream().filter(o3 -> !r1.contains(o3.getClass()) && !r2.contains(o3.getClass())).forEach(o3 -> {
+                    ops.add(setOf(o1, o2, o3));
+
+                    final Set<Class<? extends Operator>> r3 = RESTRICTIONS.getOrDefault(o3.getClass(), setOf(o3.getClass()));
+
+                    allOperators.stream().filter(o4 -> !r1.contains(o4.getClass()) && !r2.contains(o4.getClass()) && !r3.contains(o4.getClass())).forEach(o4 -> {
+                        ops.add(setOf(o1, o2, o3, o4));
+                    });
+                });
+            });
+
+        });
+
     }
 
-    private static List<Operator[]> newArrayList(Operator[]... ops) {
-        List<Operator[]> l = new ArrayList<>();
-        Collections.addAll(l, ops);
-        return l;
+    private static Set<Class<? extends Operator>> setOf(Class<? extends Operator>... op) {
+        return new HashSet<>(Arrays.asList(op));
     }
+
+    private static Set<Operator> setOf(Operator... op) {
+        return new HashSet<>(Arrays.asList(op));
+    }
+
 }

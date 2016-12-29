@@ -15,11 +15,11 @@ public enum MoveType {
         this.code = code;
     }
 
-    public String getCode() {
-        return code;
-    }
-
     public static MoveType byCode(String code) {
         return Arrays.stream(MoveType.values()).filter(mt -> mt.getCode().equals(code)).findAny().orElse(null);
+    }
+
+    public String getCode() {
+        return code;
     }
 }

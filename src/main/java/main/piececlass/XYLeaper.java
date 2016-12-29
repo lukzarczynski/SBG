@@ -1,9 +1,10 @@
 package main.piececlass;
 
-import java.util.Set;
 import main.MoveUtil;
 import main.OneMove;
 import main.operator.Operator;
+
+import java.util.Set;
 
 /**
  * Created by lukasz on 06.12.16.
@@ -43,7 +44,8 @@ public class XYLeaper extends PieceClass {
         return b.isEmpty() ? pieceMoves : MoveUtil.subtract(pieceMoves, b);
     }
 
-    @Override public String getDescription() {
+    @Override
+    public String getDescription() {
         return description;
     }
 

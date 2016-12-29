@@ -6,20 +6,25 @@ import main.OneMove;
 import java.util.function.Predicate;
 
 /**
- * Created by lukasz on 06.12.16.
+ * Created by lukza on 28.12.2016.
  */
-public class Backwards extends Operator {
+public class OnlyEven extends Operator {
 
     @Override
     public Predicate<OneMove> matches() {
         return move -> {
+            final Integer dx = move.getMoves().stream().map(Move::getDx).reduce(0, Integer::sum);
             final Integer dy = move.getMoves().stream().map(Move::getDy).reduce(0, Integer::sum);
-            return dy < 0;
+            return isEven(dx) && isEven(dy);
         };
+    }
+
+    private boolean isEven(Integer dx) {
+        return dx % 2 == 0;
     }
 
     @Override
     public String getDescription() {
-        return "Backwards";
+        return "Only even";
     }
 }

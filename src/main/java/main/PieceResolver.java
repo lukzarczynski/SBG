@@ -1,10 +1,9 @@
 package main;
 
+import main.tree.*;
+
 import java.util.*;
 import java.util.stream.Collectors;
-
-import main.tree.*;
-import org.apache.commons.lang3.tuple.Pair;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -14,28 +13,28 @@ import static java.util.Objects.nonNull;
  */
 public class PieceResolver {
 
-    public static String resolve(Piece piece) throws PieceResolverException{
+    public static String resolve(Piece piece) throws PieceResolverException {
 
-        Set<OneMove> movesToInterpret = piece.getMoves();
+        Set<OneMove> movesToInterpret = new HashSet<>(piece.getMoves());
         Map<OneMove, List<Resolver>> asd = new HashMap<>();
 
-        Resolvers.resolvers.forEach(r -> {
-            boolean matches = r.matches(piece.getMoves());
-            if (matches) {
-                ResolveResult apply = r.apply(piece.getMoves());
+
+        Resolvers.ops.forEach(ops -> {
+            new SearchingResolver(ops)
+                    .search(piece.getMoves(), piece).forEach(resolver -> {
+                ResolveResult apply = resolver
+                        .apply(piece.getMoves());
 
                 apply.getParsed().forEach(parsed -> {
                     asd.putIfAbsent(parsed, new ArrayList<>());
-                    asd.get(parsed).add(r);
+                    asd.get(parsed).add(resolver);
                 });
-            }
+            });
         });
 
         Set<OneMove> parsedMoves = asd.keySet();
 
-        System.out.println();
-
-        if(parsedMoves.size() == movesToInterpret.size()){
+        if (parsedMoves.size() == movesToInterpret.size()) {
             return resolve2(piece, asd.values().stream().flatMap(Collection::stream).collect(Collectors.toList()));
         }
         throw new PieceResolverException(String.format("Could parse: %s out of %s", parsedMoves.size(), movesToInterpret.size()));
