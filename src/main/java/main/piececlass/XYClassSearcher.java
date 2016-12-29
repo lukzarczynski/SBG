@@ -18,19 +18,16 @@ import java.util.stream.Collectors;
  */
 public class XYClassSearcher {
 
-    private static final Map<Pair<Integer, Integer>, XYLeaper> leapersCache = new ConcurrentHashMap<>();
-    private static final Map<Pair<Integer, Integer>, XYRider> ridersCache = new ConcurrentHashMap<>();
-
     public static Set<XYLeaper> findLeapers(Set<OneMove> moves, Piece piece, Set<Operator> operators) {
         return getCandidates(moves).stream()
-                .map(XYClassSearcher::getLeaper)
+                .map(PieceCache::getLeaper)
                 .filter(r -> r.matches(piece.getMoves(), operators))
                 .collect(Collectors.toSet());
     }
 
     public static Set<XYRider> findRiders(Set<OneMove> moves, Piece piece, Set<Operator> operators) {
         return getCandidates(moves).stream()
-                .map(XYClassSearcher::getRider)
+                .map(PieceCache::getRider)
                 .filter(r -> r.matches(piece.getMoves(), operators))
                 .collect(Collectors.toSet());
     }
@@ -42,22 +39,4 @@ public class XYClassSearcher {
                 .collect(Collectors.toSet());
     }
 
-    private static XYLeaper getLeaper(Pair<Integer, Integer> pair) {
-        if (!leapersCache.containsKey(pair)) {
-            XYLeaper value = new XYLeaper(pair.getLeft(), pair.getRight());
-            leapersCache.put(pair, value);
-            if (!Objects.equals(pair.getLeft(), pair.getRight())) {
-                leapersCache.put(Pair.of(pair.getRight(), pair.getLeft()), value);
-            }
-        }
-        return leapersCache.get(pair);
-    }
-
-    private static XYRider getRider(Pair<Integer, Integer> pair) {
-        if (!ridersCache.containsKey(pair)) {
-            XYRider value = new XYRider(pair.getLeft(), pair.getRight());
-            ridersCache.put(pair, value);
-        }
-        return ridersCache.get(pair);
-    }
 }

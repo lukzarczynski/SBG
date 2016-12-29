@@ -15,16 +15,8 @@ import java.util.stream.Stream;
  */
 public class SearchingResolver {
 
-    protected Set<Operator> operators;
-    protected int priority;
-
-    public SearchingResolver(Set<Operator> operators) {
-        this.operators = operators;
-        this.priority = this.operators.stream().map(o -> o.value).reduce(0, Integer::sum);
-        this.priority += (operators.size() - 1) * 20;
-    }
-
-    public Collection<Resolver> search(Set<OneMove> moves, Piece piece) {
+    public static Collection<Resolver> search(Set<OneMove> moves, Piece piece, Set<Operator>
+        operators) {
         return Stream.concat(
                 XYClassSearcher.findLeapers(moves, piece, operators).stream(),
                 XYClassSearcher.findRiders(moves, piece, operators).stream()
