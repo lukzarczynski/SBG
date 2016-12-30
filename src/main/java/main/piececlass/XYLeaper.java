@@ -3,7 +3,9 @@ package main.piececlass;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import main.MoveUtil;
@@ -37,45 +39,46 @@ public class XYLeaper extends PieceClass {
   }
 
   @Override
-  public boolean matches(Set<OneMove> pieceMoves, Operator... op) {
+  public boolean matches(Set<OneMove> pieceMoves, Collection<Operator> op) {
     final Set<OneMove> b = filterMoves(op);
     return !b.isEmpty() && MoveUtil.containsAll(pieceMoves, b);
   }
 
   @Override
-  public boolean matchesPrefix(Set<OneMove> moves, Operator... op) {
+  public boolean matchesPrefix(Set<OneMove> moves, Collection<Operator> op) {
     final Set<OneMove> b = filterMoves(op);
     return !b.isEmpty() && MoveUtil.containsAllPrefixes(moves, b);
   }
 
   @Override
-  public Set<OneMove> apply(Set<OneMove> pieceMoves, Operator... op) {
+  public Set<OneMove> apply(Set<OneMove> pieceMoves, Collection<Operator> op) {
     final Set<OneMove> b = filterMoves(op);
     return b.isEmpty() ? pieceMoves : MoveUtil.subtract(pieceMoves, b);
   }
 
   @Override
-  public Set<OneMove> applyPrefix(Set<OneMove> moves, Operator... op) {
+  public Map<OneMove, OneMove> applyPrefix(Set<OneMove> moves,
+                                           Collection<Operator> op) {
     final Set<OneMove> b = filterMoves(op);
 
     final Set<String> setStrings = b.stream().map(OneMove::toString).collect(Collectors.toSet());
 
-    return b.isEmpty() ? moves :
+    return b.isEmpty() ? null :
         moves.stream()
-            .map(OneMove::toString)
-            .filter(om -> setStrings.stream().anyMatch(om::startsWith))
-            .map(om -> {
-              String bestMatch = setStrings.stream().filter(om::startsWith).sorted((c, a) -> Integer.compare(a
-                  .length(), c.length())).findFirst().get();
-              String ns = StringUtils.replaceOnce(om, bestMatch, "").trim();
-              if (ns.startsWith("+")) {
-                ns = ns.replaceFirst("\\+", "");
-              }
-              return ns;
-            })
-            .map(OneMove::parse)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toSet());
+            .filter(om -> setStrings.stream().anyMatch(ob -> om.toString().startsWith(ob)))
+            .collect(Collectors.toMap(Function.identity(),
+                o -> {
+                  String om = o.toString();
+                  String bestMatch =
+                      setStrings.stream()
+                          .filter(om::startsWith)
+                          .sorted((c, a) -> Integer.compare(a.length(), c.length())).findFirst().get();
+                  String ns = StringUtils.replaceOnce(om, bestMatch, "").trim();
+                  if (ns.startsWith("+")) {
+                    ns = ns.replaceFirst("\\+", "");
+                  }
+                  return OneMove.parse(ns).stream().findAny().orElse(null);
+                }));
   }
 
   @Override

@@ -1,8 +1,7 @@
-package main.tree;
+package main.resolvers;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,8 +28,8 @@ public class PrefixResolverSearcher {
     Set<XYLeaper> leapers = findLeapers(moves, piece, operators1);
     Set<XYRider> riders = findRiders(moves, piece, operators1);
 
-   return  Stream.concat(leapers.stream(), riders.stream()).map(pc -> new Resolver(pc,
-       operators1)).collect(Collectors.toSet());
+    return Stream.concat(leapers.stream(), riders.stream()).map(pc -> new SimplePieceResolver(pc,
+        operators1)).collect(Collectors.toSet());
 
 
   }

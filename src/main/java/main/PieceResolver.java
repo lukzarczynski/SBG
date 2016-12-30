@@ -14,12 +14,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import main.tree.Node;
-import main.tree.PrefixResolverSearcher;
 import main.tree.ResolveResult;
-import main.tree.Resolver;
+import main.resolvers.Resolver;
 import main.tree.Resolvers;
 import main.tree.Root;
-import main.tree.SearchingResolver;
+import main.resolvers.SimplePieceResolverSearcher;
 
 /**
  * Created by lukasz on 25.12.16.
@@ -33,7 +32,7 @@ public class PieceResolver {
     Map<OneMove, List<Resolver>> prefixes = new HashMap<>();
 
 
-    Resolvers.ops.forEach(ops -> SearchingResolver
+    Resolvers.ops.forEach(ops -> SimplePieceResolverSearcher
         .search(piece.getMoves(), piece, ops)
         .forEach(resolver -> {
           ResolveResult apply = resolver.apply(piece.getMoves());
@@ -44,15 +43,15 @@ public class PieceResolver {
           });
         }));
 
-    Resolvers.ops.forEach(ops -> {
-      Set<Resolver> prefixResolvers = PrefixResolverSearcher.findPrefixResolvers(piece.getMoves(), piece, ops);
-
-      System.out.println(prefixResolvers);
-      prefixResolvers.forEach(r -> {
-        Set<OneMove> oneMoves = r.applyPrefixes(piece.getMoves());
-      });
-
-    });
+//    Resolvers.ops.forEach(ops -> {
+//      Set<Resolver> prefixResolvers = PrefixResolverSearcher.findPrefixResolvers(piece.getMoves(), piece, ops);
+//
+//      System.out.println(prefixResolvers);
+//      prefixResolvers.forEach(r -> {
+//        Set<OneMove> oneMoves = r.applyPrefixes(piece.getMoves());
+//      });
+//
+//    });
 
     Set<OneMove> parsedMoves = simpleParse.keySet();
 

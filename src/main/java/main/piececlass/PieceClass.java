@@ -3,6 +3,7 @@ package main.piececlass;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,38 +18,16 @@ public abstract class PieceClass {
 
   protected Set<OneMove> moves = new HashSet<>();
 
-  public boolean matches(Set<OneMove> moves) {
-    return matches(moves, new None());
-  }
+  public abstract boolean matches(Set<OneMove> moves, Collection<Operator> operators);
 
-  public boolean matches(Set<OneMove> moves, Collection<Operator> operators) {
-    return matches(moves, operators.toArray(new Operator[operators.size()]));
-  }
+  public abstract boolean matchesPrefix(Set<OneMove> moves, Collection<Operator> operators);
 
-  public boolean matchesPrefix(Set<OneMove> moves, Collection<Operator> operators) {
-    return matches(moves, operators.toArray(new Operator[operators.size()]));
-  }
+  public abstract Set<OneMove> apply(Set<OneMove> moves, Collection<Operator> operators);
 
-  public Set<OneMove> apply(Set<OneMove> moves, Collection<Operator> operators) {
-    return apply(moves, operators.toArray(new Operator[operators.size()]));
-  }
-  public Set<OneMove> applyPrefix(Set<OneMove> moves, Collection<Operator> operators) {
-    return applyPrefix(moves, operators.toArray(new Operator[operators.size()]));
-  }
-
-  public abstract boolean matches(Set<OneMove> moves, Operator... op);
-
-  public abstract boolean matchesPrefix(Set<OneMove> moves, Operator... op);
-
-  public abstract Set<OneMove> apply(Set<OneMove> moves, Operator... op);
-
-  public abstract Set<OneMove> applyPrefix(Set<OneMove> moves, Operator... op);
+  public abstract Map<OneMove, OneMove> applyPrefix(Set<OneMove> moves, Collection<Operator>
+      operators);
 
   public abstract String getDescription();
-
-  public Set<OneMove> filterMoves(Operator[] op) {
-    return filterMoves(Arrays.asList(op));
-  }
 
   public Set<OneMove> filterMoves(Collection<Operator> op) {
     return moves.stream()

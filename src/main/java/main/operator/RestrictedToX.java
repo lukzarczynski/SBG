@@ -20,8 +20,12 @@ public class RestrictedToX extends Operator {
     @Override
     public Predicate<OneMove> matches() {
         return move -> {
-            final Integer dx = move.getMoves().stream().map(Move::getDx).reduce(0, Integer::sum);
-            final Integer dy = move.getMoves().stream().map(Move::getDy).reduce(0, Integer::sum);
+            final Integer dx = move.getMoves().stream().map(m -> m.getDx() * m.getPower()).reduce
+                (0,
+                Integer::sum);
+            final Integer dy = move.getMoves().stream().map(m -> m.getDy() * m.getPower()).reduce
+                (0,
+                Integer::sum);
             return Math.abs(dx) <= x && Math.abs(dy) <= x;
         };
     }

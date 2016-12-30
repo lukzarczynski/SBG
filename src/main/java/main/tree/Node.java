@@ -3,6 +3,7 @@ package main.tree;
 import main.MoveUtil;
 import main.OneMove;
 import main.Piece;
+import main.resolvers.Resolver;
 
 import java.util.HashSet;
 import java.util.List;
@@ -39,7 +40,7 @@ public class Node {
         this.resolver = resolver;
         this.parent = parent;
         this.piece = parent.piece;
-        final boolean match = resolver.matches(parent.piece.getMoves());
+        final boolean match = resolver.isApplicable(parent.piece.getMoves());
         if (match) {
             ResolveResult apply = resolver.apply(parent.piece.getMoves());
             this.movesToInterpret = MoveUtil.subtract(this.parent.movesToInterpret, apply.getParsed());
@@ -48,7 +49,7 @@ public class Node {
         }
         this.leaf = this.movesToInterpret.isEmpty();
         this.description = resolver.getDescription();
-        this.value = parent.value + resolver.getPriority();
+        this.value = parent.value + resolver.getValue();
         usedResolvers = new HashSet<>();
         usedResolvers.addAll(parent.usedResolvers);
         usedResolvers.add(resolver);
