@@ -22,6 +22,8 @@ public abstract class Resolver {
 
   public abstract String getDescription();
 
+  public abstract boolean containsMove(OneMove oneMove);
+
   public int getValue() {
     return value;
   }
@@ -46,4 +48,6 @@ public abstract class Resolver {
     result = 31 * result + value;
     return result;
   }
+
+  public abstract boolean containsMovePrefix(OneMove om);
 }

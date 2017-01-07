@@ -1,16 +1,14 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by lukasz on 26.11.16.
  */
 public class OneMove {
+
+    public static final OneMove EMPTY_MOVE = new OneMove();
 
     private List<Move> moves = new ArrayList<>();
 
@@ -21,16 +19,16 @@ public class OneMove {
     }
 
     public static Set<OneMove> parse(String regex) {
-        if(regex.isEmpty()){
+        if (regex.isEmpty()) {
             return new HashSet<>();
         }
         List<OneMove> oneMoves = new ArrayList<>();
         oneMoves.add(new OneMove());
         final String[] mm = regex.split("(?=\\()");
         for (String m : mm) {
-            final List<Move> parsedMoves = Move.parse(m);
+            final List<List<Move>> parsedMoves = Move.parse(m);
             if (parsedMoves.size() == 1) {
-                oneMoves.forEach(om -> om.getMoves().addAll(parsedMoves));
+                oneMoves.forEach(om -> om.getMoves().addAll(parsedMoves.get(0)));
             } else {
                 oneMoves =
                         oneMoves.stream()
@@ -47,11 +45,11 @@ public class OneMove {
         return parse(String.format("(%s,%s,%s)", x, y, target)).iterator().next();
     }
 
-    private static Set<OneMove> addAll(OneMove move, List<Move> parsed) {
+    private static Set<OneMove> addAll(OneMove move, List<List<Move>> parsed) {
         return parsed.stream().map(m -> {
             final OneMove copy = move.copy();
-            if (m.getPower() != 0) {
-                copy.getMoves().add(m);
+            if (m.size() != 0) {
+                copy.getMoves().addAll(m);
             }
             return copy;
         }).collect(Collectors.toSet());

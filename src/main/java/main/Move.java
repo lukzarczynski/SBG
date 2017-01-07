@@ -20,7 +20,7 @@ public class Move {
         this.power = power;
     }
 
-    public static List<Move> parse(String regex) {
+    public static List<List<Move>> parse(String regex) {
         String m = regex;
         final List<Move> moves = new ArrayList<>();
         if (m.contains("^")) {
@@ -53,7 +53,15 @@ public class Move {
             move.setDy(Integer.parseInt(ss[1]));
             move.setMoveType(MoveType.byCode(ss[2]));
         });
-        return moves;
+        return moves.stream().map(m2 -> {
+            List<Move> result = new ArrayList<>();
+            for (int i = 0; i < m2.getPower(); i++) {
+                Move copy = m2.copy();
+                copy.setPower(1);
+                result.add(copy);
+            }
+            return result;
+        }).collect(Collectors.toList());
     }
 
     public Move copy() {
@@ -133,8 +141,11 @@ public class Move {
 
     @Override
     public String toString() {
-        return String.format("(%s,%s,%s)^%s",
-                dx, dy, moveType.getCode(), power);
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < power; i++) {
+            builder.append(String.format("(%s,%s,%s)", dx, dy, moveType.getCode()));
+        }
+        return builder.toString();
     }
 
 }

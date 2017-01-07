@@ -2,6 +2,7 @@ package main;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.*;
 import java.util.*;
@@ -56,6 +57,7 @@ public class Main {
     public static void resolve(Set<Piece> pieces, FileOutputStream parsedFOS, FileOutputStream failedFOS) throws IOException {
         final AtomicInteger index = new AtomicInteger(0);
 
+
         pieces.parallelStream().forEach(pa -> {
             try {
                 String text = resolve(pa);
@@ -80,11 +82,11 @@ public class Main {
         });
 
         System.out.println("Resolved");
-}
+    }
 
     public static String resolve(Piece piece) throws PieceResolverException {
-        final String resolve = PieceResolver.resolve(piece);
-        return "//" + resolve + "\n" + piece.toString() + "\n";
+        Pair<String, Integer> result = PieceResolver.resolve(piece);
+        return "// V: " + result.getValue() + ", D: " + result.getKey() + "\n" + piece.toString() + "\n";
     }
 
     private static void scanDirectory() throws IOException {

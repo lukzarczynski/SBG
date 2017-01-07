@@ -56,18 +56,20 @@ public class XYRider extends PieceClass {
         moves.stream()
             .filter(om -> setStrings.stream().anyMatch(ob -> om.toString().startsWith(ob)))
             .collect(Collectors.toMap(Function.identity(),
-                o -> {
-                  String om = o.toString();
-                  String bestMatch =
-                      setStrings.stream()
-                          .filter(om::startsWith)
-                          .sorted((c, a) -> Integer.compare(a.length(), c.length())).findFirst().get();
-                  String ns = StringUtils.replaceOnce(om, bestMatch, "").trim();
-                  if (ns.startsWith("+")) {
-                    ns = ns.replaceFirst("\\+", "");
-                  }
-                  return OneMove.parse(ns).stream().findAny().orElse(null);
-                }));
+                o -> getOneMove(setStrings, o)));
+  }
+
+  private OneMove getOneMove(Set<String> setStrings, OneMove o) {
+    String om = o.toString();
+    String bestMatch =
+            setStrings.stream()
+                    .filter(om::startsWith)
+                    .sorted((c, a) -> Integer.compare(a.length(), c.length())).findFirst().get();
+    String ns = StringUtils.replaceOnce(om, bestMatch, "").trim();
+    if (ns.startsWith("+")) {
+      ns = ns.replaceFirst("\\+", "");
+    }
+    return OneMove.parse(ns).stream().findAny().orElse(OneMove.EMPTY_MOVE);
   }
 
   @Override

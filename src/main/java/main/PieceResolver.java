@@ -1,134 +1,171 @@
 package main;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import main.tree.Node;
+import main.operator.Operator;
+import main.piececlass.PieceCache;
+import main.piececlass.PieceClass;
+import main.piececlass.XYLeaper;
+import main.piececlass.XYRider;
+import main.resolvers.*;
 import main.tree.ResolveResult;
-import main.resolvers.Resolver;
 import main.tree.Resolvers;
-import main.tree.Root;
-import main.resolvers.SimplePieceResolverSearcher;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukasz on 25.12.16.
  */
 public class PieceResolver {
 
-  public static String resolve(Piece piece) throws PieceResolverException {
+    public static Pair<String, Integer> resolve(Piece piece) throws PieceResolverException {
 
-    Set<OneMove> movesToInterpret = new HashSet<>(piece.getMoves());
-    Map<OneMove, List<Resolver>> simpleParse = new HashMap<>();
-    Map<OneMove, List<Resolver>> prefixes = new HashMap<>();
+        long start = System.currentTimeMillis();
 
-
-    Resolvers.ops.forEach(ops -> SimplePieceResolverSearcher
-        .search(piece.getMoves(), piece, ops)
-        .forEach(resolver -> {
-          ResolveResult apply = resolver.apply(piece.getMoves());
-
-          apply.getParsed().forEach(parsed -> {
-            simpleParse.putIfAbsent(parsed, new ArrayList<>());
-            simpleParse.get(parsed).add(resolver);
-          });
-        }));
-
-//    Resolvers.ops.forEach(ops -> {
-//      Set<Resolver> prefixResolvers = PrefixResolverSearcher.findPrefixResolvers(piece.getMoves(), piece, ops);
-//
-//      System.out.println(prefixResolvers);
-//      prefixResolvers.forEach(r -> {
-//        Set<OneMove> oneMoves = r.applyPrefixes(piece.getMoves());
-//      });
-//
-//    });
-
-    Set<OneMove> parsedMoves = simpleParse.keySet();
-
-    if (parsedMoves.size() == movesToInterpret.size()) {
-      return resolve2(piece, simpleParse.values().stream().flatMap(Collection::stream).collect(Collectors.toList()));
-    }
-    throw new PieceResolverException(String.format("Could parse: %s out of %s", parsedMoves.size(), movesToInterpret.size()));
-  }
-
-  public static String resolve2(Piece piece, List<Resolver> resolvers) throws PieceResolverException {
-    final Root root = new Root(piece);
-
-    Set<Node> nodes = new HashSet<>();
-    Set<Node> visited = new HashSet<>();
-    nodes.add(root);
-    int i = 0;
-    Node leaf = null;
-    while (i < nodes.size()) {
-      Node n = nodes.stream()
-          .filter(c -> !visited.contains(c))
-          .filter(c -> !c.isLeaf())
-          .sorted(Comparator.comparingInt(a -> a.movesToInterpret.size()))
-          .findFirst().orElse(null);
-      if (isNull(n)) {
-        break;
-      }
-
-      visited.add(n);
-      n.expandNode(resolvers, nonNull(leaf) ? leaf.getValue() : Long.MAX_VALUE);
-      final Set<Node> children = n.children;
-      nodes.addAll(children);
+        Set<OneMove> movesToInterpret = new HashSet<>(piece.getMoves());
+        Map<OneMove, List<Resolver>> resultMap = new HashMap<>();
 
 
-      leaf = nodes.stream()
-          .filter(Node::isLeaf)
-          .sorted(Comparator.comparing(Node::getValue))
-          .findFirst()
-          .orElse(null);
+        List<OneMove> collect = piece.getMoves().stream()
+                .sorted((m1, m2) -> Integer.compare(m2.getMoves().size(), m1.getMoves().size()))
+                .collect(Collectors.toList());
 
-      Node bestMatch = nodes.stream()
-          .sorted((a, b) -> {
-            int compare = Integer.compare(a.movesToInterpret.size(), b.movesToInterpret.size());
-            if (compare == 0) {
-              return a.getValue().compareTo(b.getValue());
+
+        for (OneMove om : collect) {
+            checkTimeout(start);
+
+            if (resultMap.containsKey(om)) {
+                continue;
             }
-            return compare;
 
-          })
-//                    .sorted(Comparator.comparingInt(a -> a.movesToInterpret.size()))
-          .findFirst().orElse(root);
+            Optional<Move> first = om.getMoves().stream().findFirst();
+            if (!first.isPresent()) {
+                continue;
+            }
 
-//            System.out.println(String.format("Best match: m: %s v: %s, nodes: %s, visited: %s",
-//                    bestMatch.movesToInterpret.size(), bestMatch.getValue(),
-//                    nodes.size(),
-//                    visited.size()));
+            XYLeaper xyLeaper = PieceCache
+                    .getLeaper(Pair.of(Math.abs(first.get().getDx()), Math.abs(first.get().getDy())));
+            XYRider xyRider = PieceCache
+                    .getRider(Pair.of(Math.abs(first.get().getDx()), Math.abs(first.get().getDy())));
+
+
+            for (Set<Operator> operators : Resolvers.getSortedOps()) {
+
+                checkTimeout(start);
+                if (tryPieceClass(piece, movesToInterpret, om, xyLeaper, operators, resultMap)) {
+                    break;
+                } else if (tryPieceClass(piece, movesToInterpret, om, xyRider, operators, resultMap)) {
+                    break;
+                } else if (tryCompositeClass(piece, movesToInterpret, om, xyLeaper, operators, resultMap)) {
+                    break;
+                } else if (tryCompositeClass(piece, movesToInterpret, om, xyRider, operators, resultMap)) {
+                    break;
+                }
+
+            }
+
+            throw new PieceResolverException("could not find description for piece " + om.toString());
+        }
+
+
+        if (resultMap.size() != piece.getMoves().size()) {
+            throw new PieceResolverException("not all parsed");
+        }
+        return SetCover.getResult(resultMap);
+//
+//
+//        return resultMap.entrySet().stream().map(e ->
+//                String.format("m: %s, r: %s", e.getKey().toString(),
+//                        e.getValue().stream().map(Resolver::getResult)
+//                                .collect(Collectors.joining(" | ")))).collect(Collectors.joining("\n"));
+
     }
 
-    if (leaf == null) {
-      Node bestMatch = nodes.stream()
-          .sorted(Comparator.comparingInt(a -> a.movesToInterpret.size()))
-          .findFirst().orElse(root);
-      throw new PieceResolverException(getDescription(bestMatch));
-    } else {
-      return getDescription(leaf);
-    }
-  }
-
-  private static String getDescription(Node leaf) {
-    StringBuilder description = new StringBuilder();
-    Node x = leaf;
-    while (x.parent != null) {
-      description.append(x.getDescription());
-      x = x.parent;
+    private static void checkTimeout(long start) throws PieceResolverException {
+        if (System.currentTimeMillis() - start > 5000) {
+            System.out.println("TIMEOUT");
+            throw new PieceResolverException("tIMEOUT");
+        }
     }
 
-    return description.toString();
-  }
+    private static boolean tryCompositeClass(Piece piece, Set<OneMove> movesToInterpret,
+                                             OneMove om, PieceClass xyLeaper,
+                                             Set<Operator> operators,
+                                             Map<OneMove, List<Resolver>> resultMap) {
+        SimplePieceResolver firstResolver = new SimplePieceResolver(xyLeaper, operators);
+
+        if (firstResolver.isApplicableForPrefixes(piece.getMoves())
+                && firstResolver.containsMovePrefix(om)) {
+            PrefixResolveResult prefixResolveResult = firstResolver.applyForPrefixes(piece.getMoves());
+
+            Optional<Pair<Set<Operator>, Optional<SimplePieceResolver>>> best2 =
+                    Resolvers.getSortedOps().stream()
+                            .map(ops -> {
+                                Optional<SimplePieceResolver> first =
+                                        SimplePieceResolverSearcher.search(prefixResolveResult.getSuffixes(), ops)
+                                                .stream()
+                                                .sorted(Comparator.comparingInt(SimplePieceResolver::getValue))
+                                                .findFirst();
+
+                                return Pair.of(ops, first);
+
+                            })
+                            .filter(pair -> pair.getRight().isPresent())
+                            .filter(pair -> {
+
+                                SimpleCompositResolver comRes = new SimpleCompositResolver(
+                                        firstResolver,
+                                        pair.getRight().get());
+
+                                ResolveResult apply = comRes.apply(piece.getMoves());
+
+                                return apply.getParsed().contains(om);
+                            })
+                            .findFirst();
+
+            if (best2.isPresent()) {
+                SimpleCompositResolver comRes = new SimpleCompositResolver(
+                        firstResolver,
+                        best2.get().getRight().get());
+
+                ResolveResult apply = comRes.apply(piece.getMoves());
+
+                if (!apply.getParsed().contains(om)) {
+                    return false;
+                }
+
+                apply.getParsed().forEach(ooo -> {
+                    resultMap.putIfAbsent(ooo, new ArrayList<>());
+                    resultMap.get(ooo).add(comRes);
+                });
+                movesToInterpret.removeAll(apply.getParsed());
+
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    private static boolean tryPieceClass(Piece piece,
+                                         Set<OneMove> movesToInterpret,
+                                         OneMove om,
+                                         PieceClass xyLeaper,
+                                         Set<Operator> operators,
+                                         Map<OneMove, List<Resolver>> resultMap) {
+        SimplePieceResolver resolver = new SimplePieceResolver(xyLeaper, operators);
+
+        if (resolver.isApplicable(piece.getMoves()) && resolver.containsMove(om)) {
+            ResolveResult apply = resolver.apply(piece.getMoves());
+            apply.getParsed().forEach(pm -> {
+                resultMap.putIfAbsent(pm, new ArrayList<>());
+                resultMap.get(pm).add(resolver);
+            });
+            movesToInterpret.removeAll(apply.getParsed());
+            return true;
+        }
+        return false;
+    }
 
 }
 

@@ -7,10 +7,7 @@ import main.operator.Operator;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -18,25 +15,40 @@ import java.util.stream.Collectors;
  */
 public class XYClassSearcher {
 
-    public static Set<XYLeaper> findLeapers(Set<OneMove> moves, Piece piece, Set<Operator> operators) {
+    public static Set<XYLeaper> findLeapers(Set<OneMove> moves, Set<Operator> operators) {
         return getCandidates(moves).stream()
                 .map(PieceCache::getLeaper)
-                .filter(r -> r.matches(piece.getMoves(), operators))
+                .filter(r -> r.matches(moves, operators))
                 .collect(Collectors.toSet());
     }
 
-    public static Set<XYRider> findRiders(Set<OneMove> moves, Piece piece, Set<Operator> operators) {
+    public static Set<XYRider> findRiders(Set<OneMove> moves, Set<Operator> operators) {
         return getCandidates(moves).stream()
                 .map(PieceCache::getRider)
-                .filter(r -> r.matches(piece.getMoves(), operators))
+                .filter(r -> r.matches(moves, operators))
                 .collect(Collectors.toSet());
     }
 
-    private static Set<Pair<Integer, Integer>> getCandidates(Set<OneMove> moves) {
-        List<Move> firstMoves = moves.stream().map(om -> om.getMoves().get(0)).collect(Collectors.toList());
+    public static Set<Pair<Integer, Integer>> getCandidates(Set<OneMove> moves) {
+        List<Move> firstMoves = moves.stream()
+                .filter(om  -> !om.getMoves().isEmpty())
+                .map(om -> om.getMoves().get(0)).collect(Collectors.toList());
 
         return firstMoves.stream().map(m -> Pair.of(Math.abs(m.getDx()), Math.abs(m.getDy())))
                 .collect(Collectors.toSet());
     }
 
+    public static Set<XYLeaper> findLeapersForPrefix(Set<OneMove> moves, Set<Operator> operators) {
+        return getCandidates(moves).stream()
+                .map(PieceCache::getLeaper)
+                .filter(r -> r.matchesPrefix(moves, operators))
+                .collect(Collectors.toSet());
+    }
+
+    public static Set<XYRider> findRidersForPrefix(Set<OneMove> moves,  Set<Operator> operators) {
+        return getCandidates(moves).stream()
+                .map(PieceCache::getRider)
+                .filter(r -> r.matchesPrefix(moves, operators))
+                .collect(Collectors.toSet());
+    }
 }

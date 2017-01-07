@@ -3,6 +3,8 @@ package main.tree;
 import main.operator.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by lukasz on 10.12.16.
@@ -10,6 +12,12 @@ import java.util.*;
 public final class Resolvers {
 
     public static final Set<Set<Operator>> ops;
+    public static final List<Set<Operator>> opsSorted;
+    private static final Comparator<Set<Operator>> setComparator = (op1, op2) -> {
+        Integer sum1 = op1.stream().map(Operator::getValue).reduce(0, Integer::sum);
+        Integer sum2 = op2.stream().map(Operator::getValue).reduce(0, Integer::sum);
+        return Integer.compare(sum1, sum2);
+    };
 
     private static final Map<Class<? extends Operator>, Set<Class<? extends Operator>>> RESTRICTIONS;
 
@@ -80,6 +88,12 @@ public final class Resolvers {
 
         });
 
+        opsSorted = ops.stream().sorted(setComparator).collect(Collectors.toList());
+
+    }
+
+    public static final List<Set<Operator>> getSortedOps() {
+        return opsSorted;
     }
 
     private static Set<Class<? extends Operator>> setOf(Class<? extends Operator>... op) {

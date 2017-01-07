@@ -77,7 +77,7 @@ public class XYLeaper extends PieceClass {
                   if (ns.startsWith("+")) {
                     ns = ns.replaceFirst("\\+", "");
                   }
-                  return OneMove.parse(ns).stream().findAny().orElse(null);
+                  return OneMove.parse(ns).stream().findAny().orElse(OneMove.EMPTY_MOVE);
                 }));
   }
 

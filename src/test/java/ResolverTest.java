@@ -49,7 +49,7 @@ public class ResolverTest {
     pieces.forEach(p -> {
       String resolve;
       try {
-        resolve = PieceResolver.resolve(p);
+        resolve = PieceResolver.resolve(p).getKey();
         System.out.println(resolve);
       } catch (PieceResolverException e) {
         fail();
