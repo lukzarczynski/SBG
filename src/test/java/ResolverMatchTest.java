@@ -1,4 +1,3 @@
-import main.Main;
 import main.Piece;
 import main.PieceResolverException;
 import org.junit.Test;
@@ -36,7 +35,7 @@ public class ResolverMatchTest {
 
     @Test
     public void someTest() throws FileNotFoundException, PieceResolverException {
-        Piece p = Piece.parse("NAME " + regex + " &");
+        Piece p = Piece.parse("NAME " + regex + " &", 8, 8);
 
 
         HashSet<Piece> pieces = new HashSet<>();

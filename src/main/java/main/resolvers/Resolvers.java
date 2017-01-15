@@ -1,10 +1,9 @@
-package main.tree;
+package main.resolvers;
 
 import main.operator.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by lukasz on 10.12.16.
@@ -39,31 +38,46 @@ public final class Resolvers {
                 new WithoutCapture(),
                 new OnlyEven(),
                 new OnlyOdd(),
-                new RestrictedToX(1),
-                new RestrictedToX(2),
-                new RestrictedToX(3),
-                new RestrictedToX(4),
-                new RestrictedToX(5),
-                new RestrictedToX(6),
+                new MaxTimes(2),
+                new MaxTimes(3),
+                new MaxTimes(4),
+                new MaxTimes(5),
+                new MaxTimes(6),
+                new MinTimes(2),
+                new MinTimes(3),
+                new MinTimes(4),
+                new MinTimes(5),
+                new MinTimes(6),
+                new ExactlyTimes(2),
+                new ExactlyTimes(3),
+                new ExactlyTimes(4),
+                new ExactlyTimes(5),
+                new ExactlyTimes(6),
                 new OverEnemyPieceInstead(),
                 new OverOwnPieceInstead(),
-                new SelfCaptureInstead()
+                new SelfCaptureInstead(),
+                new OverOwnPieceInsteadEndingNormally()
         );
 
 
-        RESTRICTIONS.put(Forward.class, setOf(None.class, Backwards.class));
-        RESTRICTIONS.put(Backwards.class, setOf(None.class, Forward.class));
-        RESTRICTIONS.put(Sideways.class, setOf(None.class, Orthogonal.class, Horizontal.class));
-        RESTRICTIONS.put(OnlyCapture.class, setOf(None.class, WithoutCapture.class));
-        RESTRICTIONS.put(WithoutCapture.class, setOf(None.class, OnlyCapture.class));
-        RESTRICTIONS.put(Diagonal.class, setOf(None.class, Horizontal.class, Orthogonal.class));
-        RESTRICTIONS.put(Orthogonal.class, setOf(None.class, Sideways.class, Diagonal.class, Horizontal.class));
-        RESTRICTIONS.put(Horizontal.class, setOf(None.class, Sideways.class, Diagonal.class, Orthogonal.class));
-        RESTRICTIONS.put(OnlyEven.class, setOf(None.class, OnlyOdd.class));
-        RESTRICTIONS.put(OnlyOdd.class, setOf(None.class, OnlyEven.class));
-        RESTRICTIONS.put(RestrictedToX.class, setOf(None.class, RestrictedToX.class));
-        RESTRICTIONS.put(OverEnemyPieceInstead.class, setOf(None.class, OverOwnPieceInstead.class));
-        RESTRICTIONS.put(OverOwnPieceInstead.class, setOf(None.class, OverEnemyPieceInstead.class));
+        addRestrictions(Forward.class, None.class, Backwards.class);
+        addRestrictions(Backwards.class, None.class, Forward.class);
+        addRestrictions(Sideways.class, None.class, Orthogonal.class, Horizontal.class);
+        addRestrictions(OnlyCapture.class, None.class, WithoutCapture.class);
+        addRestrictions(WithoutCapture.class, None.class, OnlyCapture.class);
+        addRestrictions(Diagonal.class, None.class, Horizontal.class, Orthogonal.class);
+        addRestrictions(Orthogonal.class, None.class, Sideways.class, Diagonal.class, Horizontal.class);
+        addRestrictions(Horizontal.class, None.class, Sideways.class, Diagonal.class, Orthogonal.class);
+        addRestrictions(OnlyEven.class, None.class, OnlyOdd.class);
+        addRestrictions(OnlyOdd.class, None.class, OnlyEven.class);
+        addRestrictions(MaxTimes.class, None.class, MaxTimes.class, MinTimes.class, ExactlyTimes.class);
+        addRestrictions(MinTimes.class, None.class, MaxTimes.class, MinTimes.class, ExactlyTimes.class);
+        addRestrictions(ExactlyTimes.class, None.class, MaxTimes.class, MinTimes.class, ExactlyTimes.class);
+        addRestrictions(OverEnemyPieceInstead.class, None.class, OverOwnPieceInstead.class);
+        addRestrictions(OverOwnPieceInstead.class, None.class, OverEnemyPieceInstead.class);
+        addRestrictions(OverOwnPieceInsteadEndingNormally.class, None.class,
+                OverEnemyPieceInstead.class,
+                OverOwnPieceInstead.class);
 
         allOperators.forEach(o1 -> {
             ops.add(setOf(o1));
@@ -90,6 +104,15 @@ public final class Resolvers {
 
         opsSorted = ops.stream().sorted(setComparator).collect(Collectors.toList());
 
+    }
+
+    private static void addRestrictions(Class<? extends Operator> op, Class<? extends Operator>... restrictions) {
+        RESTRICTIONS.putIfAbsent(op, setOf(op));
+        RESTRICTIONS.get(op).addAll(Arrays.asList(restrictions));
+        RESTRICTIONS.get(op).forEach(r -> {
+            RESTRICTIONS.putIfAbsent(r, setOf(r));
+            RESTRICTIONS.get(r).add(op);
+        });
     }
 
     public static final List<Set<Operator>> getSortedOps() {

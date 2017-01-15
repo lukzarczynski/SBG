@@ -10,7 +10,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * moves that end only without capturing enemy piece
+ * moves that captures self piece instead of enemy
  * <p>
  * Created by lukasz on 06.12.16.
  */
@@ -27,12 +27,16 @@ public class SelfCaptureInstead extends Operator {
         return move -> {
             OneMove om = new OneMove();
             List<Move> moves = new ArrayList<>(om.getMoves());
-            if (!moves.isEmpty()) {
-                Move lastMove = moves.get(moves.size() - 1).copy();
-                lastMove.setMoveType(MoveType.OWN);
-                moves.set(moves.size() - 1, lastMove.copy());
-                om.setMoves(moves);
+            if (moves.isEmpty()) {
+                return move;
             }
+            Move lastMove = moves.get(moves.size() - 1).copy();
+            if (lastMove.getMoveType().equals(MoveType.PIECE)) {
+                lastMove.setMoveType(MoveType.OWN);
+            }
+            moves.set(moves.size() - 1, lastMove);
+            om.setMoves(moves);
+
             return om;
         };
     }

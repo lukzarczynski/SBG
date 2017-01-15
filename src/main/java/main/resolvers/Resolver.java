@@ -3,7 +3,7 @@ package main.resolvers;
 import java.util.Set;
 
 import main.OneMove;
-import main.tree.ResolveResult;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Created by lukasz on 07.12.16.
@@ -16,13 +16,11 @@ public abstract class Resolver {
     this.value = value;
   }
 
-  public abstract boolean isApplicable(Set<OneMove> moves);
+  public abstract boolean isApplicable(Set<OneMove> moves, Pair<Integer,Integer> xy);
 
-  public abstract ResolveResult apply(Set<OneMove> moves);
+  public abstract ResolveResult apply(Set<OneMove> moves, Pair<Integer,Integer> xy);
 
   public abstract String getDescription();
-
-  public abstract boolean containsMove(OneMove oneMove);
 
   public int getValue() {
     return value;
@@ -32,7 +30,11 @@ public abstract class Resolver {
     return valid;
   }
 
-  @Override
+  public abstract boolean containsMove(OneMove oneMove, Pair<Integer, Integer> xy);
+
+  public abstract boolean containsMovePrefix(OneMove oneMove, Pair<Integer, Integer> xy);
+
+    @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
@@ -48,6 +50,4 @@ public abstract class Resolver {
     result = 31 * result + value;
     return result;
   }
-
-  public abstract boolean containsMovePrefix(OneMove om);
 }

@@ -15,7 +15,7 @@ public class Piece {
     private String name;
     private Set<OneMove> moves;
 
-    public static Piece parse(String regex) {
+    public static Piece parse(String regex, int width, int height) {
         final Piece piece = new Piece();
 
         final String moves = regex.substring(regex.indexOf("(")).replace("&", "");
@@ -27,6 +27,7 @@ public class Piece {
                 .map(OneMove::parse)
                 .flatMap(Collection::stream)
                 .filter(om -> StringUtils.isNoneEmpty(om.toString()))
+                .filter(om -> om.isValid(width, height))
                 .collect(Collectors.toSet()));
 
         return piece;

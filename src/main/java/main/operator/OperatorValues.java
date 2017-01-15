@@ -18,13 +18,16 @@ public class OperatorValues {
         values.put(Horizontal.class, 4);
         values.put(None.class, 1);
         values.put(OnlyCapture.class, 6);
-        values.put(OnlyEven.class, 10);
-        values.put(OnlyOdd.class, 10);
+        values.put(OnlyEven.class, 12);
+        values.put(OnlyOdd.class, 12);
         values.put(Orthogonal.class, 4);
         values.put(OverEnemyPieceInstead.class, 8);
+        values.put(OverOwnPieceInsteadEndingNormally.class, 14);
         values.put(SelfCaptureInstead.class, 8);
         values.put(OverOwnPieceInstead.class, 8);
-        values.put(RestrictedToX.class, 8);
+        values.put(MaxTimes.class, 8);
+        values.put(MinTimes.class, 8);
+        values.put(ExactlyTimes.class, 10);
         values.put(Sideways.class, 3);
         values.put(WithoutCapture.class, 6);
     }

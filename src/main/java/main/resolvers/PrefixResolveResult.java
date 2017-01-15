@@ -2,6 +2,7 @@ package main.resolvers;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,15 +13,15 @@ import main.OneMove;
  */
 public class PrefixResolveResult {
 
-  private final Set<Pair<OneMove, OneMove>> move;
+  private final Map<OneMove, OneMove> move;
   private final Set<OneMove> notMatchedPrefixes;
 
-  public PrefixResolveResult(Set<Pair<OneMove, OneMove>> move, Set<OneMove> notMatchedPrefixes) {
+  public PrefixResolveResult(Map<OneMove, OneMove> move, Set<OneMove> notMatchedPrefixes) {
     this.move = move;
     this.notMatchedPrefixes = notMatchedPrefixes;
   }
 
-  public Set<Pair<OneMove, OneMove>> getMove() {
+  public Map<OneMove, OneMove> getMove() {
     return move;
   }
 
@@ -29,10 +30,10 @@ public class PrefixResolveResult {
   }
 
   public Set<OneMove> getSuffixes() {
-    return move.stream().map(Pair::getValue).collect(Collectors.toSet());
+    return move.values().stream().collect(Collectors.toSet());
   }
 
   public Set<OneMove> getPrefixes() {
-    return move.stream().map(Pair::getKey).collect(Collectors.toSet());
+    return move.keySet().stream().collect(Collectors.toSet());
   }
 }

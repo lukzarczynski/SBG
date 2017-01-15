@@ -2,10 +2,10 @@ package main.resolvers;
 
 import main.MoveUtil;
 import main.OneMove;
-import main.tree.ResolveResult;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,10 +24,10 @@ public class SimpleCompositResolver extends Resolver {
     }
 
     @Override
-    public boolean isApplicable(Set<OneMove> moves) {
-        if (resolver1.isApplicableForPrefixes(moves)) {
-            PrefixResolveResult prefixResolveResult = resolver1.applyForPrefixes(moves);
-            if (resolver2.isApplicable(prefixResolveResult.getSuffixes())) {
+    public boolean isApplicable(Set<OneMove> moves, Pair<Integer,Integer> xy) {
+        if (resolver1.isApplicableForPrefixes(moves, xy)) {
+            PrefixResolveResult prefixResolveResult = resolver1.applyForPrefixes(moves, xy);
+            if (resolver2.isApplicable(prefixResolveResult.getSuffixes(), xy)) {
                 return true;
             }
         }
@@ -35,9 +35,9 @@ public class SimpleCompositResolver extends Resolver {
     }
 
     @Override
-    public ResolveResult apply(Set<OneMove> moves) {
-        PrefixResolveResult prefixResolveResult = resolver1.applyForPrefixes(moves);
-        ResolveResult apply = resolver2.apply(prefixResolveResult.getSuffixes());
+    public ResolveResult apply(Set<OneMove> moves, Pair<Integer,Integer> xy) {
+        PrefixResolveResult prefixResolveResult = resolver1.applyForPrefixes(moves, xy);
+        ResolveResult apply = resolver2.apply(prefixResolveResult.getSuffixes(), xy);
 
 
         Set<OneMove> notParsed = prefixResolveResult.getNotMatchedPrefixes();
@@ -45,9 +45,9 @@ public class SimpleCompositResolver extends Resolver {
                 (apply.getNotParsed()
                         .stream()
                         .map(notP ->
-                                prefixResolveResult.getMove().stream()
+                                prefixResolveResult.getMove().entrySet().stream()
                                         .filter(p -> p.getValue().equals(notP))
-                                        .map(Pair::getKey)
+                                        .map(Map.Entry::getKey)
                                         .collect(Collectors.toSet()))
                         .flatMap(Collection::stream)
                         .collect(Collectors.toSet()));
@@ -61,12 +61,12 @@ public class SimpleCompositResolver extends Resolver {
     }
 
     @Override
-    public boolean containsMove(OneMove oneMove) {
+    public boolean containsMove(OneMove oneMove, Pair<Integer,Integer> xy) {
         return false;
     }
 
     @Override
-    public boolean containsMovePrefix(OneMove om) {
+    public boolean containsMovePrefix(OneMove om, Pair<Integer,Integer> xy) {
         return false;
     }
 }

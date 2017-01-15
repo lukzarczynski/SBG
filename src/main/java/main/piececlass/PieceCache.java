@@ -13,6 +13,7 @@ public class PieceCache {
 
 
   private static final Map<Pair<Integer, Integer>, XYLeaper> leapersCache = new ConcurrentHashMap<>();
+  private static final Map<Pair<Integer, Integer>, XYYXLeaper> xyyxLeapersCache = new ConcurrentHashMap<>();
   private static final Map<Pair<Integer, Integer>, XYRider> ridersCache = new ConcurrentHashMap<>();
 
   public static XYLeaper getLeaper(Pair<Integer, Integer> pair) {
@@ -24,6 +25,13 @@ public class PieceCache {
       }
     }
     return leapersCache.get(pair);
+  }
+  public static XYYXLeaper getXYYXLeaper(Pair<Integer, Integer> pair) {
+    if (!xyyxLeapersCache.containsKey(pair)) {
+      XYYXLeaper value = new XYYXLeaper(pair.getLeft(), pair.getRight());
+      xyyxLeapersCache.put(pair, value);
+    }
+    return xyyxLeapersCache.get(pair);
   }
 
   public static XYRider getRider(Pair<Integer, Integer> pair) {

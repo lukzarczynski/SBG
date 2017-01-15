@@ -60,7 +60,7 @@ public class PieceType {
     }
 
     public static PieceType of(String description, String regex) {
-        return new PieceType(Piece.parse(regex), description);
+        return new PieceType(Piece.parse(regex, 8, 8), description);
     }
 
     public Piece getPiece() {

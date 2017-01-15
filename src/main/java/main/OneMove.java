@@ -1,5 +1,7 @@
 package main;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -11,11 +13,19 @@ public class OneMove {
     public static final OneMove EMPTY_MOVE = new OneMove();
 
     private List<Move> moves = new ArrayList<>();
+    private Pair<Integer, Integer> vector = Pair.of(0, 0);
 
     public static OneMove of(List<Move> moves) {
         final OneMove om = new OneMove();
         om.setMoves(moves);
         return om;
+    }
+
+    public static Set<OneMove> parse(String regex, Pair<Integer, Integer> vector) {
+        return parse(regex).stream().map(m -> {
+            m.setVector(vector);
+            return m;
+        }).collect(Collectors.toSet());
     }
 
     public static Set<OneMove> parse(String regex) {
@@ -54,6 +64,32 @@ public class OneMove {
             return copy;
         }).collect(Collectors.toSet());
 
+    }
+
+    public Pair<Integer, Integer> getVector() {
+        return vector;
+    }
+
+    public void setVector(Pair<Integer, Integer> vector) {
+        this.vector = vector;
+    }
+
+    public boolean isValid(int width, int height) {
+        return isValid(width, height, vector.getKey(),vector.getValue());
+    }
+
+    public boolean isValid(int width, int height, int vectorX, int vectorY) {
+        int x = vectorX;
+        int y = vectorY;
+        for (Move m : getMoves()) {
+            x += m.getDx();
+            y += m.getDy();
+
+            if (Math.abs(x) >= width || Math.abs(y) >= height) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public List<Move> getMoves() {
@@ -95,5 +131,10 @@ public class OneMove {
     public String toString() {
         return moves.stream().map(Move::toString).collect(Collectors.joining());
     }
+
+    public boolean isValid(Pair<Integer, Integer> xy) {
+        return isValid(xy.getKey(), xy.getValue());
+    }
+
 
 }
