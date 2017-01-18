@@ -1,8 +1,8 @@
 package main.operator;
 
-import main.Move;
-import main.MoveType;
-import main.OneMove;
+import main.model.Move;
+import main.model.MoveType;
+import main.model.OneMove;
 
 import java.util.ArrayList;
 import java.util.List;

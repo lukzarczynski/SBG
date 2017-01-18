@@ -1,5 +1,8 @@
 package main;
 
+import main.model.Move;
+import main.model.OneMove;
+import main.model.Piece;
 import main.operator.Operator;
 import main.piececlass.*;
 import main.resolvers.*;
@@ -9,38 +12,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
-
-enum PieceResolveType {
-
-    SIMPLE,
-    COMPOSIT,
-    OTHER;
-
-    public static PieceResolveType forPiece(OneMove om) {
-        int types = 0;
-        Pair<Integer, Integer> currPair = Pair.of(0, 0);
-
-        for (Move m : om.getMoves()) {
-            Pair<Integer, Integer> of = Pair.of(m.getDx(), m.getDy());
-            if (!currPair.equals(of)) {
-                types++;
-            }
-            currPair = of;
-        }
-        switch (types) {
-            case 1:
-                return SIMPLE;
-            case 2:
-                return COMPOSIT;
-            default:
-                return OTHER;
-        }
-
-
-    }
-
-
-}
 
 /**
  * Created by lukasz on 25.12.16.
@@ -61,7 +32,7 @@ public class PieceResolver {
 
 
         for (OneMove om : collect) {
-            checkTimeout(start);
+            checkTimeout(start, ParamsAndEvaluators.PIECE_TIMEOUT_MS);
 
             if (resultMap.containsKey(om)) {
                 continue;
@@ -86,14 +57,14 @@ public class PieceResolver {
 
             for (Set<Operator> operators : Resolvers.getSortedOps()) {
 
-                checkTimeout(start);
+                checkTimeout(start, ParamsAndEvaluators.MOVE_TIMEOUT_MS);
 
                 if (type.equals(PieceResolveType.OTHER)) {
                     throw new PieceResolverException("Not implemented yet: " + om.toString());
                 } else if (type.equals(PieceResolveType.SIMPLE)) {
                     if (tryPieceClass(piece, movesToInterpret, om, xyLeaper, operators, xy, resultMap)) {
                         break;
-                    } else if (tryPieceClass(piece, movesToInterpret, om, xyyxLeaper, operators, xy, resultMap)) {
+                    } else if (xyyxLeaper.isValid() && tryPieceClass(piece, movesToInterpret, om, xyyxLeaper, operators, xy, resultMap)) {
                         break;
                     } else if (tryPieceClass(piece, movesToInterpret, om, xyRider, operators, xy, resultMap)) {
                         break;
@@ -101,7 +72,7 @@ public class PieceResolver {
                 } else {
                     if (tryCompositeClass(piece, movesToInterpret, om, xyLeaper, operators, xy, resultMap)) {
                         break;
-                    } else if (tryCompositeClass(piece, movesToInterpret, om, xyyxLeaper, operators, xy, resultMap)) {
+                    } else if (xyyxLeaper.isValid() && tryCompositeClass(piece, movesToInterpret, om, xyyxLeaper, operators, xy, resultMap)) {
                         break;
                     } else if (tryCompositeClass(piece, movesToInterpret, om, xyRider, operators, xy, resultMap)) {
                         break;
@@ -123,8 +94,8 @@ public class PieceResolver {
 
     }
 
-    private static void checkTimeout(long start) throws PieceResolverException {
-        if (System.currentTimeMillis() - start > 10000) {
+    private static void checkTimeout(long start, int max) throws PieceResolverException {
+        if (System.currentTimeMillis() - start > max) {
             throw new PieceResolverException("TIMEOUT");
         }
     }
@@ -136,7 +107,7 @@ public class PieceResolver {
                                              Set<Operator> operators,
                                              Pair<Integer, Integer> xy,
                                              Map<OneMove, List<Resolver>> resultMap) {
-        SimplePieceResolver firstResolver = new SimplePieceResolver(pieceClass, operators, xy);
+        SimplePieceResolver firstResolver = new SimplePieceResolver(pieceClass, operators);
 
         if (firstResolver.isApplicableForPrefixes(piece.getMoves(), xy)
                 && firstResolver.containsMovePrefix(om, xy)) {
@@ -154,13 +125,13 @@ public class PieceResolver {
             XYRider xyRider = PieceCache
                     .getRider(Pair.of(Math.abs(first.getDx()), Math.abs(first.getDy())));
 
-            Pair<Integer,Integer> newXY = Pair.of(xy.getLeft() - Math.abs(firstOM.getDx()), xy.getRight() - Math.abs(firstOM.getDy()));
+            Pair<Integer, Integer> newXY = Pair.of(xy.getLeft() - Math.abs(firstOM.getDx()), xy.getRight() - Math.abs(firstOM.getDy()));
 
             for (Set<Operator> suffixOps : Resolvers.getSortedOps()) {
                 List<SimplePieceResolver> asd = Arrays.asList(
-                        new SimplePieceResolver(xyRider, suffixOps, newXY),
-                        new SimplePieceResolver(xyyxLeaper, suffixOps, newXY),
-                        new SimplePieceResolver(xyLeaper, suffixOps, newXY)
+                        new SimplePieceResolver(xyRider, suffixOps),
+                        new SimplePieceResolver(xyyxLeaper, suffixOps),
+                        new SimplePieceResolver(xyLeaper, suffixOps)
                 );
 
                 SimplePieceResolver spr = asd.stream()
@@ -171,12 +142,10 @@ public class PieceResolver {
                     continue;
                 }
 
-                SimpleCompositResolver comRes = new SimpleCompositResolver(firstResolver, spr);
+                SimpleCompositeResolver comRes = new SimpleCompositeResolver(firstResolver, spr);
 
                 ResolveResult apply = comRes.apply(piece.getMoves(), xy);
-                if (!apply.getParsed().contains(om)) {
-                    continue;
-                } else {
+                if (apply.getParsed().contains(om)) {
                     apply.getParsed().forEach(ooo -> {
                         resultMap.putIfAbsent(ooo, new ArrayList<>());
                         resultMap.get(ooo).add(comRes);
@@ -198,7 +167,7 @@ public class PieceResolver {
                                          Set<Operator> operators,
                                          Pair<Integer, Integer> xy,
                                          Map<OneMove, List<Resolver>> resultMap) {
-        SimplePieceResolver resolver = new SimplePieceResolver(xyLeaper, operators, xy);
+        SimplePieceResolver resolver = new SimplePieceResolver(xyLeaper, operators);
 
         if (resolver.isApplicable(piece.getMoves(), xy) && resolver.containsMove(om, xy)) {
             ResolveResult apply = resolver.apply(piece.getMoves(), xy);

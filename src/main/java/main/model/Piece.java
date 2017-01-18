@@ -1,5 +1,6 @@
-package main;
+package main.model;
 
+import main.MoveUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;

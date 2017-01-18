@@ -1,4 +1,4 @@
-import main.Piece;
+import main.model.Piece;
 import main.PieceResolverException;
 import org.junit.Test;
 import org.junit.runner.RunWith;

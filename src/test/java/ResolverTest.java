@@ -1,16 +1,11 @@
-import main.Main;
-import main.Piece;
-import main.PieceResolver;
 import main.PieceResolverException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Set;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.fail;

@@ -1,13 +1,13 @@
 package main.resolvers;
 
 import main.MoveUtil;
-import main.OneMove;
+import main.model.OneMove;
+import main.ParamsAndEvaluators;
 import main.operator.Operator;
 import main.piececlass.PieceClass;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,27 +17,13 @@ import java.util.stream.Collectors;
  */
 public class SimplePieceResolver extends Resolver {
 
-    protected PieceClass pieceClass;
-    protected Set<Operator> operators;
+    private PieceClass pieceClass;
+    private Set<Operator> operators;
 
-    public SimplePieceResolver(PieceClass pieceClass, Set<Operator> ops, Pair<Integer, Integer> xy) {
-        super(ops.stream().map(o -> o.value).reduce(0, Integer::sum) + ((ops.size() - 1) * 20));
+    public SimplePieceResolver(PieceClass pieceClass, Set<Operator> ops) {
+        super(ParamsAndEvaluators.evaluateSimpleResolver(pieceClass, ops));
         this.pieceClass = pieceClass;
         this.operators = ops;
-
-        final Set<OneMove> allFilteredMoves = pieceClass.filterMoves(ops, xy);
-        valid = !allFilteredMoves.isEmpty();
-        if (valid) {
-            valid = this.operators.stream()
-                    .noneMatch(op -> {
-                        final List<Operator> allExceptOp = this.operators.stream()
-                                .filter(a -> a != op)
-                                .collect(Collectors.toList());
-                        final Set<OneMove> oneMoves =
-                                pieceClass.filterMoves(allExceptOp, xy);
-                        return oneMoves.size() == allFilteredMoves.size();
-                    });
-        }
     }
 
     @Override
@@ -58,13 +44,11 @@ public class SimplePieceResolver extends Resolver {
                 operators.stream().map(Operator::getDescription).collect(Collectors.joining(", ")));
     }
 
-    @Override
     public boolean containsMove(OneMove oneMove, Pair<Integer, Integer> xy) {
         Set<OneMove> oneMoves = pieceClass.filterMoves(operators, xy);
         return oneMoves.contains(oneMove);
     }
 
-    @Override
     public boolean containsMovePrefix(OneMove oneMove, Pair<Integer, Integer> xy) {
         final String m = oneMove.toString();
         Set<OneMove> oneMoves = pieceClass.filterMoves(operators, xy);
@@ -92,6 +76,14 @@ public class SimplePieceResolver extends Resolver {
         result = 31 * result + pieceClass.hashCode();
         result = 31 * result + operators.hashCode();
         return result;
+    }
+
+    public PieceClass getPieceClass() {
+        return pieceClass;
+    }
+
+    public Set<Operator> getOperators() {
+        return operators;
     }
 
     public PrefixResolveResult applyForPrefixes(Set<OneMove> moves, Pair<Integer, Integer> xy) {

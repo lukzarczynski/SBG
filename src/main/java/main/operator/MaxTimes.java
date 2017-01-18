@@ -1,6 +1,6 @@
 package main.operator;
 
-import main.OneMove;
+import main.model.OneMove;
 
 import java.util.function.Predicate;
 

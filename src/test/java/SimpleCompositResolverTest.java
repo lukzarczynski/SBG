@@ -1,4 +1,4 @@
-import main.Piece;
+import main.model.Piece;
 import main.PieceResolver;
 import main.PieceResolverException;
 import org.apache.commons.lang3.tuple.Pair;

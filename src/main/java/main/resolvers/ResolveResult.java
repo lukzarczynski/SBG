@@ -1,6 +1,6 @@
 package main.resolvers;
 
-import main.OneMove;
+import main.model.OneMove;
 
 import java.util.Set;
 

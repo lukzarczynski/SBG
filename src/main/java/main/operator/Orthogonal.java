@@ -1,7 +1,7 @@
 package main.operator;
 
-import main.Move;
-import main.OneMove;
+import main.model.Move;
+import main.model.OneMove;
 
 import java.util.function.Predicate;
 

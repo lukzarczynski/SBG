@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
-import main.OneMove;
+import main.model.OneMove;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

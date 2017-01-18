@@ -1,5 +1,6 @@
 package main;
 
+import main.model.OneMove;
 import main.resolvers.Resolver;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -22,8 +23,6 @@ public class SetCover {
                     resolverListMap.get(r).add(k);
                 }));
 
-//        final List<Map.Entry<OneMove, List<Resolver>>> collect =
-//                map.entrySet().stream().sorted(Comparator.comparingInt(e -> e.getValue().size())).collect(Collectors.toList());
 
         while (!movesToDescribe.isEmpty()) {
 
@@ -40,17 +39,6 @@ public class SetCover {
             });
 
         }
-
-
-//        for (Map.Entry<OneMove, List<Resolver>> entry : collect) {
-//            if (movesToDescribe.contains(entry.getKey())) {
-//                final Resolver resolver = entry.getValue().stream()
-//                        .sorted(Comparator.comparingInt(Resolver::getValue))
-//                        .findFirst().get();
-//                result.add(resolver);
-//                movesToDescribe.removeAll(resolverListMap.get(resolver));
-//            }
-//        }
 
         return Pair.of(result.stream()
                         .sorted(Comparator.comparingInt(Resolver::getValue))

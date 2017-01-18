@@ -1,16 +1,12 @@
 package main.piececlass;
 
 import main.MoveUtil;
-import main.OneMove;
+import main.model.OneMove;
 import main.operator.Operator;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Created by lukasz on 06.12.16.
@@ -20,6 +16,7 @@ public class XYRider extends PieceClass {
     private final String description;
 
     public XYRider(int x, int y) {
+        super(Pair.of(x, y));
         addAnyNumberOf(x, y);
         addAnyNumberOf(-x, y);
         addAnyNumberOf(x, -y);

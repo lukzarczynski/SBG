@@ -1,6 +1,7 @@
 package main.operator;
 
-import main.OneMove;
+import main.model.OneMove;
+import main.ParamsAndEvaluators;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -11,10 +12,9 @@ import java.util.function.Predicate;
 public abstract class Operator {
 
     public final int value;
-    private boolean hasMapFunction = true;
 
     public Operator() {
-        this.value = OperatorValues.getForClass(this.getClass());
+        this.value = ParamsAndEvaluators.getOperatorValueForClass(this.getClass());
     }
 
     protected Operator(int value) {
@@ -24,7 +24,6 @@ public abstract class Operator {
     public abstract Predicate<OneMove> matches();
 
     public Function<OneMove, OneMove> map() {
-        hasMapFunction = false;
         return Function.identity();
     }
 
@@ -49,7 +48,4 @@ public abstract class Operator {
         return value;
     }
 
-    public boolean isHasMapFunction() {
-        return hasMapFunction;
-    }
 }

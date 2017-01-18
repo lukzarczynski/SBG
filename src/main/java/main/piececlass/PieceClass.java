@@ -1,6 +1,6 @@
 package main.piececlass;
 
-import main.OneMove;
+import main.model.OneMove;
 import main.operator.Operator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -18,6 +18,11 @@ import java.util.stream.Collectors;
 public abstract class PieceClass {
 
     protected Set<OneMove> moves = new HashSet<>();
+    private Pair<Integer, Integer> xy;
+
+    protected PieceClass(Pair<Integer, Integer> xy) {
+        this.xy = xy;
+    }
 
     public abstract boolean matches(Set<OneMove> moves, Collection<Operator> operators, Pair<Integer, Integer> xy);
 
@@ -70,6 +75,10 @@ public abstract class PieceClass {
             ns = ns.replaceFirst("\\+", "");
         }
         return OneMove.parse(ns, vector).stream().findAny().orElse(OneMove.EMPTY_MOVE);
+    }
+
+    public Pair<Integer, Integer> getXy() {
+        return xy;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package main;
+package main.model;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -75,7 +75,7 @@ public class OneMove {
     }
 
     public boolean isValid(int width, int height) {
-        return isValid(width, height, vector.getKey(),vector.getValue());
+        return isValid(width, height, vector.getKey(), vector.getValue());
     }
 
     public boolean isValid(int width, int height, int vectorX, int vectorY) {
