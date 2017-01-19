@@ -16,28 +16,24 @@ import java.util.stream.Stream;
  */
 public class Main {
 
-    public static void parseDirectory(String directory) throws IOException {
-        File dir = new File(directory);
+    public static void parseDirectory(String directory, final Statistics statistics) throws IOException {
+
+        final File dir = new File(directory);
         if (!dir.isDirectory()) {
             throw new RuntimeException(directory + " is not a directory, aborting");
         }
 
-        File[] sbgs = dir.listFiles((d, name) -> FilenameUtils.getExtension(name).equals("sbg2"));
+        final File[] sbgs = dir.listFiles((d, name) -> FilenameUtils.getExtension(name).equals("sbg"));
         assert sbgs != null;
-
 
         final List<File> fileList = new ArrayList<>();
         Collections.addAll(fileList, sbgs);
 
-        AtomicInteger succ = new AtomicInteger(0);
-        AtomicInteger fail = new AtomicInteger(0);
-
-
-        fileList.stream().forEach(f -> handleOneFile(f, succ, fail, sbgs.length));
+        fileList.parallelStream().forEach(f -> handleOneFile(f, sbgs.length, statistics));
 
     }
 
-    private static void handleOneFile(File f, AtomicInteger succ, AtomicInteger fail, int length) {
+    private static void handleOneFile(File f, int length, final Statistics statistics) {
         try {
             ParseResult parseResult = parseOneFile(f);
             Integer i = 0;
@@ -46,6 +42,9 @@ public class Main {
             for (Piece p : parseResult.getPieces()) {
                 Pair<String, Integer> resolve;
                 resolve = PieceResolver.resolve(p, parseResult.getXY());
+
+                statistics.addPiece(p, f,  resolve.getKey(), resolve.getValue());
+
                 metaTags.add(String.format(
                         "META SCORE HUML_%s: %s", p.getName(), resolve.getValue()
                 ));
@@ -66,6 +65,8 @@ public class Main {
             final StringBuilder fileContent = new StringBuilder(scanner.nextLine()).append("\n");
 
 
+            Double rappValue = Double.MIN_VALUE;
+
             boolean isMeta = true;
 
             final StringBuilder meta = new StringBuilder();
@@ -77,13 +78,19 @@ public class Main {
                     if (s.contains("<BOARD>")) {
                         isMeta = false;
 
+                        String metaString = meta.toString();
+                        if (metaString.contains("META SCORE RAPP")) {
+                            int i1 = metaString.indexOf("META SCORE RAPP") + "META SCORE RAPP: ".length();
+                            rappValue = Double.parseDouble(metaString.substring(i1, metaString.indexOf("}", i1)));
+                        }
+
                         fileContent.append(
                                 Stream
-                                        .of(meta.toString().split("(?=/\\*)"))
+                                        .of(metaString.split("(?=/\\*)"))
                                         .filter(x -> !x.contains("HUML"))
                                         .collect(Collectors.joining()));
 
-                        metaTags.forEach(tag -> fileContent.append(String.format("/* %s */\n", tag)));
+                        metaTags.forEach(tag -> fileContent.append(String.format("/* {%s} */\n", tag)));
                         fileContent.append("\n").append(s).append("\n");
                     } else {
                         meta.append(s).append("\n");
@@ -93,7 +100,9 @@ public class Main {
                 }
             }
 
-            File resultFile = new File(f.getAbsolutePath() + "2");
+            statistics.addFile(f, rappValue, result);
+
+            File resultFile = new File(f.getAbsolutePath());
             resultFile.createNewFile();
             FileOutputStream resultFOS = new FileOutputStream(resultFile);
             resultFOS.write(fileContent.toString().getBytes());
@@ -102,17 +111,16 @@ public class Main {
 
             System.out.println(String.format("Finished file %s (P: %s, F: %s, SUM: %s) of %s",
                     f.getName(),
-                    succ.incrementAndGet(),
-                    fail.get(),
-                    succ.get() + fail.get(), length));
+                    statistics.getSuccess().incrementAndGet(),
+                    statistics.getFail().get(),
+                    statistics.getSuccess().get() + statistics.getFail().get(), length));
         } catch (PieceResolverException e) {
             System.out.println("\t" + e.getMessage());
             System.out.println(String.format("Failed file %s (P: %s, F: %s, SUM: %s) of %s",
                     f.getName(),
-                    succ.get(),
-                    fail.incrementAndGet(),
-                    succ.get() + fail.get(),
-                    length));
+                    statistics.getSuccess().get(),
+                    statistics.getFail().incrementAndGet(),
+                    statistics.getSuccess().get() + statistics.getFail().get(), length));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -170,9 +178,64 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        parseDirectory("C:\\Users\\lukza\\Documents\\sbg_games\\RAPP-EVOLVED_GAMES-LIST");
+        final Statistics statistics = new Statistics();
+
+        try {
+            parseDirectory("C:\\Users\\lukza\\Documents\\sbg_games\\RAPP-EVOLVED_GAMES-LIST", statistics);
+        } catch (RuntimeException e) {
+            System.out.println(statistics);
+        }
+
+        File statFile = new File(Main.class.getClassLoader().getResource("statistics.html").getFile());
+        StringBuilder fContent = new StringBuilder();
+        new Scanner(statFile).forEachRemaining(s -> fContent.append(s).append("\n"));
+
+        String content = fContent.toString();
+
+        content = content.replace("{BEST_FILES_HUM_TABLE}", getFTable(statistics.getBestHumanFiles()));
+        content = content.replace("{WORST_FILES_HUM_TABLE}", getFTable(statistics.getWorstHumanFiles()));
+        content = content.replace("{BEST_FILES_RAPP_TABLE}", getFTable(statistics.getBestRappFiles()));
+        content = content.replace("{WORST_FILES_RAPP_TABLE}", getFTable(statistics.getWorstRappFiles()));
+        content = content.replace("{BEST_PIECES_TABLE}", getPTable(statistics.getBestPieces()));
+        content = content.replace("{WORST_PIECES_TABLE}", getPTable(statistics.getWorstPieces()));
+
+
+        File resultFile = new File("C:\\Users\\lukza\\Documents\\sbg_games\\RAPP-EVOLVED_GAMES-LIST\\statistics.html");
+        resultFile.createNewFile();
+        FileOutputStream resultFOS = new FileOutputStream(resultFile);
+        resultFOS.write(content.getBytes());
+        resultFOS.close();
+
 //        parseDirAsPieces("C:\\Users\\lukza\\Documents\\sbg_games\\RAPP-EVOLVED_GAMES-LIST");
 
+    }
+
+    private static String getFTable(List<Statistics.FileStatistic> filesStats){
+        StringBuilder table = new StringBuilder();
+        final String fileTableFormat = "<tr>\n" +
+                "<td><a href=\"%s\">%s</a></td>\n" +
+                "<td>%s</td>\n" +
+                "<td>%s</td>\n" +
+                "</tr>\n";
+        filesStats.forEach(fs -> table.append(String.format(
+                fileTableFormat, fs.getFile(), fs.getFile(), fs.getRappValue(), fs.getHumaLikenessValue())
+        ));
+
+        return table.toString();
+    }
+    private static String getPTable(List<Statistics.PieceStatistic> filesStats){
+        StringBuilder table = new StringBuilder();
+        final String pieceTableFormat = "<tr>\n" +
+                "<td><a href=\"%s\">%s</a></td>\n" +
+                "<td>%s</td>\n" +
+                "<td>%s</td>\n" +
+                "<td>%s</td>\n" +
+                "</tr>\n";
+        filesStats.forEach(fs -> table.append(String.format(
+                pieceTableFormat, fs.getFile(), fs.getFile(), fs.getValue(), fs.getPiece().toString(), fs.getDescription())
+        ));
+
+        return table.toString();
     }
 
     private static void parseDirAsPieces(String directory) throws FileNotFoundException {
