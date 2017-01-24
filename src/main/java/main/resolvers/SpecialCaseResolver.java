@@ -50,7 +50,7 @@ public class SpecialCaseResolver extends Resolver {
             x += m.getDx();
             y += m.getDy();
 
-            result *= ParamsAndEvaluators.evaluatePosition(x, y);
+            result *= ParamsAndEvaluators.fxy(x, y);
 
         }
 

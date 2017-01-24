@@ -3,8 +3,12 @@ package main.resolvers;
 import main.MoveUtil;
 import main.ParamsAndEvaluators;
 import main.model.OneMove;
+import main.operator.ExactlyTimes;
+import main.operator.MaxTimes;
+import main.operator.MinTimes;
 import main.operator.Operator;
 import main.piececlass.PieceClass;
+import main.piececlass.XYRider;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
@@ -22,17 +26,30 @@ public class SimplePieceResolver extends Resolver {
     private Set<Operator> operators;
 
     public SimplePieceResolver(PieceClass pieceClass, Set<Operator> ops) {
-        super(ParamsAndEvaluators.evaluateSimpleResolver(pieceClass, ops));
+        super(ParamsAndEvaluators.fko(pieceClass, ops));
         this.pieceClass = pieceClass;
         this.operators = ops;
+    }
+
+    public boolean isValid() {
+        if (!(pieceClass instanceof XYRider)) {
+            if (operators.stream().anyMatch(o -> o instanceof MaxTimes || o instanceof MinTimes || o instanceof ExactlyTimes)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean isValidFor(Collection<OneMove> moves, OneMove oneMove, Pair<Integer, Integer> xy) {
         return pieceClass.isSubsetAndContains(moves, operators, oneMove, xy);
     }
 
-    public boolean isValidForWithVector(Collection<OneMove> moves, OneMove oneMove, Pair<Integer, Integer> xy, Pair<Integer,Integer> vector) {
+    public boolean isValidForWithVector(Collection<OneMove> moves, OneMove oneMove, Pair<Integer, Integer> xy, Pair<Integer, Integer> vector) {
         return pieceClass.isSubsetAndContainsWithVector(moves, operators, oneMove, xy, vector);
+    }
+
+    public boolean isValidForWithVector(Collection<OneMove> moves, Pair<Integer, Integer> xy, Pair<Integer, Integer> vector) {
+        return pieceClass.isSubsetWithVector(moves, operators, xy, vector);
     }
 
     public ResolveResult resolve(Collection<OneMove> moves, Pair<Integer, Integer> xy) {
@@ -41,7 +58,7 @@ public class SimplePieceResolver extends Resolver {
                 MoveUtil.subtract(moves, notMatchingMoves));
     }
 
-    public ResolveResult resolveWithVector(Collection<OneMove> moves, Pair<Integer, Integer> xy, Pair<Integer,Integer> vector) {
+    public ResolveResult resolveWithVector(Collection<OneMove> moves, Pair<Integer, Integer> xy, Pair<Integer, Integer> vector) {
         final Collection<OneMove> notMatchingMoves = pieceClass.getNotMatchingMovesWithVector(moves, operators, xy, vector);
         return new ResolveResult(notMatchingMoves,
                 MoveUtil.subtract(moves, notMatchingMoves));

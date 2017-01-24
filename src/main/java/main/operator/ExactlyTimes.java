@@ -12,7 +12,7 @@ public class ExactlyTimes extends Operator {
     private final int x;
 
     public ExactlyTimes(int x) {
-        super(2 * x);
+        super();
         this.x = x;
     }
 

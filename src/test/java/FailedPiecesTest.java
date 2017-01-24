@@ -28,12 +28,9 @@ public class FailedPiecesTest {
 
             Piece parse = Piece.parse(s, xy.getKey(), xy.getValue());
 
-            try {
-                Pair<String, Integer> resolve = PieceResolver.resolve(parse, xy);
-                System.out.println("RESOLVED line: " + parsed + " : " + s);
-                System.out.println(resolve.getKey());
-            } catch (PieceResolverException ignored) {
-            }
+            Pair<String, Integer> resolve = PieceResolver.resolve(parse, xy);
+            System.out.println("RESOLVED line: " + parsed + " : " + s);
+            System.out.println(resolve.getKey());
             System.out.println(parsed++);
 
         }

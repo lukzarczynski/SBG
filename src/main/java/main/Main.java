@@ -1,6 +1,10 @@
 package main;
 
 import main.model.Piece;
+import main.statistics.FileStatistic;
+import main.statistics.OneFileStats;
+import main.statistics.PieceStatistic;
+import main.statistics.Statistics;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -16,7 +20,38 @@ import java.util.stream.Stream;
  */
 public class Main {
 
-    public static void parseDirectory(String directory, final Statistics statistics) throws IOException {
+    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\ng\\SIMB-EVOLVED_GAMES-LIST";
+
+    public static void main(String[] args) throws IOException {
+
+        final Statistics statistics = parseDirectory(DIRECTORY);
+
+        File statFile = new File(Main.class.getClassLoader().getResource("statistics.html").getFile());
+        StringBuilder fContent = new StringBuilder();
+        new Scanner(statFile).forEachRemaining(s -> fContent.append(s).append("\n"));
+
+        String content = fContent.toString();
+
+        content = content.replace("{TIME_IN_MS}", statistics.getTimeInMs().toString());
+        content = content.replace("{FILES_PARSED}", Integer.toString(statistics.getFilesParsed()));
+        content = content.replace("{BEST_FILES_HUM_TABLE}", getFTable(statistics.getBestHumanFiles()));
+        content = content.replace("{WORST_FILES_HUM_TABLE}", getFTable(statistics.getWorstHumanFiles()));
+        content = content.replace("{BEST_FILES_RAPP_TABLE}", getFTable(statistics.getBestRappFiles()));
+        content = content.replace("{WORST_FILES_RAPP_TABLE}", getFTable(statistics.getWorstRappFiles()));
+        content = content.replace("{BEST_PIECES_TABLE}", getPTable(statistics.getBestPieces()));
+        content = content.replace("{WORST_PIECES_TABLE}", getPTable(statistics.getWorstPieces()));
+
+
+        File resultFile = new File(DIRECTORY + "\\statistics.html");
+        resultFile.createNewFile();
+        FileOutputStream resultFOS = new FileOutputStream(resultFile);
+        resultFOS.write(content.getBytes());
+        resultFOS.close();
+
+//        parseDirAsPieces(DIRECTORY);
+    }
+
+    private static Statistics parseDirectory(String directory) throws IOException {
 
         final File dir = new File(directory);
         if (!dir.isDirectory()) {
@@ -28,117 +63,121 @@ public class Main {
 
         final List<File> fileList = new ArrayList<>();
         Collections.addAll(fileList, sbgs);
+        long start = System.currentTimeMillis();
 
-        fileList.parallelStream().forEach(f -> handleOneFile(f, sbgs.length, statistics));
+        final List<OneFileStats> collect = fileList.parallelStream()
+                .map(Main::handleOneFile)
+                .collect(Collectors.toList());
+
+        return new Statistics(collect, System.currentTimeMillis() - start);
 
     }
 
-    private static void handleOneFile(File f, int length, final Statistics statistics) {
+    private static OneFileStats handleOneFile(File f) {
+        OneFileStats oneFileStat = new OneFileStats();
+        System.out.println(String.format("%s started file %s ", new Date().toString(), f.getName()));
         long startFile = System.currentTimeMillis();
+
+        ParseResult parseResult = parseOneFile(f);
+        List<String> metaTags = new ArrayList<>();
+
+        Map<String, Integer> pieceValues = new HashMap<>();
+
+        for (Piece p : parseResult.getPieces()) {
+//                System.out.println("Parsing piece " + p.getName());
+            Pair<String, Integer> resolve = PieceResolver.resolve(p, parseResult.getXY());
+
+            oneFileStat.addPiece(p, f, resolve.getKey(), resolve.getValue());
+
+            metaTags.add(String.format(
+                    "META SCORE HUML_%s: %s", p.getName(), resolve.getValue()
+            ));
+            metaTags.add(String.format(
+                    "META DESC HUML_%s: %s", p.getName(), resolve.getKey()
+            ));
+
+            pieceValues.put(p.getName(), resolve.getValue());
+        }
+
+        Integer result = ParamsAndEvaluators.fgame(parseResult.getPiecesCount(), pieceValues);
+        metaTags.add(String.format("META SCORE HUML: %s", result));
+
+        final Scanner scanner;
         try {
+            scanner = new Scanner(f);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("file not found");
+        }
 
-            ParseResult parseResult = parseOneFile(f);
-            Integer i = 0;
-            List<String> metaTags = new ArrayList<>();
+        final StringBuilder fileContent = new StringBuilder(scanner.nextLine()).append("\n");
 
-            for (Piece p : parseResult.getPieces()) {
-                Pair<String, Integer> resolve;
-                resolve = PieceResolver.resolve(p, parseResult.getXY());
+        Double rappValue = Double.MIN_VALUE;
 
-                statistics.addPiece(p, f,  resolve.getKey(), resolve.getValue());
+        boolean isMeta = true;
 
-                metaTags.add(String.format(
-                        "META SCORE HUML_%s: %s", p.getName(), resolve.getValue()
-                ));
-                metaTags.add(String.format(
-                        "META DESC HUML_%s: %s", p.getName(), resolve.getKey()
-                ));
+        final StringBuilder meta = new StringBuilder();
 
-                i += resolve.getValue() * Optional.ofNullable(parseResult.getPiecesCount().get(p.getName())).orElse(0);
-            }
+        while (scanner.hasNextLine()) {
+            String s = scanner.nextLine();
 
-            Integer sumOfCounts = parseResult.getPiecesCount().values().stream().reduce(0, Integer::sum);
-            Integer numberOfDifferentPieces = parseResult.getPiecesCount().size();
-            Integer result = (i / sumOfCounts) * (10 + numberOfDifferentPieces);
-            metaTags.add(String.format("META SCORE HUML: %s", result));
+            if (isMeta) {
+                if (s.contains("<BOARD>")) {
+                    isMeta = false;
 
-            final Scanner scanner = new Scanner(f);
+                    String metaString = meta.toString();
+                    if (metaString.contains("META SCORE RAPP")) {
+                        int i1 = metaString.indexOf("META SCORE RAPP") + "META SCORE RAPP: ".length();
+                        rappValue = Double.parseDouble(metaString.substring(i1, metaString.indexOf("}", i1)));
+                    } else if (metaString.contains("META SCORE SIMB")){
+                        int i1 = metaString.indexOf("META SCORE SIMB") + "META SCORE SIMB: ".length();
+                        rappValue = Double.parseDouble(metaString.substring(i1, metaString.indexOf("}", i1)));
 
-            final StringBuilder fileContent = new StringBuilder(scanner.nextLine()).append("\n");
-
-
-            Double rappValue = Double.MIN_VALUE;
-
-            boolean isMeta = true;
-
-            final StringBuilder meta = new StringBuilder();
-
-            while (scanner.hasNextLine()) {
-                String s = scanner.nextLine();
-
-                if (isMeta) {
-                    if (s.contains("<BOARD>")) {
-                        isMeta = false;
-
-                        String metaString = meta.toString();
-                        if (metaString.contains("META SCORE RAPP")) {
-                            int i1 = metaString.indexOf("META SCORE RAPP") + "META SCORE RAPP: ".length();
-                            rappValue = Double.parseDouble(metaString.substring(i1, metaString.indexOf("}", i1)));
-                        }
-
-                        fileContent.append(
-                                Stream
-                                        .of(metaString.split("(?=/\\*)"))
-                                        .filter(x -> !x.contains("HUML"))
-                                        .collect(Collectors.joining()));
-
-                        metaTags.forEach(tag -> fileContent.append(String.format("/* {%s} */\n", tag)));
-                        fileContent.append("\n").append(s).append("\n");
-                    } else {
-                        meta.append(s).append("\n");
                     }
-                } else {
-                    fileContent.append(s).append("\n");
-                }
-            }
 
-            statistics.addFile(f, rappValue, result);
+                    fileContent.append(
+                            Stream
+                                    .of(metaString.split("(?=/\\*)"))
+                                    .filter(x -> !x.contains("HUML"))
+                                    .collect(Collectors.joining()));
+
+                    metaTags.forEach(tag -> fileContent.append(String.format("/* {%s} */\n", tag)));
+                    fileContent.append("\n").append(s).append("\n");
+                } else {
+                    meta.append(s).append("\n");
+                }
+            } else {
+                fileContent.append(s).append("\n");
+            }
+        }
+
+        oneFileStat.setFileStatistic(f, rappValue, result);
+        try {
 
             File resultFile = new File(f.getAbsolutePath());
             resultFile.createNewFile();
             FileOutputStream resultFOS = new FileOutputStream(resultFile);
             resultFOS.write(fileContent.toString().getBytes());
             resultFOS.close();
-
-
-            System.out.println(String.format("Finished file %s (P: %s, F: %s, SUM: %s, FM: %s) of %s -- %s ms",
-                    f.getName(),
-                    statistics.getSuccess().incrementAndGet(),
-                    statistics.getFail().get(),
-                    statistics.getSuccess().get() + statistics.getFail().get(),
-                    PieceResolver.failedMoves.size(),
-                    length,
-                    System.currentTimeMillis() - startFile));
-        } catch (PieceResolverException e) {
-            System.out.println("\t" + e.getMessage());
-            System.out.println(String.format("Failed file %s (P: %s, F: %s, SUM: %s, FM: %s) of %s -- %s ms",
-                    f.getName(),
-                    statistics.getSuccess().get(),
-                    statistics.getFail().incrementAndGet(),
-                    statistics.getSuccess().get() + statistics.getFail().get(),
-                    PieceResolver.failedMoves.size(), length,
-                    System.currentTimeMillis() - startFile));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        System.out.println(String.format("Finished file %s -- %s ms", f.getName(), System.currentTimeMillis() - startFile));
+
+        return oneFileStat;
+
     }
 
-    public static ParseResult parseOneFile(File file) throws FileNotFoundException {
+    private static ParseResult parseOneFile(File file) {
         final ParseResult result = new ParseResult();
 
-        final Set<Piece> pieces = new HashSet<>();
-        final Scanner scanner = new Scanner(file);
+        final List<Piece> pieces = new ArrayList<>();
+        final Scanner scanner;
+        try {
+            scanner = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("file not found");
+        }
 
         final Map<String, Integer> piecesCount = new HashMap<>();
 
@@ -184,40 +223,7 @@ public class Main {
 
     }
 
-    public static void main(String[] args) throws IOException {
-        final Statistics statistics = new Statistics();
-
-        try {
-            parseDirectory("C:\\Users\\lukza\\Documents\\sbg_games\\RAPP-EVOLVED_GAMES-LIST", statistics);
-        } catch (RuntimeException e) {
-            System.out.println(statistics);
-        }
-
-        File statFile = new File(Main.class.getClassLoader().getResource("statistics.html").getFile());
-        StringBuilder fContent = new StringBuilder();
-        new Scanner(statFile).forEachRemaining(s -> fContent.append(s).append("\n"));
-
-        String content = fContent.toString();
-
-        content = content.replace("{BEST_FILES_HUM_TABLE}", getFTable(statistics.getBestHumanFiles()));
-        content = content.replace("{WORST_FILES_HUM_TABLE}", getFTable(statistics.getWorstHumanFiles()));
-        content = content.replace("{BEST_FILES_RAPP_TABLE}", getFTable(statistics.getBestRappFiles()));
-        content = content.replace("{WORST_FILES_RAPP_TABLE}", getFTable(statistics.getWorstRappFiles()));
-        content = content.replace("{BEST_PIECES_TABLE}", getPTable(statistics.getBestPieces()));
-        content = content.replace("{WORST_PIECES_TABLE}", getPTable(statistics.getWorstPieces()));
-
-
-        File resultFile = new File("C:\\Users\\lukza\\Documents\\sbg_games\\RAPP-EVOLVED_GAMES-LIST\\statistics.html");
-        resultFile.createNewFile();
-        FileOutputStream resultFOS = new FileOutputStream(resultFile);
-        resultFOS.write(content.getBytes());
-        resultFOS.close();
-
-//        parseDirAsPieces("C:\\Users\\lukza\\Documents\\sbg_games\\RAPP-EVOLVED_GAMES-LIST");
-
-    }
-
-    private static String getFTable(List<Statistics.FileStatistic> filesStats){
+    private static synchronized String getFTable(List<FileStatistic> filesStats) {
         StringBuilder table = new StringBuilder();
         final String fileTableFormat = "<tr>\n" +
                 "<td><a href=\"%s\">%s</a></td>\n" +
@@ -230,7 +236,8 @@ public class Main {
 
         return table.toString();
     }
-    private static String getPTable(List<Statistics.PieceStatistic> filesStats){
+
+    private static synchronized String getPTable(List<PieceStatistic> filesStats) {
         StringBuilder table = new StringBuilder();
         final String pieceTableFormat = "<tr>\n" +
                 "<td><a href=\"%s\">%s</a></td>\n" +
@@ -245,6 +252,12 @@ public class Main {
         return table.toString();
     }
 
+    /**
+     * unused
+     *
+     * @param directory
+     * @throws FileNotFoundException
+     */
     private static void parseDirAsPieces(String directory) throws FileNotFoundException {
         File dir = new File(directory);
         if (!dir.isDirectory()) {
@@ -272,40 +285,24 @@ public class Main {
 
 
         fileList.parallelStream().forEach(f -> {
-            try {
-                String filename = f.getName();
-                ParseResult parseResult = parseOneFile(f);
+            String filename = f.getName();
+            ParseResult parseResult = parseOneFile(f);
 
-                parseResult.getPieces().parallelStream().forEach(pa -> {
+            parseResult.getPieces().parallelStream().forEach(pa -> {
+                pa.setName(filename + pa.getName());
+                Pair<String, Integer> text = PieceResolver.resolve(pa, parseResult.getXY());
+                synchronized (parsedFOS) {
                     try {
-                        pa.setName(filename + pa.getName());
-                        Pair<String, Integer> text = PieceResolver.resolve(pa, parseResult.getXY());
-                        synchronized (parsedFOS) {
-                            try {
-                                parsedFOS.write(String.format("%s : %s \n", pa.getName(), text.getKey().replaceAll("\n", "")).getBytes());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    } catch (PieceResolverException e) {
-                        String text = String.format("[%s,%s] %s\n", parseResult.getXY().getKey(), parseResult.getXY().getValue(), pa.toString());
-                        synchronized (failedFOS) {
-                            try {
-                                failedFOS.write(text.getBytes());
-                            } catch (IOException e1) {
-                                e1.printStackTrace();
-                            }
-                        }
+                        parsedFOS.write(String.format("%s : %s \n", pa.getName(), text.getKey().replaceAll("\n", "")).getBytes());
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    System.out.println("Piece no: " + index.getAndIncrement());
-                });
+                }
+                System.out.println("Piece no: " + index.getAndIncrement());
+            });
 
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
         });
 
     }
-
 
 }

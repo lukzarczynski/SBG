@@ -20,9 +20,6 @@ public class PieceCache {
         if (!leapersCache.containsKey(pair)) {
             XYLeaper value = new XYLeaper(pair.getLeft(), pair.getRight());
             leapersCache.put(pair, value);
-            if (!Objects.equals(pair.getLeft(), pair.getRight())) {
-                leapersCache.put(Pair.of(pair.getRight(), pair.getLeft()), value);
-            }
         }
         return leapersCache.get(pair);
     }
@@ -32,6 +29,9 @@ public class PieceCache {
         if (!xyyxLeapersCache.containsKey(pair)) {
             XYYXLeaper value = new XYYXLeaper(pair.getLeft(), pair.getRight());
             xyyxLeapersCache.put(pair, value);
+            if (!Objects.equals(pair.getLeft(), pair.getRight())) {
+                xyyxLeapersCache.put(Pair.of(pair.getRight(), pair.getLeft()), value);
+            }
         }
         return xyyxLeapersCache.get(pair);
     }

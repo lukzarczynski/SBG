@@ -46,4 +46,13 @@ public final class Utils {
         }
         return Pair.of(x, y);
     }
+
+    public static Pair<Integer, Integer> getNewDimensions(Pair<Integer, Integer> oldXY, OneMove prefix) {
+        Pair<Integer, Integer> prefixAsVector = asVector(prefix);
+        return Pair.of(
+                oldXY.getKey() - Math.abs(prefixAsVector.getKey()),
+                oldXY.getValue() - Math.abs(prefixAsVector.getValue())
+        );
+
+    }
 }

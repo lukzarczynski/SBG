@@ -18,6 +18,9 @@ public class PrefixResolveResult {
         this.notMatchedPrefixes = notMatchedPrefixes;
     }
 
+    /**
+     * @return key: prefix, value: set of suffixes
+     */
     public Map<OneMove, Set<OneMove>> getMap() {
         return move;
     }

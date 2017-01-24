@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
  */
 public class SetCover {
 
+    private static final Comparator<Map.Entry<Resolver, Set<OneMove>>> resolverValueComparator = (r1, r2) -> Integer.compare(r2.getValue().size(), r1.getValue().size());
+
+
     public static Pair<String, Integer> getResult(Map<OneMove, List<Resolver>> map) {
         final Set<OneMove> movesToDescribe = new HashSet<>(map.keySet());
         final Map<Resolver, Set<OneMove>> resolverListMap = new HashMap<>();
@@ -28,7 +31,7 @@ public class SetCover {
 
             Resolver best = resolverListMap.entrySet()
                     .stream()
-                    .sorted((r1, r2) -> Integer.compare(r2.getValue().size(), r1.getValue().size()))
+                    .sorted(resolverValueComparator)
                     .map(Map.Entry::getKey).findFirst().get();
 
             result.add(best);

@@ -31,6 +31,13 @@ public abstract class PieceClass {
 
     }
 
+
+    public boolean isSubsetWithVector(Collection<OneMove> moves, Set<Operator> operators, Pair<Integer, Integer> xy, Pair<Integer, Integer> vector) {
+        final Set<OneMove> filteredMoves = filterWithVector(operators, xy, vector);
+        return !filteredMoves.isEmpty()
+                && MoveUtil.containsAll(moves, filteredMoves);
+    }
+
     public boolean isSubsetAndContainsWithVector(Collection<OneMove> moves,
                                                  Collection<Operator> operators,
                                                  OneMove oneMove,

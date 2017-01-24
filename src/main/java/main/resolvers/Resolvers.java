@@ -14,7 +14,7 @@ public final class Resolvers {
     public static final Set<Set<Operator>> ops;
     public static final List<Set<Operator>> opsSorted;
     private static final Comparator<Set<Operator>> setComparator =
-            Comparator.comparingInt(ParamsAndEvaluators::evaluateMultipleOperators);
+            Comparator.comparingInt(ParamsAndEvaluators::fo);
 
     private static final Map<Class<? extends Operator>, Set<Class<? extends Operator>>> RESTRICTIONS;
 
@@ -27,6 +27,7 @@ public final class Resolvers {
                 new Forward(),
                 new Backwards(),
                 new Sideways(),
+                new NotHorizontal(),
                 new OnlyCapture(),
                 new WithoutCapture(),
                 new OnlyEven(),
@@ -36,26 +37,31 @@ public final class Resolvers {
                 new MaxTimes(4),
                 new MaxTimes(5),
                 new MaxTimes(6),
+
                 new MinTimes(2),
                 new MinTimes(3),
                 new MinTimes(4),
                 new MinTimes(5),
                 new MinTimes(6),
+
                 new ExactlyTimes(2),
                 new ExactlyTimes(3),
                 new ExactlyTimes(4),
                 new ExactlyTimes(5),
                 new ExactlyTimes(6),
+
                 new OverEnemyPieceInstead(),
                 new OverOwnPieceInstead(),
                 new SelfCaptureInstead(),
-                new OverOwnPieceInsteadEndingNormally()
+                new OverOwnPieceInsteadEndingNormally(),
+                new OverEnemyPieceInsteadEndingNormally()
         );
 
 
         addRestrictions(Forward.class, None.class, Backwards.class);
         addRestrictions(Backwards.class, None.class, Forward.class);
         addRestrictions(Sideways.class, None.class);
+        addRestrictions(NotHorizontal.class, None.class);
         addRestrictions(OnlyCapture.class, None.class, WithoutCapture.class);
         addRestrictions(WithoutCapture.class, None.class, OnlyCapture.class);
         addRestrictions(OnlyEven.class, None.class, OnlyOdd.class, MaxTimes.class, MinTimes.class, ExactlyTimes.class);
@@ -66,6 +72,9 @@ public final class Resolvers {
         addRestrictions(OverEnemyPieceInstead.class, None.class, OverOwnPieceInstead.class);
         addRestrictions(OverOwnPieceInstead.class, None.class, OverEnemyPieceInstead.class);
         addRestrictions(OverOwnPieceInsteadEndingNormally.class, None.class,
+                OverEnemyPieceInstead.class,
+                OverOwnPieceInstead.class, OverOwnPieceInsteadEndingNormally.class);
+        addRestrictions(OverEnemyPieceInsteadEndingNormally.class, None.class,
                 OverEnemyPieceInstead.class,
                 OverOwnPieceInstead.class);
 

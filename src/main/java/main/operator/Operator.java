@@ -14,11 +14,7 @@ public abstract class Operator {
     public final int value;
 
     public Operator() {
-        this.value = ParamsAndEvaluators.getOperatorValueForClass(this.getClass());
-    }
-
-    protected Operator(int value) {
-        this.value = value;
+        this.value = ParamsAndEvaluators.fo(this.getClass());
     }
 
     public abstract Predicate<OneMove> matches();

@@ -12,7 +12,7 @@ public class MaxTimes extends Operator {
     private final int x;
 
     public MaxTimes(int x) {
-        super(2 * x);
+        super();
         this.x = x;
     }
 

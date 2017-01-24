@@ -3,6 +3,7 @@ package main;
 import main.model.Piece;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,17 +12,17 @@ import java.util.Set;
  */
 public class ParseResult {
 
-    private Set<Piece> pieces;
+    private Collection<Piece> pieces;
     private Map<String, Integer> piecesCount;
     private int width;
     private int height;
 
 
-    public Set<Piece> getPieces() {
+    public Collection<Piece> getPieces() {
         return pieces;
     }
 
-    public void setPieces(Set<Piece> pieces) {
+    public void setPieces(Collection<Piece> pieces) {
         this.pieces = pieces;
     }
 

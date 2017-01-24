@@ -3,14 +3,14 @@ package main;
 import main.model.Move;
 import main.model.OneMove;
 import main.model.Piece;
-import main.operator.Operator;
-import main.operator.Outwards;
+import main.operator.*;
 import main.piececlass.*;
 import main.resolvers.*;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 
@@ -23,7 +23,7 @@ public class PieceResolver {
     public static int comp = 0;
     public static int simpl = 0;
 
-    public static Pair<String, Integer> resolve(Piece piece, Pair<Integer, Integer> xy) throws PieceResolverException {
+    public static Pair<String, Integer> resolve(Piece piece, Pair<Integer, Integer> xy) {
 
         long start = System.currentTimeMillis();
 
@@ -85,17 +85,12 @@ public class PieceResolver {
                 }
             }
             if (movesToInterpret.contains(om)) {
-//                System.out.println("Could not resolve " + om.toString() + ", trying special case");
+                System.out.println("Could not resolve " + om.toString() + ", trying special case");
                 PieceResolver.failedMoves.add(om);
                 start = System.currentTimeMillis();
                 trySpecialCase(movesToInterpret, om, resultMap);
             }
 
-        }
-
-
-        if (resultMap.size() != piece.getMoves().size()) {
-            throw new PieceResolverException("not all parsed");
         }
         return SetCover.getResult(resultMap);
 
@@ -137,14 +132,6 @@ public class PieceResolver {
         return prefixesOnly;
     }
 
-    private static boolean checkTimeout(long start, int max) {
-        if (System.currentTimeMillis() - start > max) {
-            System.out.println("TIMEOUT");
-            return true;
-        }
-        return false;
-    }
-
     private static boolean tryCompositeClass(Set<OneMove> movesToInterpret,
                                              OneMove om,
                                              PieceClass pieceClass,
@@ -155,42 +142,59 @@ public class PieceResolver {
 
         final SimplePieceResolver firstResolver = new SimplePieceResolver(pieceClass, operators);
 
+        if (!firstResolver.isValid()) {
+            return false;
+        }
+
         comp++;
         final OneMove omPrefix = allPrefixesMap.get(om);
-        final Pair<Integer, Integer> omPrefixAsVector = Utils.asVector(omPrefix);
         final OneMove omWithoutPrefix = om.withoutPrefix(omPrefix);
 
         if (firstResolver.isValidFor(allPrefixesMap.values(), omPrefix, xy)) {
 
             final PrefixResolveResult prefixResolveResult = firstResolver.applyForPrefixes(allPrefixesMap, xy);
 
-
-            // makes not much sense
-            final Move firstOM = om.getFirst().get();
-            final Pair<Integer, Integer> newXY = Pair.of(xy.getLeft() - Math.abs(firstOM.getDx()), xy.getRight() - Math.abs(firstOM.getDy()));
-
-            final Move anyFirstMoveOfSuffix = prefixResolveResult.getAnySuffix().getFirst().get();
+            final Move anyFirstMoveOfSuffix = omWithoutPrefix.getFirst().get();
 
             final XYLeaper xyLeaper = PieceCache.getLeaper(anyFirstMoveOfSuffix.getXY());
             final XYYXLeaper xyyxLeaper = PieceCache.getXYYXLeaper(anyFirstMoveOfSuffix.getXY());
             final XYRider xyRider = PieceCache.getRider(anyFirstMoveOfSuffix.getXY());
 
             final Set<Operator> outwardsSet = Utils.setOf(new Outwards());
+            final Set<Operator> outwardXSet = Utils.setOf(new OutwardsX());
+            final Set<Operator> outwardYSet = Utils.setOf(new OutwardsY());
 
             for (Set<Operator> suffixOps : Resolvers.getSortedOps()) {
-                final List<SimplePieceResolver> listOfSuffixResolvers = Arrays.asList(
+                final List<SimplePieceResolver> listOfSuffixResolvers = Stream.of(
                         new SimplePieceResolver(xyyxLeaper, suffixOps),
                         new SimplePieceResolver(xyLeaper, suffixOps),
                         new SimplePieceResolver(xyRider, suffixOps),
                         new SimplePieceResolver(xyyxLeaper, Utils.sum(suffixOps, outwardsSet)),
                         new SimplePieceResolver(xyLeaper, Utils.sum(suffixOps, outwardsSet)),
-                        new SimplePieceResolver(xyRider, Utils.sum(suffixOps, outwardsSet))
-                );
+                        new SimplePieceResolver(xyRider, Utils.sum(suffixOps, outwardsSet)),
+                        new SimplePieceResolver(xyyxLeaper, Utils.sum(suffixOps, outwardXSet)),
+                        new SimplePieceResolver(xyLeaper, Utils.sum(suffixOps, outwardXSet)),
+                        new SimplePieceResolver(xyRider, Utils.sum(suffixOps, outwardXSet)),
+                        new SimplePieceResolver(xyyxLeaper, Utils.sum(suffixOps, outwardYSet)),
+                        new SimplePieceResolver(xyLeaper, Utils.sum(suffixOps, outwardYSet)),
+                        new SimplePieceResolver(xyRider, Utils.sum(suffixOps, outwardYSet)))
+                        .filter(SimplePieceResolver::isValid).collect(Collectors.toList());
+
 
                 SimplePieceResolver tempSuffixResolver = null;
                 for (SimplePieceResolver sufResolver : listOfSuffixResolvers) {
-                    boolean valid = sufResolver
-                            .isValidForWithVector(prefixResolveResult.getMap().get(omPrefix), omWithoutPrefix, newXY, omPrefixAsVector);
+
+                    boolean valid = prefixResolveResult.getMap().entrySet().stream()
+                            .allMatch(e -> {
+                                final OneMove prefix = e.getKey();
+                                final Set<OneMove> suffixes = e.getValue();
+                                final Pair<Integer, Integer> prefixAsVector = Utils.asVector(prefix);
+                                if (prefix.equals(omPrefix)) {
+                                    return sufResolver.isValidForWithVector(suffixes, omWithoutPrefix, xy, prefixAsVector);
+                                }
+                                return sufResolver.isValidForWithVector(suffixes, xy, prefixAsVector);
+
+                            });
 
 
                     if (valid) {
@@ -209,7 +213,9 @@ public class PieceResolver {
                 final SimpleCompositeResolver comRes = new SimpleCompositeResolver(firstResolver, tempSuffixResolver);
 
                 prefixResolveResult.getMap().forEach((prefix, suffixes) -> {
-                    ResolveResult resolvedSuffixes = suffixResolver.resolveWithVector(suffixes, newXY, Utils.asVector(prefix));
+                    ResolveResult resolvedSuffixes = suffixResolver.resolveWithVector(suffixes,
+                            xy,
+                            Utils.asVector(prefix));
 
                     resolvedSuffixes.getParsed()
                             .forEach(suffix -> {
@@ -236,6 +242,10 @@ public class PieceResolver {
                                          Map<OneMove, List<Resolver>> resultMap) {
         SimplePieceResolver resolver = new SimplePieceResolver(xyLeaper, operators);
 
+        if (!resolver.isValid()) {
+            return false;
+        }
+
         simpl++;
         if (resolver.isValidFor(piece.getMoves(), om, xy)) {
             final ResolveResult resolveResult = resolver.resolve(piece.getMoves(), xy);
@@ -259,6 +269,14 @@ public class PieceResolver {
         resultMap.get(om).add(resolver);
         movesToInterpret.remove(om);
         return true;
+    }
+
+    private static boolean checkTimeout(long start, int max) {
+        if (System.currentTimeMillis() - start > max) {
+            System.out.println("TIMEOUT");
+            return true;
+        }
+        return false;
     }
 
 }
