@@ -66,6 +66,31 @@ public class OneMove {
 
     }
 
+    public OneMove withoutPrefix(OneMove prefix) {
+        final List<Move> resultMoves = new ArrayList<>();
+        final List<Move> prefixMoves = prefix.getMoves();
+
+        int x = 0;
+        int y = 0;
+        for (int i = 0; i < moves.size(); i++) {
+            if (i < prefixMoves.size()) {
+                x += prefixMoves.get(i).getDx();
+                y += prefixMoves.get(i).getDy();
+            } else {
+                resultMoves.add(moves.get(i).copy());
+            }
+        }
+
+        final OneMove result = new OneMove();
+        result.setMoves(resultMoves);
+        result.setVector(Pair.of(x, y));
+        return result;
+    }
+
+    public Optional<Move> getFirst() {
+        return moves.isEmpty() ? Optional.empty() : Optional.of(moves.get(0));
+    }
+
     public Pair<Integer, Integer> getVector() {
         return vector;
     }

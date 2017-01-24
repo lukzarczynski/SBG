@@ -1,13 +1,14 @@
 package main.resolvers;
 
 import main.MoveUtil;
-import main.model.OneMove;
 import main.ParamsAndEvaluators;
+import main.model.OneMove;
 import main.operator.Operator;
 import main.piececlass.PieceClass;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,37 +27,31 @@ public class SimplePieceResolver extends Resolver {
         this.operators = ops;
     }
 
-    @Override
-    public boolean isApplicable(Set<OneMove> moves, Pair<Integer, Integer> xy) {
-        return pieceClass.matches(moves, operators, xy);
+    public boolean isValidFor(Collection<OneMove> moves, OneMove oneMove, Pair<Integer, Integer> xy) {
+        return pieceClass.isSubsetAndContains(moves, operators, oneMove, xy);
     }
 
-    @Override
-    public ResolveResult apply(Set<OneMove> moves, Pair<Integer, Integer> xy) {
-        Set<OneMove> apply = pieceClass.apply(moves, operators, xy);
-        return new ResolveResult(apply, MoveUtil.subtract(moves, apply));
+    public boolean isValidForWithVector(Collection<OneMove> moves, OneMove oneMove, Pair<Integer, Integer> xy, Pair<Integer,Integer> vector) {
+        return pieceClass.isSubsetAndContainsWithVector(moves, operators, oneMove, xy, vector);
+    }
+
+    public ResolveResult resolve(Collection<OneMove> moves, Pair<Integer, Integer> xy) {
+        final Collection<OneMove> notMatchingMoves = pieceClass.getNotMatchingMoves(moves, operators, xy);
+        return new ResolveResult(notMatchingMoves,
+                MoveUtil.subtract(moves, notMatchingMoves));
+    }
+
+    public ResolveResult resolveWithVector(Collection<OneMove> moves, Pair<Integer, Integer> xy, Pair<Integer,Integer> vector) {
+        final Collection<OneMove> notMatchingMoves = pieceClass.getNotMatchingMovesWithVector(moves, operators, xy, vector);
+        return new ResolveResult(notMatchingMoves,
+                MoveUtil.subtract(moves, notMatchingMoves));
     }
 
     @Override
     public String getDescription() {
-        return String.format(" like %s but only:  %s ",
+        return String.format(" %s but %s ",
                 pieceClass.getDescription(),
                 operators.stream().map(Operator::getDescription).collect(Collectors.joining(", ")));
-    }
-
-    public boolean containsMove(OneMove oneMove, Pair<Integer, Integer> xy) {
-        Set<OneMove> oneMoves = pieceClass.filterMoves(operators, xy);
-        return oneMoves.contains(oneMove);
-    }
-
-    public boolean containsMovePrefix(OneMove oneMove, Pair<Integer, Integer> xy) {
-        final String m = oneMove.toString();
-        Set<OneMove> oneMoves = pieceClass.filterMoves(operators, xy);
-        return oneMoves.stream().anyMatch(om -> m.startsWith(om.toString()));
-    }
-
-    public boolean isApplicableForPrefixes(Set<OneMove> moves, Pair<Integer, Integer> xy) {
-        return pieceClass.matchesPrefix(moves, operators, xy);
     }
 
     @Override
@@ -86,17 +81,20 @@ public class SimplePieceResolver extends Resolver {
         return operators;
     }
 
-    public PrefixResolveResult applyForPrefixes(Set<OneMove> moves, Pair<Integer, Integer> xy) {
-        Map<OneMove, OneMove> oneMoves = pieceClass.applyPrefix(moves, operators, xy);
+    public PrefixResolveResult applyForPrefixes(Map<OneMove, OneMove> mapOfMovesAndItsPrefix, Pair<Integer, Integer> xy) {
+        final Map<OneMove, Set<OneMove>> resultMap
+                = pieceClass.getMapOfMatchedPrefixesAndItsSuffixes(mapOfMovesAndItsPrefix, operators, xy);
 
-        final Map<OneMove, OneMove> result = new HashMap<>();
-        oneMoves.forEach((k, v) -> {
-            if (!v.equals(OneMove.EMPTY_MOVE)) {
-                result.put(k, v);
+        final Set<OneMove> matchedPrefixes = resultMap.keySet();
+
+        final Set<OneMove> notMatchedMoves = new HashSet<>();
+        mapOfMovesAndItsPrefix.forEach((move, prefix) -> {
+            if (!matchedPrefixes.contains(prefix)) {
+                notMatchedMoves.add(move);
             }
         });
-        return new PrefixResolveResult(
-                result,
-                MoveUtil.subtract(moves, oneMoves.keySet()));
+
+        return new PrefixResolveResult(resultMap, notMatchedMoves);
     }
+
 }

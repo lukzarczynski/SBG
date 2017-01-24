@@ -4,6 +4,7 @@ import main.model.Move;
 import main.model.OneMove;
 import main.model.Piece;
 import main.operator.Operator;
+import main.operator.Outwards;
 import main.piececlass.*;
 import main.resolvers.*;
 import org.apache.commons.lang3.tuple.Pair;
@@ -18,6 +19,10 @@ import static java.util.Objects.isNull;
  */
 public class PieceResolver {
 
+    public static final Set<OneMove> failedMoves = new HashSet<>();
+    public static int comp = 0;
+    public static int simpl = 0;
+
     public static Pair<String, Integer> resolve(Piece piece, Pair<Integer, Integer> xy) throws PieceResolverException {
 
         long start = System.currentTimeMillis();
@@ -26,41 +31,40 @@ public class PieceResolver {
         Map<OneMove, List<Resolver>> resultMap = new HashMap<>();
 
 
-        List<OneMove> collect = piece.getMoves().stream()
+        final List<OneMove> sortedMoves = piece.getMoves().stream()
+                .filter(om -> !om.getMoves().isEmpty())
                 .sorted((m1, m2) -> Integer.compare(m2.getMoves().size(), m1.getMoves().size()))
                 .collect(Collectors.toList());
 
 
-        for (OneMove om : collect) {
-            checkTimeout(start, ParamsAndEvaluators.PIECE_TIMEOUT_MS);
+        final Map<OneMove, OneMove> prefixesOnly = getPrefixes(piece);
+
+        for (OneMove om : sortedMoves) {
+            if (checkTimeout(start, ParamsAndEvaluators.PIECE_TIMEOUT_MS)) {
+                break;
+            }
 
             if (resultMap.containsKey(om)) {
+                //move already resolved
                 continue;
             }
 
-            Optional<Move> first = om.getMoves().stream().findFirst();
-            if (!first.isPresent()) {
-                continue;
-            }
+            Move first = om.getFirst().get();
 
-            XYLeaper xyLeaper = PieceCache
-                    .getLeaper(
-                            Pair.of(Math.abs(first.get().getDx()), Math.abs(first.get().getDy())));
-            XYYXLeaper xyyxLeaper = PieceCache
-                    .getXYYXLeaper(Pair.of(Math.abs(first.get().getDx()), Math.abs(first.get().getDy())));
-            XYRider xyRider = PieceCache
-                    .getRider(Pair.of(Math.abs(first.get().getDx()), Math.abs(first.get().getDy())));
-
+            final XYLeaper xyLeaper = PieceCache.getLeaper(first.getXY());
+            final XYYXLeaper xyyxLeaper = PieceCache.getXYYXLeaper(first.getXY());
+            final XYRider xyRider = PieceCache.getRider(first.getXY());
 
             PieceResolveType type = PieceResolveType.forPiece(om);
 
-
             for (Set<Operator> operators : Resolvers.getSortedOps()) {
 
-                checkTimeout(start, ParamsAndEvaluators.MOVE_TIMEOUT_MS);
+                if (checkTimeout(start, ParamsAndEvaluators.MOVE_TIMEOUT_MS)) {
+                    break;
+                }
 
                 if (type.equals(PieceResolveType.OTHER)) {
-                    throw new PieceResolverException("Not implemented yet: " + om.toString());
+                    trySpecialCase(movesToInterpret, om, resultMap);
                 } else if (type.equals(PieceResolveType.SIMPLE)) {
                     if (tryPieceClass(piece, movesToInterpret, om, xyLeaper, operators, xy, resultMap)) {
                         break;
@@ -70,18 +74,21 @@ public class PieceResolver {
                         break;
                     }
                 } else {
-                    if (tryCompositeClass(piece, movesToInterpret, om, xyLeaper, operators, xy, resultMap)) {
+                    if (tryCompositeClass(movesToInterpret, om, xyLeaper, operators, xy, resultMap, prefixesOnly)) {
                         break;
-                    } else if (xyyxLeaper.isValid() && tryCompositeClass(piece, movesToInterpret, om, xyyxLeaper, operators, xy, resultMap)) {
+                    } else if (xyyxLeaper.isValid()
+                            && tryCompositeClass(movesToInterpret, om, xyyxLeaper, operators, xy, resultMap, prefixesOnly)) {
                         break;
-                    } else if (tryCompositeClass(piece, movesToInterpret, om, xyRider, operators, xy, resultMap)) {
+                    } else if (tryCompositeClass(movesToInterpret, om, xyRider, operators, xy, resultMap, prefixesOnly)) {
                         break;
                     }
-
                 }
             }
             if (movesToInterpret.contains(om)) {
-                throw new PieceResolverException("could not find description for piece " + om.toString());
+//                System.out.println("Could not resolve " + om.toString() + ", trying special case");
+                PieceResolver.failedMoves.add(om);
+                start = System.currentTimeMillis();
+                trySpecialCase(movesToInterpret, om, resultMap);
             }
 
         }
@@ -94,66 +101,126 @@ public class PieceResolver {
 
     }
 
-    private static void checkTimeout(long start, int max) throws PieceResolverException {
-        if (System.currentTimeMillis() - start > max) {
-            throw new PieceResolverException("TIMEOUT");
+    /**
+     * (1,1,e)(2,2,p) -> <br/>
+     * <p>
+     * key: (1,1,e)(2,2,p)<br/>
+     * value: (1,1,e)
+     *
+     * @param piece
+     * @return map
+     */
+    private static Map<OneMove, OneMove> getPrefixes(Piece piece) {
+        final Map<OneMove, OneMove> prefixesOnly = new HashMap<>();
+        for (OneMove om : piece.getMoves()) {
+            List<Move> moves = new ArrayList<>();
+            Move first = null;
+            boolean valid = false;
+            for (Move m : om.getMoves()) {
+                if (isNull(first)) {
+                    first = m;
+                }
+
+                if (!Objects.equals(m.getDx(), first.getDx()) || !Objects.equals(m.getDy(), first.getDy())) {
+                    valid = true;
+                    break;
+                }
+                moves.add(m);
+            }
+
+            if (!moves.isEmpty() && valid) {
+                OneMove prefixMove = new OneMove();
+                prefixMove.setMoves(moves);
+                prefixesOnly.put(om, prefixMove);
+            }
         }
+        return prefixesOnly;
     }
 
-    private static boolean tryCompositeClass(Piece piece,
-                                             Set<OneMove> movesToInterpret,
+    private static boolean checkTimeout(long start, int max) {
+        if (System.currentTimeMillis() - start > max) {
+            System.out.println("TIMEOUT");
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean tryCompositeClass(Set<OneMove> movesToInterpret,
                                              OneMove om,
                                              PieceClass pieceClass,
                                              Set<Operator> operators,
                                              Pair<Integer, Integer> xy,
-                                             Map<OneMove, List<Resolver>> resultMap) {
-        SimplePieceResolver firstResolver = new SimplePieceResolver(pieceClass, operators);
+                                             Map<OneMove, List<Resolver>> resultMap,
+                                             Map<OneMove, OneMove> allPrefixesMap) {
 
-        if (firstResolver.isApplicableForPrefixes(piece.getMoves(), xy)
-                && firstResolver.containsMovePrefix(om, xy)) {
-            PrefixResolveResult prefixResolveResult = firstResolver.applyForPrefixes(piece.getMoves(), xy);
+        final SimplePieceResolver firstResolver = new SimplePieceResolver(pieceClass, operators);
 
-            OneMove omSuffix = prefixResolveResult.getMove().get(om);
-            Move first = omSuffix.getMoves().stream().findFirst().get();
-            Move firstOM = om.getMoves().stream().findFirst().get();
+        comp++;
+        final OneMove omPrefix = allPrefixesMap.get(om);
+        final Pair<Integer, Integer> omPrefixAsVector = Utils.asVector(omPrefix);
+        final OneMove omWithoutPrefix = om.withoutPrefix(omPrefix);
+
+        if (firstResolver.isValidFor(allPrefixesMap.values(), omPrefix, xy)) {
+
+            final PrefixResolveResult prefixResolveResult = firstResolver.applyForPrefixes(allPrefixesMap, xy);
 
 
-            XYLeaper xyLeaper = PieceCache
-                    .getLeaper(Pair.of(Math.abs(first.getDx()), Math.abs(first.getDy())));
-            XYYXLeaper xyyxLeaper = PieceCache
-                    .getXYYXLeaper(Pair.of(Math.abs(first.getDx()), Math.abs(first.getDy())));
-            XYRider xyRider = PieceCache
-                    .getRider(Pair.of(Math.abs(first.getDx()), Math.abs(first.getDy())));
+            // makes not much sense
+            final Move firstOM = om.getFirst().get();
+            final Pair<Integer, Integer> newXY = Pair.of(xy.getLeft() - Math.abs(firstOM.getDx()), xy.getRight() - Math.abs(firstOM.getDy()));
 
-            Pair<Integer, Integer> newXY = Pair.of(xy.getLeft() - Math.abs(firstOM.getDx()), xy.getRight() - Math.abs(firstOM.getDy()));
+            final Move anyFirstMoveOfSuffix = prefixResolveResult.getAnySuffix().getFirst().get();
+
+            final XYLeaper xyLeaper = PieceCache.getLeaper(anyFirstMoveOfSuffix.getXY());
+            final XYYXLeaper xyyxLeaper = PieceCache.getXYYXLeaper(anyFirstMoveOfSuffix.getXY());
+            final XYRider xyRider = PieceCache.getRider(anyFirstMoveOfSuffix.getXY());
+
+            final Set<Operator> outwardsSet = Utils.setOf(new Outwards());
 
             for (Set<Operator> suffixOps : Resolvers.getSortedOps()) {
-                List<SimplePieceResolver> asd = Arrays.asList(
-                        new SimplePieceResolver(xyRider, suffixOps),
+                final List<SimplePieceResolver> listOfSuffixResolvers = Arrays.asList(
                         new SimplePieceResolver(xyyxLeaper, suffixOps),
-                        new SimplePieceResolver(xyLeaper, suffixOps)
+                        new SimplePieceResolver(xyLeaper, suffixOps),
+                        new SimplePieceResolver(xyRider, suffixOps),
+                        new SimplePieceResolver(xyyxLeaper, Utils.sum(suffixOps, outwardsSet)),
+                        new SimplePieceResolver(xyLeaper, Utils.sum(suffixOps, outwardsSet)),
+                        new SimplePieceResolver(xyRider, Utils.sum(suffixOps, outwardsSet))
                 );
 
-                SimplePieceResolver spr = asd.stream()
-                        .filter(r -> r.isApplicable(prefixResolveResult.getSuffixes(), newXY))
-                        .findFirst()
-                        .orElse(null);
-                if (isNull(spr)) {
+                SimplePieceResolver tempSuffixResolver = null;
+                for (SimplePieceResolver sufResolver : listOfSuffixResolvers) {
+                    boolean valid = sufResolver
+                            .isValidForWithVector(prefixResolveResult.getMap().get(omPrefix), omWithoutPrefix, newXY, omPrefixAsVector);
+
+
+                    if (valid) {
+                        tempSuffixResolver = sufResolver;
+                        break;
+                    }
+                }
+
+                final SimplePieceResolver suffixResolver;
+                if (isNull(tempSuffixResolver)) {
                     continue;
+                } else {
+                    suffixResolver = tempSuffixResolver;
                 }
 
-                SimpleCompositeResolver comRes = new SimpleCompositeResolver(firstResolver, spr);
+                final SimpleCompositeResolver comRes = new SimpleCompositeResolver(firstResolver, tempSuffixResolver);
 
-                ResolveResult apply = comRes.apply(piece.getMoves(), xy);
-                if (apply.getParsed().contains(om)) {
-                    apply.getParsed().forEach(ooo -> {
-                        resultMap.putIfAbsent(ooo, new ArrayList<>());
-                        resultMap.get(ooo).add(comRes);
-                    });
-                    movesToInterpret.removeAll(apply.getParsed());
+                prefixResolveResult.getMap().forEach((prefix, suffixes) -> {
+                    ResolveResult resolvedSuffixes = suffixResolver.resolveWithVector(suffixes, newXY, Utils.asVector(prefix));
 
-                    return true;
-                }
+                    resolvedSuffixes.getParsed()
+                            .forEach(suffix -> {
+                                final OneMove resolvedMove = Utils.joinMoves(prefix, suffix);
+                                resultMap.putIfAbsent(resolvedMove, new ArrayList<>());
+                                resultMap.get(resolvedMove).add(comRes);
+                                movesToInterpret.remove(resolvedMove);
+                            });
+                });
+
+                return true;
             }
             return false;
         }
@@ -169,16 +236,29 @@ public class PieceResolver {
                                          Map<OneMove, List<Resolver>> resultMap) {
         SimplePieceResolver resolver = new SimplePieceResolver(xyLeaper, operators);
 
-        if (resolver.isApplicable(piece.getMoves(), xy) && resolver.containsMove(om, xy)) {
-            ResolveResult apply = resolver.apply(piece.getMoves(), xy);
-            apply.getParsed().forEach(pm -> {
-                resultMap.putIfAbsent(pm, new ArrayList<>());
-                resultMap.get(pm).add(resolver);
-            });
-            movesToInterpret.removeAll(apply.getParsed());
+        simpl++;
+        if (resolver.isValidFor(piece.getMoves(), om, xy)) {
+            final ResolveResult resolveResult = resolver.resolve(piece.getMoves(), xy);
+            resolveResult.getParsed()
+                    .forEach(pm -> {
+                        resultMap.putIfAbsent(pm, new ArrayList<>());
+                        resultMap.get(pm).add(resolver);
+                    });
+            movesToInterpret.removeAll(resolveResult.getParsed());
             return true;
         }
         return false;
+    }
+
+    private static boolean trySpecialCase(Set<OneMove> movesToInterpret,
+                                          OneMove om,
+                                          Map<OneMove, List<Resolver>> resultMap) {
+
+        SpecialCaseResolver resolver = new SpecialCaseResolver(om);
+        resultMap.putIfAbsent(om, new ArrayList<>());
+        resultMap.get(om).add(resolver);
+        movesToInterpret.remove(om);
+        return true;
     }
 
 }

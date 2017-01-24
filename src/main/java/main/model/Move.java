@@ -1,5 +1,7 @@
 package main.model;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -94,6 +96,10 @@ public class Move {
 
     public void setDy(Integer dy) {
         this.dy = dy;
+    }
+
+    public Pair<Integer,Integer> getXY(){
+        return Pair.of(getDx(),getDy());
     }
 
 

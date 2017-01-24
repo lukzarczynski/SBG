@@ -1,15 +1,11 @@
 package main.piececlass;
 
+import main.MoveUtil;
 import main.model.OneMove;
 import main.operator.Operator;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -24,27 +20,81 @@ public abstract class PieceClass {
         this.xy = xy;
     }
 
-    public abstract boolean matches(Set<OneMove> moves, Collection<Operator> operators, Pair<Integer, Integer> xy);
+    public boolean isSubsetAndContains(Collection<OneMove> moves,
+                                       Collection<Operator> operators,
+                                       OneMove oneMove,
+                                       Pair<Integer, Integer> xy) {
+        final Set<OneMove> filteredMoves = filterMoves(operators, xy);
+        return !filteredMoves.isEmpty()
+                && filteredMoves.contains(oneMove)
+                && MoveUtil.containsAll(moves, filteredMoves);
 
-    public abstract boolean matchesPrefix(Set<OneMove> moves, Collection<Operator> operators, Pair<Integer, Integer> xy);
+    }
 
-    public abstract Set<OneMove> apply(Set<OneMove> moves, Collection<Operator> operators, Pair<Integer, Integer> xy);
+    public boolean isSubsetAndContainsWithVector(Collection<OneMove> moves,
+                                                 Collection<Operator> operators,
+                                                 OneMove oneMove,
+                                                 Pair<Integer, Integer> xy,
+                                                 Pair<Integer, Integer> vector) {
+        final Set<OneMove> filteredMoves = filterWithVector(operators, xy, vector);
+        return !filteredMoves.isEmpty()
+                && filteredMoves.contains(oneMove)
+                && MoveUtil.containsAll(moves, filteredMoves);
 
-    public Map<OneMove, OneMove> applyPrefix(Set<OneMove> moves,
-                                             Collection<Operator> op, Pair<Integer, Integer> xy) {
-        final Set<OneMove> b = filterMoves(op, xy);
+    }
 
-        final Set<String> setStrings = b.stream().map(OneMove::toString).collect(Collectors.toSet());
+    /**
+     * @param moves
+     * @param operators
+     * @param xy
+     * @return all moves that did not match
+     */
+    public Collection<OneMove> getNotMatchingMoves(Collection<OneMove> moves,
+                                                   Collection<Operator> operators,
+                                                   Pair<Integer, Integer> xy) {
+        final Set<OneMove> filteredMoves = filterMoves(operators, xy);
+        return filteredMoves.isEmpty() ? moves : MoveUtil.subtract(moves, filteredMoves);
+    }
 
-        return b.isEmpty() ? null :
-                moves.stream()
-                        .filter(om -> setStrings.stream().anyMatch(ob -> om.toString().startsWith(ob)))
-                        .collect(Collectors.toMap(Function.identity(),
-                                o -> getOneMove(setStrings, o)));
+    public Collection<OneMove> getNotMatchingMovesWithVector(Collection<OneMove> moves,
+                                                             Collection<Operator> operators,
+                                                             Pair<Integer, Integer> xy,
+                                                             Pair<Integer, Integer> vector) {
+        final Set<OneMove> filteredMoves = filterWithVector(operators, xy, vector);
+        return filteredMoves.isEmpty() ? moves : MoveUtil.subtract(moves, filteredMoves);
+    }
+
+    /**
+     * @param prefixes  key: move, value: prefix(move)
+     * @param operators
+     * @param xy        board size
+     * @return key: prefix, value: set of suffixes
+     */
+    public Map<OneMove, Set<OneMove>> getMapOfMatchedPrefixesAndItsSuffixes(Map<OneMove, OneMove> prefixes,
+                                                                            Set<Operator> operators,
+                                                                            Pair<Integer, Integer> xy) {
+        final Set<OneMove> filteredMoves = filterMoves(operators, xy);
+
+        final Map<OneMove, Set<OneMove>> result = new HashMap<>();
+
+        prefixes.forEach((move, prefix) -> {
+            if (filteredMoves.contains(prefix)) {
+                result.putIfAbsent(prefix, new HashSet<>());
+                result.get(prefix).add(move.withoutPrefix(prefix));
+            }
+        });
+
+        return result;
+
     }
 
     public abstract String getDescription();
 
+    /**
+     * @param op operators
+     * @param xy board size
+     * @return moves that matches all operators
+     */
     public Set<OneMove> filterMoves(Collection<Operator> op, Pair<Integer, Integer> xy) {
         return moves.stream()
                 .filter(m -> op.stream().allMatch(o -> o.matches().test(m)))
@@ -59,22 +109,14 @@ public abstract class PieceClass {
                 .collect(Collectors.toSet());
     }
 
-    protected OneMove getOneMove(Set<String> setStrings, OneMove o) {
-        String om = o.toString();
-        String bestMatch =
-                setStrings.stream()
-                        .filter(om::startsWith)
-                        .sorted((c, a) -> Integer.compare(a.length(), c.length())).findFirst().get();
+    public Set<OneMove> filterWithVector(Collection<Operator> op, Pair<Integer, Integer> xy, Pair<Integer, Integer> vector) {
+        this.moves.forEach(m -> m.setVector(vector));
 
-        OneMove next = OneMove.parse(bestMatch).iterator().next();
-        Pair<Integer, Integer> vector = next.getMoves().stream()
-                .map(m -> Pair.of(m.getDx(), m.getDy())).reduce(Pair.of(0, 0), (p1, p2) -> Pair.of(p1.getKey() + p2.getKey(), p1.getValue() + p2.getValue()));
+        final Set<OneMove> result = filterMoves(op, xy);
 
-        String ns = StringUtils.replaceOnce(om, bestMatch, "").trim();
-        if (ns.startsWith("+")) {
-            ns = ns.replaceFirst("\\+", "");
-        }
-        return OneMove.parse(ns, vector).stream().findAny().orElse(OneMove.EMPTY_MOVE);
+        final Pair<Integer, Integer> zero = Pair.of(0, 0);
+        this.moves.forEach(m -> m.setVector(zero));
+        return result;
     }
 
     public Pair<Integer, Integer> getXy() {
@@ -95,4 +137,5 @@ public abstract class PieceClass {
     public int hashCode() {
         return moves.hashCode();
     }
+
 }

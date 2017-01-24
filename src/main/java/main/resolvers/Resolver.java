@@ -3,6 +3,7 @@ package main.resolvers;
 import main.model.OneMove;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -14,10 +15,6 @@ public abstract class Resolver {
     public Resolver(int value) {
         this.value = value;
     }
-
-    public abstract boolean isApplicable(Set<OneMove> moves, Pair<Integer, Integer> xy);
-
-    public abstract ResolveResult apply(Set<OneMove> moves, Pair<Integer, Integer> xy);
 
     public abstract String getDescription();
 

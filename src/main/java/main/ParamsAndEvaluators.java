@@ -13,21 +13,18 @@ import java.util.Set;
  */
 public final class ParamsAndEvaluators {
 
-    public static final Integer PIECE_TIMEOUT_MS = 10000;
-    public static final Integer MOVE_TIMEOUT_MS = 5000;
+    public static final Integer PIECE_TIMEOUT_MS = 600000;
+    public static final Integer MOVE_TIMEOUT_MS = 100000;
     private static final Map<Class<? extends Operator>, Integer> values;
 
     static {
         values = new HashMap<>();
         ParamsAndEvaluators.values.put(Backwards.class, 2);
-        ParamsAndEvaluators.values.put(Diagonal.class, 4);
         ParamsAndEvaluators.values.put(Forward.class, 2);
-        ParamsAndEvaluators.values.put(Horizontal.class, 4);
         ParamsAndEvaluators.values.put(None.class, 1);
         ParamsAndEvaluators.values.put(OnlyCapture.class, 6);
         ParamsAndEvaluators.values.put(OnlyEven.class, 12);
         ParamsAndEvaluators.values.put(OnlyOdd.class, 12);
-        ParamsAndEvaluators.values.put(Orthogonal.class, 4);
         ParamsAndEvaluators.values.put(OverEnemyPieceInstead.class, 8);
         ParamsAndEvaluators.values.put(OverOwnPieceInsteadEndingNormally.class, 14);
         ParamsAndEvaluators.values.put(SelfCaptureInstead.class, 8);
@@ -67,14 +64,20 @@ public final class ParamsAndEvaluators {
         return i * j;
     }
 
+    public static int evaluatePosition(int x, int y) {
+        int absx = Math.abs(x);
+        int absy = Math.abs(y);
+        int distanceToVerticalOrHorizontal = Math.min(absx, absy);
+        int distanceToDiagonal = Math.abs(absx - absy) / 2 + (Math.abs(absx - absy) % 2);
+        int distanceToBeginning = Math.max(absx, absy);
+        return Math.min(distanceToDiagonal, distanceToVerticalOrHorizontal) + distanceToBeginning;
+    }
+
     private static int evaluatePieceClass(PieceClass pieceClass) {
         int x = Math.abs(pieceClass.getXy().getKey());
         int y = Math.abs(pieceClass.getXy().getValue());
 
-        int distanceToVerticalOrHorizontal = Math.min(x, y);
-        int distanceToDiagonal = Math.abs(x - y) / 2 + (Math.abs(x - y) % 2);
-        int distanceToBeginning = Math.max(x, y);
-        return Math.min(distanceToDiagonal, distanceToVerticalOrHorizontal) + distanceToBeginning;
+        return evaluatePosition(x, y);
     }
 
 }

@@ -23,35 +23,20 @@ public class XYLeaper extends PieceClass {
             moves.add(OneMove.parse(-x, y, t));
             moves.add(OneMove.parse(x, -y, t));
             moves.add(OneMove.parse(-x, -y, t));
-//
-//      if (x != y) {
-//        moves.add(OneMove.parse(y, x, t));
-//        moves.add(OneMove.parse(-y, x, t));
-//        moves.add(OneMove.parse(y, -x, t));
-//        moves.add(OneMove.parse(-y, -x, t));
-//      }
         }
 
-        description = String.format("(%s,%s) leaper", x, y);
+        if (x == y) {
+            description = String.format("leaps %s diagonally", x);
+        } else if (x == 0) {
+            description = String.format("leaps %s forward or backwards", y);
+        } else if (y == 0) {
+            description = String.format("leaps %s sideways", x);
+        } else {
+            description = String.format("(%s,%s) leaper", x, y);
+        }
     }
 
-    @Override
-    public boolean matches(Set<OneMove> pieceMoves, Collection<Operator> op, Pair<Integer, Integer> xy) {
-        final Set<OneMove> b = filterMoves(op, xy);
-        return !b.isEmpty() && MoveUtil.containsAll(pieceMoves, b);
-    }
 
-    @Override
-    public boolean matchesPrefix(Set<OneMove> moves, Collection<Operator> op, Pair<Integer, Integer> xy) {
-        final Set<OneMove> b = filterMoves(op, xy);
-        return !b.isEmpty() && MoveUtil.containsAllPrefixes(moves, b);
-    }
-
-    @Override
-    public Set<OneMove> apply(Set<OneMove> pieceMoves, Collection<Operator> op, Pair<Integer, Integer> xy) {
-        final Set<OneMove> b = filterMoves(op, xy);
-        return b.isEmpty() ? pieceMoves : MoveUtil.subtract(pieceMoves, b);
-    }
 
     @Override
     public String getDescription() {

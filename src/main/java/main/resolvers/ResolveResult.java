@@ -2,6 +2,7 @@ package main.resolvers;
 
 import main.model.OneMove;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -9,19 +10,19 @@ import java.util.Set;
  */
 public class ResolveResult {
 
-    private final Set<OneMove> parsed;
-    private final Set<OneMove> notParsed;
+    private final Collection<OneMove> parsed;
+    private final Collection<OneMove> notParsed;
 
-    public ResolveResult(Set<OneMove> notParsed, Set<OneMove> parsed) {
+    public ResolveResult(Collection<OneMove> notParsed, Collection<OneMove> parsed) {
         this.parsed = parsed;
         this.notParsed = notParsed;
     }
 
-    public Set<OneMove> getParsed() {
+    public Collection<OneMove> getParsed() {
         return parsed;
     }
 
-    public Set<OneMove> getNotParsed() {
+    public Collection<OneMove> getNotParsed() {
         return notParsed;
     }
 }

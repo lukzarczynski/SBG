@@ -34,7 +34,9 @@ public class Main {
     }
 
     private static void handleOneFile(File f, int length, final Statistics statistics) {
+        long startFile = System.currentTimeMillis();
         try {
+
             ParseResult parseResult = parseOneFile(f);
             Integer i = 0;
             List<String> metaTags = new ArrayList<>();
@@ -109,18 +111,23 @@ public class Main {
             resultFOS.close();
 
 
-            System.out.println(String.format("Finished file %s (P: %s, F: %s, SUM: %s) of %s",
+            System.out.println(String.format("Finished file %s (P: %s, F: %s, SUM: %s, FM: %s) of %s -- %s ms",
                     f.getName(),
                     statistics.getSuccess().incrementAndGet(),
                     statistics.getFail().get(),
-                    statistics.getSuccess().get() + statistics.getFail().get(), length));
+                    statistics.getSuccess().get() + statistics.getFail().get(),
+                    PieceResolver.failedMoves.size(),
+                    length,
+                    System.currentTimeMillis() - startFile));
         } catch (PieceResolverException e) {
             System.out.println("\t" + e.getMessage());
-            System.out.println(String.format("Failed file %s (P: %s, F: %s, SUM: %s) of %s",
+            System.out.println(String.format("Failed file %s (P: %s, F: %s, SUM: %s, FM: %s) of %s -- %s ms",
                     f.getName(),
                     statistics.getSuccess().get(),
                     statistics.getFail().incrementAndGet(),
-                    statistics.getSuccess().get() + statistics.getFail().get(), length));
+                    statistics.getSuccess().get() + statistics.getFail().get(),
+                    PieceResolver.failedMoves.size(), length,
+                    System.currentTimeMillis() - startFile));
         } catch (IOException e) {
             e.printStackTrace();
         }

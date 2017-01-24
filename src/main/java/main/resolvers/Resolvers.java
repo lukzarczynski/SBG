@@ -27,11 +27,6 @@ public final class Resolvers {
                 new Forward(),
                 new Backwards(),
                 new Sideways(),
-                new Diagonal(),
-                new Horizontal(),
-                new Orthogonal(),
-                new Or(new Forward(), new Horizontal()),
-                new Or(new Backwards(), new Horizontal()),
                 new OnlyCapture(),
                 new WithoutCapture(),
                 new OnlyEven(),
@@ -60,14 +55,11 @@ public final class Resolvers {
 
         addRestrictions(Forward.class, None.class, Backwards.class);
         addRestrictions(Backwards.class, None.class, Forward.class);
-        addRestrictions(Sideways.class, None.class, Orthogonal.class, Horizontal.class);
+        addRestrictions(Sideways.class, None.class);
         addRestrictions(OnlyCapture.class, None.class, WithoutCapture.class);
         addRestrictions(WithoutCapture.class, None.class, OnlyCapture.class);
-        addRestrictions(Diagonal.class, None.class, Horizontal.class, Orthogonal.class);
-        addRestrictions(Orthogonal.class, None.class, Sideways.class, Diagonal.class, Horizontal.class);
-        addRestrictions(Horizontal.class, None.class, Sideways.class, Diagonal.class, Orthogonal.class);
-        addRestrictions(OnlyEven.class, None.class, OnlyOdd.class);
-        addRestrictions(OnlyOdd.class, None.class, OnlyEven.class);
+        addRestrictions(OnlyEven.class, None.class, OnlyOdd.class, MaxTimes.class, MinTimes.class, ExactlyTimes.class);
+        addRestrictions(OnlyOdd.class, None.class, OnlyEven.class, MaxTimes.class, MinTimes.class, ExactlyTimes.class);
         addRestrictions(MaxTimes.class, None.class, MaxTimes.class, MinTimes.class, ExactlyTimes.class);
         addRestrictions(MinTimes.class, None.class, MaxTimes.class, MinTimes.class, ExactlyTimes.class);
         addRestrictions(ExactlyTimes.class, None.class, MaxTimes.class, MinTimes.class, ExactlyTimes.class);
