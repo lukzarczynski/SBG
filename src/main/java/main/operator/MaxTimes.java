@@ -34,4 +34,8 @@ public class MaxTimes extends Operator {
     public String getDescription() {
         return "Max " + x + " MaxTimes";
     }
+
+    public int getX() {
+        return x;
+    }
 }

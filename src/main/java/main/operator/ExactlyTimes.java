@@ -18,20 +18,15 @@ public class ExactlyTimes extends Operator {
 
     @Override
     public Predicate<OneMove> matches() {
-//        return move -> {
-//            final Integer dx = move.getMoves().stream().map(m -> m.getDx() * m.getPower()).reduce
-//                (0,
-//                Integer::sum);
-//            final Integer dy = move.getMoves().stream().map(m -> m.getDy() * m.getPower()).reduce
-//                (0,
-//                Integer::sum);
-//            return Math.abs(dx) <= x && Math.abs(dy) <= x;
-//        };
         return move -> move.getMoves().size() == x;
     }
 
     @Override
     public String getDescription() {
         return "Exactly " + x + " Times";
+    }
+
+    public int getX() {
+        return x;
     }
 }

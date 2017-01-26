@@ -92,7 +92,7 @@ public class PieceResolver {
             }
 
         }
-        return SetCover.getResult(resultMap);
+        return SetCover.getResult(resultMap, xy);
 
     }
 

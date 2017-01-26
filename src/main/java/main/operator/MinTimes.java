@@ -34,4 +34,8 @@ public class MinTimes extends Operator {
     public String getDescription() {
         return "Min " + x + " Times";
     }
+
+    public int getX() {
+        return x;
+    }
 }
