@@ -1,0 +1,48 @@
+P - pieces
+
+for piece p in pieces do
+	M - all possile piece moves
+	Q - moves already described
+	D - descriptors
+	R - result
+	
+	for move m in (M \ Q) in do
+		
+		if 
+			((pieceClass, operators), moves, description) <- findSimpleDescription(M, m)
+			description.v <- fko( d.pieceClass, d.operators)
+			
+		else if 
+			(((pieceClass1, operators1),(pieceClass2, operators2)), moves, description) <- findCompositDescription(M, m)
+			description.v <- fko1ko2 ((pieceClass1, operators1),(pieceClass2, operators2))
+			
+		else 
+			((destination, conditions), moves, description) <- specialCaseDescription(m)
+			description.v <- fsc(destination, conditions)
+			
+		Q = Q + moves
+		D = D + description
+		
+	Q = empty
+		
+	for description d in D order by (d.moves \ Q).size desc and (d.moves \ Q).size > 0 do
+	
+		R <- R + d
+		Q <- Q + d.moves		
+	
+	p.value = fp ( R )
+		
+return fgame( pieces )	
+
+
+fko (class, operators) = (fk(class) + fko_P) * (fo(operators) + fko_Q)
+fko1ko2 ((c1,o1),(c2,o2)) = fko(c1,o1) * fko(c2,o2)
+
+fk(class) = fxy (class.x, class.y)
+fo(operators) = sum_o ( fo(o) )
+
+fxy(x, y) = distToZero(x,y) + distToClosestDiagonalVerticalOrHorizontal(x,y)
+fsc(destination, conditions) = fxy(destination) * iloczyn (fxy(condition))
+
+fgame(pieces) = ((sum_p ( p.countOnBoard * p.value) ) / sum_p (p.countOnBoard) ) * (pieces.size + game_Q )
+		

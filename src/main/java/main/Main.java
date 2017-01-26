@@ -20,7 +20,9 @@ import java.util.stream.Stream;
  */
 public class Main {
 
-    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\ng\\SIMB-EVOLVED_GAMES-LIST";
+//    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\ng\\SIMB-EVOLVED_GAMES-LIST_nonverbose";
+    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\ng\\dupa";
+    private static final AtomicInteger index = new AtomicInteger(0);
 
     public static void main(String[] args) throws IOException {
 
@@ -75,7 +77,7 @@ public class Main {
 
     private static OneFileStats handleOneFile(File f) {
         OneFileStats oneFileStat = new OneFileStats();
-        System.out.println(String.format("%s started file %s ", new Date().toString(), f.getName()));
+        System.out.println(String.format("%s %s started file %s ", index.getAndIncrement(), new Date().toString(), f.getName()));
         long startFile = System.currentTimeMillis();
 
         ParseResult parseResult = parseOneFile(f);
@@ -128,7 +130,7 @@ public class Main {
                     if (metaString.contains("META SCORE RAPP")) {
                         int i1 = metaString.indexOf("META SCORE RAPP") + "META SCORE RAPP: ".length();
                         rappValue = Double.parseDouble(metaString.substring(i1, metaString.indexOf("}", i1)));
-                    } else if (metaString.contains("META SCORE SIMB")){
+                    } else if (metaString.contains("META SCORE SIMB")) {
                         int i1 = metaString.indexOf("META SCORE SIMB") + "META SCORE SIMB: ".length();
                         rappValue = Double.parseDouble(metaString.substring(i1, metaString.indexOf("}", i1)));
 
@@ -184,6 +186,8 @@ public class Main {
         boolean boardSection = false;
         boolean piecesSection = false;
 
+        final StringBuilder piecesSectionString = new StringBuilder();
+
         while (scanner.hasNextLine()) {
             final String s = scanner.nextLine();
             if (s.startsWith("//") || StringUtils.isEmpty(s)) {
@@ -212,15 +216,25 @@ public class Main {
                     }
                 }
             } else if (piecesSection) {
-                pieces.add(Piece.parse(s, result.getWidth(), result.getHeight()));
+                piecesSectionString.append(s);
+//                pieces.add(Piece.parse(s, result.getWidth(), result.getHeight()));
             }
         }
 
-        result.setPieces(pieces);
+
+        result.setPieces(getPieces(piecesSectionString.toString(), result.getWidth(), result.getHeight()));
         result.setPiecesCount(piecesCount);
 
         return result;
 
+    }
+
+    private static Collection<Piece> getPieces(String piecesSection, int x, int y) {
+        return Stream.of(piecesSection.split("&"))
+                .filter(StringUtils::isNotBlank)
+                .map(s -> s.replaceAll("\n","") + " &")
+                .map(s -> Piece.parse(s, x, y))
+                .collect(Collectors.toSet());
     }
 
     private static synchronized String getFTable(List<FileStatistic> filesStats) {

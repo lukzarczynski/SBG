@@ -1,10 +1,8 @@
 package main.resolvers;
 
-import main.MoveUtil;
 import main.ParamsAndEvaluators;
 import main.model.Move;
 import main.model.OneMove;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,7 +16,7 @@ public class SpecialCaseResolver extends Resolver {
     private final String description;
 
     public SpecialCaseResolver(OneMove om) {
-        super(SpecialCaseResolver.evaluateSpecialCase(om));
+        super(ParamsAndEvaluators.fsc(om));
         this.om = om;
 
         List<String> conditions = new ArrayList<>();
@@ -40,27 +38,7 @@ public class SpecialCaseResolver extends Resolver {
 
     }
 
-    private static int evaluateSpecialCase(OneMove om) {
-        int x = 0;
-        int y = 0;
 
-        int result = 1;
-
-        for (Move m : om.getMoves()) {
-            x += m.getDx();
-            y += m.getDy();
-
-            result *= ParamsAndEvaluators.fxy(x, y);
-
-        }
-
-        return result;
-    }
-
-    public ResolveResult resolve(Collection<OneMove> moves, Pair<Integer, Integer> xy) {
-        HashSet<OneMove> parsed = new HashSet<>(Collections.singletonList(om));
-        return new ResolveResult(MoveUtil.subtract(moves, parsed), parsed);
-    }
 
     @Override
     public String getDescription() {

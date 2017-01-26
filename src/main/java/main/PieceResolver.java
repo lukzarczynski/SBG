@@ -85,7 +85,7 @@ public class PieceResolver {
                 }
             }
             if (movesToInterpret.contains(om)) {
-                System.out.println("Could not resolve " + om.toString() + ", trying special case");
+//                System.out.println("Could not resolve " + om.toString() + ", trying special case");
                 PieceResolver.failedMoves.add(om);
                 start = System.currentTimeMillis();
                 trySpecialCase(movesToInterpret, om, resultMap);

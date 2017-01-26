@@ -1,9 +1,13 @@
 package main;
 
+import main.model.Move;
+import main.model.OneMove;
 import main.operator.*;
 import main.piececlass.PieceClass;
+import main.resolvers.Resolver;
 import main.resolvers.SimplePieceResolver;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -70,8 +74,8 @@ public final class ParamsAndEvaluators {
      * @return fo(pieceClass) * fk(operators)
      */
     public static int fko(PieceClass pieceClass, Set<Operator> operators) {
-        int i = fo(operators);
-        int j = fk(pieceClass);
+        int i = fk(pieceClass);
+        int j = fo(operators);
         return (i + FKO_Q) * (j + FKO_P);
     }
 
@@ -98,6 +102,10 @@ public final class ParamsAndEvaluators {
     public static int fgame(Map<String, Integer> piecesCount, Map<String, Integer> pieceValues) {
 
         Integer numberOfPiecesOnBoard = piecesCount.values().stream().reduce(0, Integer::sum);
+        if (numberOfPiecesOnBoard == 0) {
+            numberOfPiecesOnBoard = 1;
+            System.err.println("NUMBER OF PIECES IS 0 !?");
+        }
         Integer numberOfDifferentPieces = piecesCount.size();
 
         Integer v = 0;
@@ -126,6 +134,10 @@ public final class ParamsAndEvaluators {
         return Math.min(distanceToDiagonal, distanceToVerticalOrHorizontal) + distanceToBeginning;
     }
 
+    public static int fp(Collection<Resolver> resolvers) {
+        return resolvers.stream().map(Resolver::getValue).reduce(0, Integer::sum);
+    }
+
     /**
      * piece class value is value of its (x,y) parameter
      * like (2,1) rider etc.
@@ -138,6 +150,24 @@ public final class ParamsAndEvaluators {
         int y = Math.abs(pieceClass.getXy().getValue());
 
         return fxy(x, y);
+    }
+
+
+    public static int fsc(OneMove om) {
+        int x = 0;
+        int y = 0;
+
+        int result = 1;
+
+        for (Move m : om.getMoves()) {
+            x += m.getDx();
+            y += m.getDy();
+
+            result *= ParamsAndEvaluators.fxy(x, y);
+
+        }
+
+        return result;
     }
 
 }

@@ -47,7 +47,7 @@ public class SetCover {
                         .sorted(Comparator.comparingInt(Resolver::getValue))
                         .map(Resolver::getDescription)
                         .collect(Collectors.joining(" | \n |  ")),
-                result.stream().map(Resolver::getValue).reduce(0, Integer::sum));
+                ParamsAndEvaluators.fp(result));
     }
 
 
