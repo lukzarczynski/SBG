@@ -36,6 +36,13 @@ public class Move {
                 moves.add(new Move(5));
                 moves.add(new Move(6));
                 moves.add(new Move(7));
+                moves.add(new Move(8));
+                moves.add(new Move(9));
+                moves.add(new Move(10));
+                moves.add(new Move(11));
+                moves.add(new Move(12));
+                moves.add(new Move(13));
+                moves.add(new Move(14));
             } else if (pow.contains("{")) {
                 moves.addAll(
                         Arrays.stream(pow.substring(1, pow.indexOf("}"))
@@ -98,8 +105,8 @@ public class Move {
         this.dy = dy;
     }
 
-    public Pair<Integer,Integer> getXY(){
-        return Pair.of(getDx(),getDy());
+    public Pair<Integer, Integer> getXY() {
+        return Pair.of(getDx(), getDy());
     }
 
 

@@ -23,7 +23,7 @@ public class ReparingRun {
 
     public static String getRepairedDescription(List<Resolver> result,
                                                 Map<Resolver, Set<OneMove>> resolverListMap,
-                                                Pair<Integer,Integer> boardSize) {
+                                                Pair<Integer, Integer> boardSize) {
 
         StringBuilder description = new StringBuilder();
 
@@ -59,9 +59,7 @@ public class ReparingRun {
 
     private static String handleSimpleResolvers(Map<Set<Operator>, List<SimplePieceResolver>> collect) {
         final StringBuilder builder = new StringBuilder();
-        collect.forEach((ops, resolvers) -> {
-            builder.append(handleSimpleResolver(ops, resolvers));
-        });
+        collect.forEach((ops, resolvers) -> builder.append(handleSimpleResolver(ops, resolvers)));
         return builder.toString();
     }
 
@@ -121,7 +119,7 @@ public class ReparingRun {
             builder.append("\n - ")
                     .append(firstPart).append(" and then ")
                     .append(handleSimpleResolvers(Part.stream().collect(Collectors.groupingBy(SimplePieceResolver::getOperators)))
-                            .replaceAll("\n - ",""));
+                            .replaceAll("\n - ", ""));
         });
 
         return builder.toString();
@@ -135,11 +133,9 @@ public class ReparingRun {
         builder.append(getTimesIfPresent(operators));
         builder.append(getCapturingIfPresent(operators));
 
-        if (hasInstance(operators, OverOwnPieceInstead.class)) {
-            builder.append(" over own pieces");
-        } else if (hasInstance(operators, OverEnemyPieceInstead.class)) {
-            builder.append(" over opponent pieces");
-        }
+
+        final Map<Pair<Integer, Integer>, List<Pair<Integer, Integer>>> collectXys = new HashMap<>();
+
 
         final List<String> collect = rider.stream().map(r -> {
             if (r.getXy().equals(Pair.of(0, 1))) {
@@ -161,20 +157,54 @@ public class ReparingRun {
                     return " diagonally";
                 }
             } else {
-                return " over vector " + r.getXy().toString();
+                collectXys.putIfAbsent(normalizePair(r.getXy()), new ArrayList<>());
+                collectXys.get(normalizePair(r.getXy())).add(r.getXy());
+                return "";
             }
-        }).collect(Collectors.toList());
+        })
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.toList());
 
-        final String xx;
-        if (collect.containsAll(Arrays.asList(" diagonally", " vertically", " horizontally"))) {
-            xx = " like queen";
-        } else if (collect.containsAll(Arrays.asList(" diagonally forward", " vertically forward"))) {
-            xx = " diagonally or vertically forward";
-        } else if (collect.containsAll(Arrays.asList(" diagonally backwards", " vertically backwards"))) {
-            xx = " diagonally or vertically backwards";
-        } else {
-            xx = collect.stream().collect(Collectors.joining(" or "));
+
+        List<String> vectors = new ArrayList<>();
+        collectXys.forEach((k, v) -> {
+            if (v.size() > 2) {
+                System.out.println("??????????????????????????????????");
+            }
+            if (v.size() == 2) {
+                vectors.add(String.format("%s/%s", v.get(0).toString(), v.get(1).toString()));
+            } else {
+                vectors.add(v.get(0).toString());
+            }
+        });
+
+        if (!vectors.isEmpty()) {
+            collect.add(" over vector " + vectors.stream().collect(Collectors.joining(" or ")));
         }
+
+        String xc = "";
+        if (hasInstance(operators, Outwards.class)) {
+            xc += " outwards";
+        } else if (hasInstance(operators, OutwardsX.class)) {
+            xc += " horizontally outwards";
+        } else if (hasInstance(operators, OutwardsY.class)) {
+            xc += " vertically outwards";
+        }
+        String xx = "";
+
+        if (StringUtils.isNotBlank(xc)) {
+            xx += xc;
+        }
+        if (collect.containsAll(Arrays.asList(" diagonally", " vertically", " horizontally"))) {
+            xx += " in every direction";
+        } else if (collect.containsAll(Arrays.asList(" diagonally forward", " vertically forward"))) {
+            xx += " diagonally or vertically forward";
+        } else if (collect.containsAll(Arrays.asList(" diagonally backwards", " vertically backwards"))) {
+            xx += " diagonally or vertically backwards";
+        } else {
+            xx += collect.stream().collect(Collectors.joining(" or "));
+        }
+
         builder.append(xx);
 
         return builder.toString();
@@ -183,10 +213,39 @@ public class ReparingRun {
 
     private static String getCapturingIfPresent(Set<Operator> operators) {
         StringBuilder builder = new StringBuilder();
-        if (hasInstance(operators, OnlyCapture.class)) {
+
+
+        final boolean onlyCapture = hasInstance(operators, OnlyCapture.class);
+        final boolean withoutCapture = hasInstance(operators, WithoutCapture.class);
+        final boolean overOwn = hasInstance(operators, OverOwnPieceInstead.class);
+        final boolean overEnemy = hasInstance(operators, OverEnemyPieceInstead.class);
+        final boolean overOwnEndingNormal = hasInstance(operators, OverOwnPieceInsteadEndingNormally.class);
+        final boolean overEnemyEndingNormal = hasInstance(operators, OverEnemyPieceInsteadEndingNormally.class);
+
+        if (onlyCapture && !(overOwnEndingNormal || overEnemyEndingNormal || overOwn || overEnemy)) {
             builder.append(" capturing");
-        } else if (hasInstance(operators, WithoutCapture.class)) {
+        } else if (onlyCapture && (overOwn || overOwnEndingNormal)) {
+            builder.append(" capturing but riding only over own pieces");
+        } else if (onlyCapture && (overEnemy || overEnemyEndingNormal)) {
+            builder.append(" capturing but riding only over opponent pieces");
+        } else if (withoutCapture && !(overOwnEndingNormal || overEnemyEndingNormal || overOwn || overEnemy)) {
             builder.append(" without capturing");
+        } else if (withoutCapture && overOwn) {
+            builder.append(" only over own pieces with self capture");
+        } else if (withoutCapture && overOwnEndingNormal) {
+            builder.append(" only over own pieces capturing self or staying on empty");
+        } else if (withoutCapture && overEnemy) {
+            builder.append(" only over opponent pieces with capturing");
+        } else if (withoutCapture && overEnemyEndingNormal) {
+            builder.append(" only over opponent pieces capturing or staying on empty");
+        } else if (overOwn) {
+            builder.append(" only over own pieces and capturing self or opponent");
+        } else if (overOwnEndingNormal) {
+            builder.append(" only over own pieces and capturing opponent or staying on empty");
+        } else if (overEnemy) {
+            builder.append(" only over opponent pieces and capturing self or opponent");
+        } else if (overEnemyEndingNormal) {
+            builder.append(" only over opponent pieces and capturing opponent or staying on empty");
         }
         return builder.toString();
     }
@@ -224,6 +283,16 @@ public class ReparingRun {
             builder.append(" Leaps");
         }
 
+
+        String xc = "";
+        if (hasInstance(operators, Outwards.class)) {
+            xc += " outwards";
+        } else if (hasInstance(operators, OutwardsX.class)) {
+            xc += " horizontally outwards";
+        } else if (hasInstance(operators, OutwardsY.class)) {
+            xc += " vertically outwards";
+        }
+        builder.append(xc);
         builder.append(describeLeapXY(leaper, operators));
 
         return builder.toString();
@@ -239,17 +308,35 @@ public class ReparingRun {
         ors.add(tryValueOfXys(xys, 3, operators));
         ors.add(tryValueOfXys(xys, 4, operators));
 
-        xys.forEach(xy -> {
-            String xxx = "";
+        if (!xys.isEmpty()) {
+            StringBuilder xxx = new StringBuilder();
             if (hasInstance(operators, Forward.class)) {
-                xxx += " forward";
+                xxx.append(" forward");
             } else if (hasInstance(operators, Backwards.class)) {
-                xxx += " backwards";
+                xxx.append(" backwards");
             }
 
-            xxx += " over vector " + xy.toString();
-            ors.add(xxx);
-        });
+            xxx.append(" over vector ");
+
+            final Map<Pair<Integer, Integer>, List<Pair<Integer, Integer>>> collect
+                    = xys.stream().collect(Collectors.groupingBy(ReparingRun::normalizePair));
+
+            List<String> vectors = new ArrayList<>();
+            collect.forEach((k, v) -> {
+                if (v.size() > 2) {
+                    System.out.println("??????????????????????????????????");
+                }
+                if (v.size() == 2) {
+                    vectors.add(String.format("%s/%s", v.get(0).toString(), v.get(1).toString()));
+                } else {
+                    vectors.add(v.get(0).toString());
+                }
+            });
+
+            xxx.append(vectors.stream().collect(Collectors.joining(" or ")));
+
+            ors.add(xxx.toString());
+        }
 
         builder.append(ors.stream().filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(" or ")));
@@ -316,6 +403,13 @@ public class ReparingRun {
 
     private static <T extends Operator> T getInstance(Set<Operator> operators, Class<T> clazz) {
         return operators.stream().filter(o -> o.getClass().equals(clazz)).findAny().map(o -> (T) o).get();
+    }
+
+    private static Pair<Integer, Integer> normalizePair(Pair<Integer, Integer> xy) {
+        if (xy.getKey() > xy.getValue()) {
+            return xy;
+        }
+        return Pair.of(xy.getValue(), xy.getKey());
     }
 
 

@@ -2,15 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b99ea05d-9c10-4f39-b5d5-1ee67d068d73" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/main/description/ReparingRun.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/main/Main.java" afterPath="$PROJECT_DIR$/src/main/java/main/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/main/PieceResolver.java" afterPath="$PROJECT_DIR$/src/main/java/main/PieceResolver.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/main/SetCover.java" afterPath="$PROJECT_DIR$/src/main/java/main/SetCover.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/main/operator/ExactlyTimes.java" afterPath="$PROJECT_DIR$/src/main/java/main/operator/ExactlyTimes.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/main/operator/MaxTimes.java" afterPath="$PROJECT_DIR$/src/main/java/main/operator/MaxTimes.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/main/operator/MinTimes.java" afterPath="$PROJECT_DIR$/src/main/java/main/operator/MinTimes.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/SimpleCompositResolverTest.java" afterPath="$PROJECT_DIR$/src/test/java/SimpleCompositResolverTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/main/description/ReparingRun.java" afterPath="$PROJECT_DIR$/src/main/java/main/description/ReparingRun.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/main/model/Move.java" afterPath="$PROJECT_DIR$/src/main/java/main/model/Move.java" />
     </list>
     <ignored path="SimplifiedBoardGames.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,29 +42,97 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/main/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
-              <caret line="156" column="0" lean-forward="true" selection-start-line="156" selection-start-column="0" selection-end-line="156" selection-end-column="0" />
+            <state relative-caret-position="-3655">
+              <caret line="23" column="94" lean-forward="false" selection-start-line="23" selection-start-column="94" selection-end-line="23" selection-end-column="94" />
               <folding>
                 <element signature="method#getPieces#0;class#Main#0" expanded="false" />
                 <element signature="method#getFTable#0;class#Main#0" expanded="false" />
                 <element signature="method#getPTable#0;class#Main#0" expanded="false" />
                 <element signature="docComment;method#parseDirAsPieces#0;class#Main#0" expanded="false" />
-                <element signature="method#parseDirAsPieces#0;class#Main#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ReparingRun.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ReparingRun.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/main/description/ReparingRun.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="460">
-              <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
+            <state relative-caret-position="138">
+              <caret line="169" column="38" lean-forward="true" selection-start-line="169" selection-start-column="38" selection-end-line="169" selection-end-column="38" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="method#getTimesIfPresent#0;class#ReparingRun#0" expanded="false" />
+                <element signature="method#tryValueOfXys#0;class#ReparingRun#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SimpleCompositResolverTest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/SimpleCompositResolverTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="731">
+              <caret line="47" column="49" lean-forward="false" selection-start-line="47" selection-start-column="49" selection-end-line="47" selection-end-column="49" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Piece.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/main/model/Piece.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="27" column="34" lean-forward="false" selection-start-line="27" selection-start-column="34" selection-end-line="27" selection-end-column="34" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OneMove.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/main/model/OneMove.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="171">
+              <caret line="38" column="57" lean-forward="false" selection-start-line="38" selection-start-column="57" selection-end-line="38" selection-end-column="57" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Move.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/main/model/Move.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="334">
+              <caret line="44" column="37" lean-forward="false" selection-start-line="44" selection-start-column="37" selection-end-line="44" selection-end-column="37" />
+              <folding>
+                <element signature="e#3082#3083#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SetCover.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/main/SetCover.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="132">
+              <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PieceResolver.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/main/PieceResolver.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="129">
+              <caret line="94" column="31" lean-forward="false" selection-start-line="94" selection-start-column="31" selection-end-line="94" selection-end-column="31" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="method#getPrefixes#0;class#PieceResolver#0" expanded="false" />
+                <element signature="method#trySpecialCase#0;class#PieceResolver#0" expanded="false" />
+                <element signature="method#checkTimeout#0;class#PieceResolver#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -89,13 +152,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>^1</find>
-      <find>odd</find>
-      <find>},</find>
-      <find>.instance</find>
-      <find>Diagonal</find>
-      <find>Operator...</find>
-      <find>filter</find>
       <find>2,0,e</find>
       <find>+</find>
       <find>Restri</find>
@@ -118,6 +174,14 @@
       <find>Sideways</find>
       <find>Rides</find>
       <find>and then</find>
+      <find>over</find>
+      <find>over vector</find>
+      <find>like queen</find>
+      <find>OverOwnPiece</find>
+      <find>enemy</find>
+      <find>over own pieces</find>
+      <find>outwards</find>
+      <find>vector</find>
     </findStrings>
     <replaceStrings>
       <replace>,</replace>
@@ -127,6 +191,7 @@
       <replace>addRestrictions</replace>
       <replace />
       <replace>class);</replace>
+      <replace>opponent</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -153,7 +218,6 @@
         <option value="$PROJECT_DIR$/src/main/java/main/piececlass/XYYXLeaper.java" />
         <option value="$PROJECT_DIR$/src/main/java/main/MoveUtil.java" />
         <option value="$PROJECT_DIR$/src/main/java/main/resolvers/ResolveResult.java" />
-        <option value="$PROJECT_DIR$/src/main/java/main/model/Move.java" />
         <option value="$PROJECT_DIR$/src/main/java/main/resolvers/Resolver.java" />
         <option value="$PROJECT_DIR$/src/main/java/main/model/OneMove.java" />
         <option value="$PROJECT_DIR$/src/main/resources/wartosci" />
@@ -187,10 +251,11 @@
         <option value="$PROJECT_DIR$/src/main/java/main/operator/MaxTimes.java" />
         <option value="$PROJECT_DIR$/src/main/java/main/operator/MinTimes.java" />
         <option value="$PROJECT_DIR$/src/main/java/main/operator/ExactlyTimes.java" />
-        <option value="$PROJECT_DIR$/src/main/java/main/PieceResolver.java" />
         <option value="$PROJECT_DIR$/src/main/java/main/SetCover.java" />
-        <option value="$PROJECT_DIR$/src/main/java/main/description/ReparingRun.java" />
+        <option value="$PROJECT_DIR$/src/main/java/main/PieceResolver.java" />
+        <option value="$PROJECT_DIR$/src/main/java/main/model/Move.java" />
         <option value="$PROJECT_DIR$/src/main/java/main/Main.java" />
+        <option value="$PROJECT_DIR$/src/main/java/main/description/ReparingRun.java" />
       </list>
     </option>
   </component>
@@ -213,8 +278,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="54" />
     <option name="y" value="-8" />
-    <option name="width" value="1634" />
-    <option name="height" value="1066" />
+    <option name="width" value="1320" />
+    <option name="height" value="784" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -234,9 +299,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -385,7 +450,7 @@
     <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="SearchEverywhereHistoryKey" value="Main&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/Main.java&#10;XYYX&#9;PSI&#9;JAVA://main.piececlass.XYYXLeaper&#10;XYL&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/piececlass/XYLeaper.java&#10;XY&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/piececlass/XYLeaper.java&#10;SpecialCase&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/SpecialCaseResolver.java&#10;Special&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/SpecialCaseResolver.java&#10;PieceRes&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/PieceResolver.java&#10;SeC&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/SetCover.java&#10;PieceClas&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/piececlass/PieceClass.java&#10;Operato&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/Operator.java&#10;Params&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/ParamsAndEvaluators.java&#10;Evalu&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/ParamsAndEvaluators.java&#10;Resolvers&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/Resolvers.java&#10;SiCoRe&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/SimpleCompositeResolver.java&#10;XYLea&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/piececlass/XYLeaper.java&#10;PIeceResolver&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/PieceResolver.java&#10;Outward&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/Outwards.java&#10;test&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/test/java/SimpleCompositResolverTest.java&#10;Stat&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/Statistics.java&#10;Res&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/Resolvers.java&#10;MaxT&#9;PSI&#9;JAVA://main.operator.MaxTimes&#10;Test&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/test/java/SimpleCompositResolverTest.java&#10;Utils&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/Utils.java&#10;Resolver&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/SimplePieceResolver.java&#10;Outwa&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/Outwards.java&#10;Outw&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/Outwards.java&#10;PieceResolver&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/PieceResolver.java&#10;MoUt&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/MoveUtil.java&#10;MoveUtil&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/MoveUtil.java&#10;OneMove&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/model/OneMove.java&#10;Util&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/Utils.java&#10;MoveUt&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/MoveUtil.java&#10;PieceCla&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/piececlass/PieceClass.java&#10;Composit&#9;PSI&#9;JAVA://main.resolvers.SimpleCompositeResolver&#10;XYRider&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/piececlass/XYRider.java&#10;Simple&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/SimplePieceResolver.java&#10;SimplePIec&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/SimplePieceResolver.java&#10;Value&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/OperatorValues.java&#10;PiecResolver&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/PieceResolver.java&#10;Piece.java&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/Piece.java&#10;Piece&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/OverEnemyPieceInsteadEndingNormally.java&#10;Pi&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/piececlass/PieceClass.java&#10;selfc&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/SelfCaptureInstead.java&#10;Opera&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/OperatorValues.java&#10;restri&#9;FILE&#9;file://C:/Users/lzarczynski/Documents/projects/SBG/src/main/java/main/operator/RestrictedToX.java&#10;PieceResol&#9;FILE&#9;file://C:/Users/lzarczynski/Documents/projects/SBG/src/main/java/main/PieceResolver.java&#10;Resol&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/tree/Resolver.java&#10;Or&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/Or.java&#10;RestrictedToOne&#9;FILE&#9;file:///home/lukasz/Documents/mgr/SimplifiedBoardGames/src/main/java/main/operator/RestrictedToOne.java" />
+    <property name="SearchEverywhereHistoryKey" value="Piece&#9;PSI&#9;JAVA://main.model.Piece&#10;Test&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/test/java/SimpleCompositResolverTest.java&#10;Main&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/Main.java&#10;XYYX&#9;PSI&#9;JAVA://main.piececlass.XYYXLeaper&#10;XYL&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/piececlass/XYLeaper.java&#10;XY&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/piececlass/XYLeaper.java&#10;SpecialCase&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/SpecialCaseResolver.java&#10;Special&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/SpecialCaseResolver.java&#10;PieceRes&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/PieceResolver.java&#10;SeC&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/SetCover.java&#10;PieceClas&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/piececlass/PieceClass.java&#10;Operato&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/Operator.java&#10;Params&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/ParamsAndEvaluators.java&#10;Evalu&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/ParamsAndEvaluators.java&#10;Resolvers&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/Resolvers.java&#10;SiCoRe&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/SimpleCompositeResolver.java&#10;XYLea&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/piececlass/XYLeaper.java&#10;PIeceResolver&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/PieceResolver.java&#10;Outward&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/Outwards.java&#10;test&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/test/java/SimpleCompositResolverTest.java&#10;Stat&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/Statistics.java&#10;Res&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/Resolvers.java&#10;MaxT&#9;PSI&#9;JAVA://main.operator.MaxTimes&#10;Utils&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/Utils.java&#10;Resolver&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/SimplePieceResolver.java&#10;Outwa&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/Outwards.java&#10;Outw&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/Outwards.java&#10;PieceResolver&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/PieceResolver.java&#10;MoUt&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/MoveUtil.java&#10;MoveUtil&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/MoveUtil.java&#10;OneMove&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/model/OneMove.java&#10;Util&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/Utils.java&#10;MoveUt&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/MoveUtil.java&#10;PieceCla&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/piececlass/PieceClass.java&#10;Composit&#9;PSI&#9;JAVA://main.resolvers.SimpleCompositeResolver&#10;XYRider&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/piececlass/XYRider.java&#10;Simple&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/SimplePieceResolver.java&#10;SimplePIec&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/resolvers/SimplePieceResolver.java&#10;Value&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/OperatorValues.java&#10;PiecResolver&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/PieceResolver.java&#10;Piece.java&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/Piece.java&#10;Pi&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/piececlass/PieceClass.java&#10;selfc&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/SelfCaptureInstead.java&#10;Opera&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/OperatorValues.java&#10;restri&#9;FILE&#9;file://C:/Users/lzarczynski/Documents/projects/SBG/src/main/java/main/operator/RestrictedToX.java&#10;PieceResol&#9;FILE&#9;file://C:/Users/lzarczynski/Documents/projects/SBG/src/main/java/main/PieceResolver.java&#10;Resol&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/tree/Resolver.java&#10;Or&#9;FILE&#9;file://C:/Users/lukza/Documents/projects/SBG/src/main/java/main/operator/Or.java&#10;RestrictedToOne&#9;FILE&#9;file:///home/lukasz/Documents/mgr/SimplifiedBoardGames/src/main/java/main/operator/RestrictedToOne.java" />
     <property name="ignore_missing_gitignore" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="js.eslint.eslintPackage" value="" />
@@ -1110,7 +1175,8 @@
       <workItem from="1485285362449" duration="13025000" />
       <workItem from="1485363254764" duration="2861000" />
       <workItem from="1485417250198" duration="1438000" />
-      <workItem from="1485461436163" duration="10849000" />
+      <workItem from="1485461436163" duration="11713000" />
+      <workItem from="1485523202433" duration="4920000" />
     </task>
     <servers />
   </component>
@@ -1147,7 +1213,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="229296000" />
+    <option name="totallyTimeSpent" value="235080000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1159,8 +1225,8 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="54" y="-8" width="1634" height="1066" extended-state="6" />
-    <editor active="true" />
+    <frame x="54" y="-8" width="1320" height="784" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -1172,20 +1238,20 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32994062" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32690248" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32565284" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32690248" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.46850997" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34180433" sideWeight="0.5" order="5" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.43412697" sideWeight="0.5" order="5" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3215434" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32104453" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25396827" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38049304" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3794163" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1275,34 +1341,17 @@
           <option name="timeStamp" value="349" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/main/Main.java</url>
-          <line>78</line>
+          <condition expression="piece.getName().equals(&quot;G&quot;)" language="JAVA" />
+          <url>file://$PROJECT_DIR$/src/main/java/main/PieceResolver.java</url>
+          <line>94</line>
           <properties />
-          <option name="timeStamp" value="360" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/main/Main.java</url>
-          <line>173</line>
-          <properties />
-          <option name="timeStamp" value="364" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/main/Main.java</url>
-          <line>113</line>
-          <properties />
-          <option name="timeStamp" value="365" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/main/Main.java</url>
-          <line>126</line>
-          <properties />
-          <option name="timeStamp" value="368" />
+          <option name="timeStamp" value="369" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="369" />
+      <option name="time" value="373" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="JUnit">
@@ -1323,13 +1372,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/main/operator/WithoutCapture.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/main/operator/OverEnemyPieceInstead.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
@@ -1379,13 +1421,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/main/model/Move.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="101" column="36" lean-forward="false" selection-start-line="101" selection-start-column="35" selection-end-line="101" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/main/piececlass/PieceCache.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
@@ -1425,19 +1460,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
           <caret line="18" column="46" lean-forward="true" selection-start-line="18" selection-start-column="46" selection-end-line="18" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/main/model/OneMove.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="106" column="13" lean-forward="false" selection-start-line="106" selection-start-column="12" selection-end-line="106" selection-end-column="13" />
-          <folding>
-            <element signature="e#3104#3105#0" expanded="false" />
-            <element signature="e#3185#3186#0" expanded="false" />
-            <element signature="e#4486#4487#0" expanded="false" />
-            <element signature="e#4544#4545#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1571,7 +1593,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="782">
           <caret line="46" column="106" lean-forward="false" selection-start-line="46" selection-start-column="106" selection-end-line="46" selection-end-column="106" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1579,15 +1600,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/SimpleCompositResolverTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="70" column="52" lean-forward="true" selection-start-line="70" selection-start-column="52" selection-end-line="70" selection-end-column="52" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1595,7 +1607,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="442">
           <caret line="34" column="23" lean-forward="true" selection-start-line="34" selection-start-column="23" selection-end-line="34" selection-end-column="23" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1614,12 +1625,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-          <folding>
-            <element signature="e#336#337#0" expanded="true" />
-            <element signature="e#394#395#0" expanded="true" />
-            <element signature="e#519#520#0" expanded="true" />
-            <element signature="e#543#544#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1627,7 +1632,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
           <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1677,7 +1681,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="292">
           <caret line="56" column="227" lean-forward="false" selection-start-line="56" selection-start-column="219" selection-end-line="56" selection-end-column="227" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1685,14 +1688,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
           <caret line="25" column="0" lean-forward="true" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/main/PieceResolver.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="448">
-          <caret line="94" column="29" lean-forward="false" selection-start-line="94" selection-start-column="29" selection-end-line="94" selection-end-column="29" />
+        <state relative-caret-position="129">
+          <caret line="94" column="31" lean-forward="false" selection-start-line="94" selection-start-column="31" selection-end-line="94" selection-end-column="31" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#getPrefixes#0;class#PieceResolver#0" expanded="false" />
@@ -1704,32 +1706,67 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/main/SetCover.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="45" column="48" lean-forward="true" selection-start-line="45" selection-start-column="48" selection-end-line="45" selection-end-column="48" />
+        <state relative-caret-position="132">
+          <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/main/description/ReparingRun.java">
+    <entry file="file://$PROJECT_DIR$/src/test/java/SimpleCompositResolverTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="460">
-          <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
+        <state relative-caret-position="731">
+          <caret line="47" column="49" lean-forward="false" selection-start-line="47" selection-start-column="49" selection-end-line="47" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/main/model/Piece.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="27" column="34" lean-forward="false" selection-start-line="27" selection-start-column="34" selection-end-line="27" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/main/model/OneMove.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="38" column="57" lean-forward="false" selection-start-line="38" selection-start-column="57" selection-end-line="38" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/main/model/Move.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="334">
+          <caret line="44" column="37" lean-forward="false" selection-start-line="44" selection-start-column="37" selection-end-line="44" selection-end-column="37" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#3082#3083#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/main/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="156" column="0" lean-forward="true" selection-start-line="156" selection-start-column="0" selection-end-line="156" selection-end-column="0" />
+        <state relative-caret-position="-3655">
+          <caret line="23" column="94" lean-forward="false" selection-start-line="23" selection-start-column="94" selection-end-line="23" selection-end-column="94" />
           <folding>
             <element signature="method#getPieces#0;class#Main#0" expanded="false" />
             <element signature="method#getFTable#0;class#Main#0" expanded="false" />
             <element signature="method#getPTable#0;class#Main#0" expanded="false" />
             <element signature="docComment;method#parseDirAsPieces#0;class#Main#0" expanded="false" />
-            <element signature="method#parseDirAsPieces#0;class#Main#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/main/description/ReparingRun.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="138">
+          <caret line="169" column="38" lean-forward="true" selection-start-line="169" selection-start-column="38" selection-end-line="169" selection-end-column="38" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#getTimesIfPresent#0;class#ReparingRun#0" expanded="false" />
+            <element signature="method#tryValueOfXys#0;class#ReparingRun#0" expanded="false" />
           </folding>
         </state>
       </provider>
