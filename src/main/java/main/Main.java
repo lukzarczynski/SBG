@@ -20,8 +20,8 @@ import java.util.stream.Stream;
  */
 public class Main {
 
-//    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\ng\\SIMB-EVOLVED_GAMES-LIST_nonverbose";
-    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\ng\\test";
+    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\final\\RAPP-EVOLVED_GAMES-LIST";
+//    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\ng\\test";
     private static final AtomicInteger index = new AtomicInteger(0);
 
     public static void main(String[] args) throws IOException {

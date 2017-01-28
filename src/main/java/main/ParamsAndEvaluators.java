@@ -36,15 +36,16 @@ public final class ParamsAndEvaluators {
         ParamsAndEvaluators.OP_VALUE.put(MaxTimes.class, 2);
         ParamsAndEvaluators.OP_VALUE.put(MinTimes.class, 2);
         ParamsAndEvaluators.OP_VALUE.put(ExactlyTimes.class, 3);
-        ParamsAndEvaluators.OP_VALUE.put(SelfCaptureInstead.class, 4);
-        ParamsAndEvaluators.OP_VALUE.put(OverEnemyPieceInstead.class, 6);
-        ParamsAndEvaluators.OP_VALUE.put(OverEnemyPieceInsteadEndingNormally.class, 7);
-        ParamsAndEvaluators.OP_VALUE.put(OverOwnPieceInstead.class, 6);
-        ParamsAndEvaluators.OP_VALUE.put(OverOwnPieceInsteadEndingNormally.class, 7);
-        ParamsAndEvaluators.OP_VALUE.put(OnlyEven.class, 8);
-        ParamsAndEvaluators.OP_VALUE.put(OnlyOdd.class, 8);
-        ParamsAndEvaluators.OP_VALUE.put(Inwards.class, 2);
+        ParamsAndEvaluators.OP_VALUE.put(SelfCaptureInstead.class, 3); // 4 => 3
+        ParamsAndEvaluators.OP_VALUE.put(OverEnemyPieceInstead.class, 4); // 6 => 3
+        ParamsAndEvaluators.OP_VALUE.put(OverEnemyPieceInsteadEndingNormally.class, 4); // 7 => 4
+        ParamsAndEvaluators.OP_VALUE.put(OverOwnPieceInstead.class, 3); // 6 => 3
+        ParamsAndEvaluators.OP_VALUE.put(OverOwnPieceInsteadEndingNormally.class, 4); // 7 => 4
+        ParamsAndEvaluators.OP_VALUE.put(OnlyEven.class, 5); // 8 => 5
+        ParamsAndEvaluators.OP_VALUE.put(OnlyOdd.class, 5); // 8 => 5
         ParamsAndEvaluators.OP_VALUE.put(Outwards.class, 2);
+        ParamsAndEvaluators.OP_VALUE.put(OutwardsY.class, 2);
+        ParamsAndEvaluators.OP_VALUE.put(OutwardsX.class, 2);
     }
 
     /**
@@ -76,7 +77,7 @@ public final class ParamsAndEvaluators {
     public static int fko(PieceClass pieceClass, Set<Operator> operators) {
         int i = fk(pieceClass);
         int j = fo(operators);
-        return (i + FKO_Q) * (j + FKO_P);
+        return i * (j + FKO_P); // it was (i + FKO_Q) * (j + FKO_P);
     }
 
     /**
@@ -106,14 +107,15 @@ public final class ParamsAndEvaluators {
             numberOfPiecesOnBoard = 1;
             System.err.println("NUMBER OF PIECES IS 0 !?");
         }
-        Integer numberOfDifferentPieces = piecesCount.size();
+        Integer numberOfDifferentPieces = Math.toIntExact(piecesCount.entrySet().stream()
+                .filter(e -> e.getValue() > 0).count());
 
-        Integer v = 0;
+        Double v = 0.0;
         for (String pieceName : piecesCount.keySet()) {
             v += pieceValues.getOrDefault(pieceName, 0)
                     * piecesCount.getOrDefault(pieceName, 0);
         }
-        return (v / numberOfPiecesOnBoard) * (FGAME_Q + numberOfDifferentPieces);
+        return (int) ((v / numberOfPiecesOnBoard) * (FGAME_Q + numberOfDifferentPieces));
     }
 
 
@@ -131,7 +133,7 @@ public final class ParamsAndEvaluators {
         int distanceToVerticalOrHorizontal = Math.min(absx, absy);
         int distanceToDiagonal = Math.abs(absx - absy) / 2 + (Math.abs(absx - absy) % 2);
         int distanceToBeginning = Math.max(absx, absy);
-        return Math.min(distanceToDiagonal, distanceToVerticalOrHorizontal) + distanceToBeginning;
+        return FKO_Q + Math.min(distanceToDiagonal, distanceToVerticalOrHorizontal) + distanceToBeginning;
     }
 
     public static int fp(Collection<Resolver> resolvers) {
@@ -157,7 +159,7 @@ public final class ParamsAndEvaluators {
         int x = 0;
         int y = 0;
 
-        int result = 1;
+        int result = 1; // it was 1;
 
         for (Move m : om.getMoves()) {
             x += m.getDx();

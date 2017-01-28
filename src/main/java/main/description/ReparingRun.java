@@ -85,19 +85,19 @@ public class ReparingRun {
                         }).flatMap(Collection::stream)
                         .collect(Collectors.toSet()));
 
-
+        String res = "";
         if (!riders.isEmpty()) {
-            return "\n - " + describeRiders(riders.stream()
+             res = res + "\n - " + describeRiders(riders.stream()
                     .map(r -> (XYRider) r.getPieceClass())
                     .collect(Collectors.toSet()), ops);
         }
         if (!leapers.isEmpty()) {
-            return "\n - " + describeLeaper(leapers.stream()
+            res = res +  "\n - " + describeLeaper(leapers.stream()
                     .map(r -> (XYLeaper) r.getPieceClass())
                     .collect(Collectors.toSet()), ops);
         }
 
-        return "";
+        return res;
     }
 
     private static String handleCompositeResolvers(List<SimpleCompositeResolver> simplePieceResolvers) {
