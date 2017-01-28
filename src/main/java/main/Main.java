@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 public class Main {
 
 //    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\ng\\SIMB-EVOLVED_GAMES-LIST_nonverbose";
-    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\ng\\dupa1";
+    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\ng\\test";
     private static final AtomicInteger index = new AtomicInteger(0);
 
     public static void main(String[] args) throws IOException {
@@ -233,7 +233,7 @@ public class Main {
                 .filter(StringUtils::isNotBlank)
                 .map(s -> s.replaceAll("\n","") + " &")
                 .map(s -> Piece.parse(s, x, y))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     private static synchronized String getFTable(List<FileStatistic> filesStats) {
