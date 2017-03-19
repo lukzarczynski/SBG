@@ -2,7 +2,9 @@ package main;
 
 import main.model.OneMove;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -15,6 +17,14 @@ public final class MoveUtil {
      */
     public static boolean containsAll(Collection<OneMove> a, Collection<OneMove> b) {
         return b.stream().allMatch(a::contains);
+    }
+
+    /**
+     * part(a, i) contains all from b
+     */
+    public static boolean containsAllForPart(Collection<OneMove> a, Collection<OneMove> b, int part) {
+        final Set<OneMove> parts = a.stream().map(OneMove::getParts).map(p -> p.get(part)).collect(Collectors.toSet());
+        return b.stream().allMatch(parts::contains);
     }
 
     public static Set<OneMove> sum(Collection<OneMove> a, Collection<OneMove> b) {

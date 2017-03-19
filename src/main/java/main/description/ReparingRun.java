@@ -243,7 +243,7 @@ public class ReparingRun {
         } else if (overOwnEndingNormal) {
             builder.append(" only over own pieces and capturing opponent or staying on empty");
         } else if (overEnemy) {
-            builder.append(" only over opponent pieces and capturing self or opponent");
+            builder.append(" only over opponent pieces capturing ");
         } else if (overEnemyEndingNormal) {
             builder.append(" only over opponent pieces and capturing opponent or staying on empty");
         }

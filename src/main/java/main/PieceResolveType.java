@@ -11,6 +11,7 @@ enum PieceResolveType {
 
     SIMPLE,
     COMPOSITE,
+    DOUBLE_BENT,
     OTHER;
 
     public static PieceResolveType forPiece(OneMove om) {
@@ -29,6 +30,8 @@ enum PieceResolveType {
                 return SIMPLE;
             case 2:
                 return COMPOSITE;
+            case 3:
+                return DOUBLE_BENT;
             default:
                 return OTHER;
         }

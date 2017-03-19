@@ -12,7 +12,6 @@ import main.piececlass.XYRider;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,6 +41,13 @@ public class SimplePieceResolver extends Resolver {
 
     public boolean isValidFor(Collection<OneMove> moves, OneMove oneMove, Pair<Integer, Integer> xy) {
         return pieceClass.isSubsetAndContains(moves, operators, oneMove, xy);
+    }
+
+    public boolean isValidForPart(Collection<OneMove> moves, Pair<Integer, Integer> xy, int part) {
+        final Pair<Integer, Integer> vector = moves.stream().map(m -> m.getParts().get(part))
+                .findAny().get().getVector();
+
+        return pieceClass.isSubset(moves, operators, xy, part, vector);
     }
 
     public boolean isValidForWithVector(Collection<OneMove> moves, OneMove oneMove, Pair<Integer, Integer> xy, Pair<Integer, Integer> vector) {
@@ -98,20 +104,15 @@ public class SimplePieceResolver extends Resolver {
         return operators;
     }
 
+    public Set<OneMove> filterForPart(Set<OneMove> moves, int part, Pair<Integer, Integer> xy) {
+        return pieceClass.filterForPart(moves, part, operators, xy);
+    }
+
     public PrefixResolveResult applyForPrefixes(Map<OneMove, OneMove> mapOfMovesAndItsPrefix, Pair<Integer, Integer> xy) {
         final Map<OneMove, Set<OneMove>> resultMap
                 = pieceClass.getMapOfMatchedPrefixesAndItsSuffixes(mapOfMovesAndItsPrefix, operators, xy);
 
-        final Set<OneMove> matchedPrefixes = resultMap.keySet();
-
-        final Set<OneMove> notMatchedMoves = new HashSet<>();
-        mapOfMovesAndItsPrefix.forEach((move, prefix) -> {
-            if (!matchedPrefixes.contains(prefix)) {
-                notMatchedMoves.add(move);
-            }
-        });
-
-        return new PrefixResolveResult(resultMap, notMatchedMoves);
+        return new PrefixResolveResult(resultMap);
     }
 
 }

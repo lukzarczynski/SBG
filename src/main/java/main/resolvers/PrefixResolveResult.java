@@ -11,11 +11,9 @@ import java.util.Set;
 public class PrefixResolveResult {
 
     private final Map<OneMove, Set<OneMove>> move;
-    private final Set<OneMove> notMatchedPrefixes;
 
-    public PrefixResolveResult(Map<OneMove, Set<OneMove>> move, Set<OneMove> notMatchedPrefixes) {
+    public PrefixResolveResult(Map<OneMove, Set<OneMove>> move) {
         this.move = move;
-        this.notMatchedPrefixes = notMatchedPrefixes;
     }
 
     /**

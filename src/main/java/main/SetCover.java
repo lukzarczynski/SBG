@@ -6,6 +6,7 @@ import main.resolvers.Resolver;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukza on 31.12.2016.
@@ -16,6 +17,16 @@ public class SetCover {
 
 
     public static Pair<String, Integer> getResult(Map<OneMove, List<Resolver>> map, Pair<Integer, Integer> xy) {
+
+        return Pair.of(
+                map.values().stream().flatMap(Collection::stream)
+                        .map(Resolver::getDescription)
+                        .distinct()
+                        .collect(Collectors.joining(" \n ")),
+                15);
+    }
+
+    public static Pair<String, Integer> getResult2(Map<OneMove, List<Resolver>> map, Pair<Integer, Integer> xy) {
         final Set<OneMove> movesToDescribe = new HashSet<>(map.keySet());
         final Map<Resolver, Set<OneMove>> resolverListMap = new HashMap<>();
         final List<Resolver> result = new ArrayList<>();

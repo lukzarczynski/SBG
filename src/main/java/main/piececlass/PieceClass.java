@@ -31,6 +31,16 @@ public abstract class PieceClass {
 
     }
 
+    public boolean isSubset(Collection<OneMove> moves,
+                            Collection<Operator> operators,
+                            Pair<Integer, Integer> xy,
+                            int part, Pair<Integer, Integer> vector) {
+        final Set<OneMove> filteredMoves = filterWithVector(operators, xy, vector);
+        return !filteredMoves.isEmpty()
+                && MoveUtil.containsAllForPart(moves, filteredMoves, part);
+
+    }
+
 
     public boolean isSubsetWithVector(Collection<OneMove> moves, Set<Operator> operators, Pair<Integer, Integer> xy, Pair<Integer, Integer> vector) {
         final Set<OneMove> filteredMoves = filterWithVector(operators, xy, vector);
@@ -92,6 +102,16 @@ public abstract class PieceClass {
         });
 
         return result;
+    }
+
+    public Set<OneMove> filterForPart(Set<OneMove> moves, int part, Set<Operator> operators,
+                                      Pair<Integer, Integer> xy) {
+        final Set<OneMove> filteredMoves = filterMoves(operators, xy);
+
+        return moves.stream()
+                .filter(m -> filteredMoves.contains(m.getParts().get(part)))
+                .collect(Collectors.toSet());
+
 
     }
 

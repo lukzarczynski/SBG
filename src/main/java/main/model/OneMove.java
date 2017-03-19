@@ -1,5 +1,6 @@
 package main.model;
 
+import main.Utils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -14,6 +15,7 @@ public class OneMove {
 
     private List<Move> moves = new ArrayList<>();
     private Pair<Integer, Integer> vector = Pair.of(0, 0);
+    private List<OneMove> parts = new ArrayList<>();
 
     public static OneMove of(List<Move> moves) {
         final OneMove om = new OneMove();
@@ -64,6 +66,34 @@ public class OneMove {
             return copy;
         }).collect(Collectors.toSet());
 
+    }
+
+    public void initializeParts() {
+        Pair<Integer, Integer> currPair = Pair.of(0, 0);
+        Pair<Integer, Integer> previousVector = Pair.of(0, 0);
+        Pair<Integer, Integer> currentVector = Pair.of(0, 0);
+
+        List<Move> currentMoves = new ArrayList<>();
+
+        for (Move m : this.getMoves()) {
+            Pair<Integer, Integer> of = Pair.of(m.getDx(), m.getDy());
+            if (!currPair.equals(of)) {
+                if (!currentMoves.isEmpty()) {
+                    OneMove part = OneMove.of(currentMoves);
+                    part.setVector(Pair.of(previousVector.getKey(), previousVector.getValue()));
+                    previousVector = currentVector;
+                    this.parts.add(part);
+                    currentMoves = new ArrayList<>();
+                }
+            }
+            currentVector = Utils.sum(currentVector, of);
+            currentMoves.add(m);
+            currPair = of;
+        }
+
+        OneMove part = OneMove.of(currentMoves);
+        part.setVector(Pair.of(previousVector.getKey(), previousVector.getValue()));
+        parts.add(part);
     }
 
     public OneMove withoutPrefix(OneMove prefix) {
@@ -150,6 +180,10 @@ public class OneMove {
 
         return getMoves().equals(oneMove.getMoves());
 
+    }
+
+    public List<OneMove> getParts() {
+        return parts;
     }
 
     @Override

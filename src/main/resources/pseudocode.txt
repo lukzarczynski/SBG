@@ -45,4 +45,8 @@ fxy(x, y) = distToZero(x,y) + distToClosestDiagonalVerticalOrHorizontal(x,y)
 fsc(destination, conditions) = fxy(destination) * iloczyn (fxy(condition))
 
 fgame(pieces) = ((sum_p ( p.countOnBoard * p.value) ) / sum_p (p.countOnBoard) ) * (pieces.size + game_Q )
-		
+
+
+
+
+		The findSimpleDescription(M,m) uses list of all possible operators and their combinations which are previously computed and sorted from the lowest sumaric value. Then it takes move m and recognizes vector (x_m, y_m) on which it moves. Next it creates a Simple Resolver for each Piece Class (with that vector) and

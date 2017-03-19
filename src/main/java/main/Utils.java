@@ -30,6 +30,12 @@ public final class Utils {
         return set;
     }
 
+    public static <T> Set<T> sum(Set<T> s1, T s2) {
+        final Set<T> set = new HashSet<>(s1);
+        set.add(s2);
+        return set;
+    }
+
     public static OneMove joinMoves(OneMove o1, OneMove o2) {
         final OneMove om = new OneMove();
         om.setMoves(new ArrayList<>(o1.getMoves()));
@@ -54,5 +60,12 @@ public final class Utils {
                 oldXY.getValue() - Math.abs(prefixAsVector.getValue())
         );
 
+    }
+
+    public static Pair<Integer, Integer> sum(Pair<Integer, Integer> currentVector, Pair<Integer, Integer> of) {
+        return Pair.of(
+                currentVector.getKey() + of.getKey(),
+                currentVector.getValue() + of.getValue()
+        );
     }
 }

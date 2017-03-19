@@ -39,9 +39,9 @@ public class XYRider extends PieceClass {
     }
 
     private void addAnyNumberOf(int x, int y) {
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i < 13; i++) {
             for (int j = 1; j <= i; j++) {
-                if (j * x > 7 || j * y > 7) {
+                if (j * x > 12 || j * y > 12) {
                     continue;
                 }
                 moves.addAll(OneMove.parse(String.format("(%s,%s,e)^%s", x, y, j)));
@@ -51,9 +51,9 @@ public class XYRider extends PieceClass {
     }
 
     private void addAnyNumberTaking(int x, int y) {
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i < 13; i++) {
             for (int j = 0; j < i; j++) {
-                if (j * x > 7 || j * y > 7) {
+                if (j * x > 12 || j * y > 12) {
                     continue;
                 }
                 moves.addAll(OneMove.parse(String.format("(%s,%s,e)^%s(%s,%s,p)", x, y, j, x, y)));
