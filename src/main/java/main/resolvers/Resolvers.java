@@ -54,7 +54,10 @@ public final class Resolvers {
                 new OverOwnPieceInstead(),
                 new SelfCaptureInstead(),
                 new OverOwnPieceInsteadEndingNormally(),
-                new OverEnemyPieceInsteadEndingNormally()
+                new OverEnemyPieceInsteadEndingNormally(),
+
+                new WithOneEnemyPiece(),
+                new WithOneOwnPiece()
         );
 
 
@@ -77,6 +80,17 @@ public final class Resolvers {
         addRestrictions(OverEnemyPieceInsteadEndingNormally.class, None.class,
                 OverEnemyPieceInstead.class,
                 OverOwnPieceInstead.class);
+
+        addRestrictions(WithOneEnemyPiece.class,
+                OverEnemyPieceInstead.class,
+                OverEnemyPieceInsteadEndingNormally.class,
+                None.class
+                );
+        addRestrictions(WithOneOwnPiece.class,
+                OverOwnPieceInstead.class,
+                OverOwnPieceInsteadEndingNormally.class,
+                None.class
+                );
 
         allOperators.forEach(o1 -> {
             ops.add(setOf(o1));

@@ -152,6 +152,21 @@ public class Move {
                 && getMoveType().equals(move.getMoveType());
     }
 
+    public boolean equalsWithoutType(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Move move = (Move) o;
+
+        return power.equals(move.getPower())
+                && getDx().equals(move.getDx())
+                && getDy().equals(move.getDy());
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

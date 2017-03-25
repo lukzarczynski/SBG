@@ -1,8 +1,10 @@
 package main.operator;
 
-import main.model.OneMove;
 import main.ParamsAndEvaluators;
+import main.model.OneMove;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -13,14 +15,22 @@ public abstract class Operator {
 
     public final int value;
 
+    private boolean hasFunction = true;
+
     public Operator() {
         this.value = ParamsAndEvaluators.fo(this.getClass());
+        this.map();
     }
 
     public abstract Predicate<OneMove> matches();
 
-    public Function<OneMove, OneMove> map() {
-        return Function.identity();
+    public Function<OneMove, Set<OneMove>> map() {
+        hasFunction = false;
+        return om -> {
+            final HashSet<OneMove> hashSet = new HashSet<>();
+            hashSet.add(om);
+            return hashSet;
+        };
     }
 
     public abstract String getDescription();
@@ -44,4 +54,13 @@ public abstract class Operator {
         return value;
     }
 
+    public boolean isHasFunction() {
+        return hasFunction;
+    }
+
+    protected Set<OneMove> setOf(OneMove m){
+        final Set<OneMove> set = new HashSet<>();
+        set.add(m);
+        return set;
+    }
 }

@@ -1,6 +1,6 @@
 package main.description;
 
-import main.model.OneMove;
+import main.SuperResolver;
 import main.operator.*;
 import main.piececlass.PieceClass;
 import main.piececlass.XYLeaper;
@@ -21,9 +21,7 @@ import java.util.stream.Collectors;
  */
 public class ReparingRun {
 
-    public static String getRepairedDescription(List<Resolver> result,
-                                                Map<Resolver, Set<OneMove>> resolverListMap,
-                                                Pair<Integer, Integer> boardSize) {
+    public static String getRepairedDescription(List<Resolver> result) {
 
         StringBuilder description = new StringBuilder();
 
@@ -41,9 +39,27 @@ public class ReparingRun {
                         .map(r -> (SimpleCompositeResolver) r)
                         .collect(Collectors.toList());
 
+        List<SuperResolver> superResolvers =
+                result.stream().filter(r -> r instanceof SuperResolver)
+                        .map(r -> (SuperResolver) r)
+                        .collect(Collectors.toList());
+
         description.append(handleSimpleResolvers(collect));
         description.append(handleCompositeResolvers(compositeResolvers));
 
+        final Map<Integer, List<SuperResolver>> bySize
+                = superResolvers.stream().collect(Collectors.groupingBy(r -> r.getResolvers().size()));
+        bySize.forEach((s, resolvers) -> {
+            if (s == 1) {
+                description.append(handleSimpleResolvers(resolvers.stream()
+                        .map(SuperResolver::getResolvers)
+                        .map(l -> l.get(0))
+                        .collect(Collectors.toList())));
+
+            } else {
+                description.append(handleSuperResolvers(resolvers, s));
+            }
+        });
 
         List<SpecialCaseResolver> specialCaseResolvers =
                 result.stream().filter(r -> r instanceof SpecialCaseResolver)
@@ -55,6 +71,44 @@ public class ReparingRun {
         description.append(specialCaseResolvers.stream().map(Resolver::getDescription).collect(Collectors.joining(" || ")));
 
         return description.toString();
+    }
+
+    private static String handleSuperResolvers(List<SuperResolver> resolvers, int size) {
+        StringBuilder builder = new StringBuilder();
+
+        Map<String, List<SimplePieceResolver>> collect = new HashMap<>();
+
+        resolvers.forEach(r -> {
+            List<String> parts = new ArrayList<>();
+            for (int i = 0; i < size - 1; i++) {
+                final SimplePieceResolver spr = r.getResolvers().get(i);
+                final String part =
+                        handleSimpleResolver(spr.getOperators(), Collections.singletonList(spr));
+                parts.add(part);
+            }
+            final String prefix = parts.stream().collect(Collectors.joining(" and then "));
+            collect.putIfAbsent(prefix, new ArrayList<>());
+            collect.get(prefix).add(r.getResolvers().get(size - 1));
+        });
+
+        collect.forEach((firstPart, Part) -> {
+
+            builder.append("\n - ")
+                    .append(firstPart).append(" and then ")
+                    .append(handleSimpleResolvers(Part.stream()
+                            .collect(Collectors.groupingBy(SimplePieceResolver::getOperators)))
+                            .replaceAll("\n - ", ""));
+        });
+
+        return builder.toString();
+    }
+
+    private static String handleSimpleResolvers(Collection<SimplePieceResolver> resolvers) {
+
+        final Map<Set<Operator>, List<SimplePieceResolver>> collect
+                = resolvers.stream().collect(Collectors.groupingBy(SimplePieceResolver::getOperators));
+
+        return handleSimpleResolvers(collect);
     }
 
     private static String handleSimpleResolvers(Map<Set<Operator>, List<SimplePieceResolver>> collect) {
@@ -87,12 +141,12 @@ public class ReparingRun {
 
         String res = "";
         if (!riders.isEmpty()) {
-             res = res + "\n - " + describeRiders(riders.stream()
+            res = res + "\n - " + describeRiders(riders.stream()
                     .map(r -> (XYRider) r.getPieceClass())
                     .collect(Collectors.toSet()), ops);
         }
         if (!leapers.isEmpty()) {
-            res = res +  "\n - " + describeLeaper(leapers.stream()
+            res = res + "\n - " + describeLeaper(leapers.stream()
                     .map(r -> (XYLeaper) r.getPieceClass())
                     .collect(Collectors.toSet()), ops);
         }
@@ -118,7 +172,8 @@ public class ReparingRun {
 
             builder.append("\n - ")
                     .append(firstPart).append(" and then ")
-                    .append(handleSimpleResolvers(Part.stream().collect(Collectors.groupingBy(SimplePieceResolver::getOperators)))
+                    .append(handleSimpleResolvers(Part.stream()
+                            .collect(Collectors.groupingBy(SimplePieceResolver::getOperators)))
                             .replaceAll("\n - ", ""));
         });
 
@@ -221,6 +276,8 @@ public class ReparingRun {
         final boolean overEnemy = hasInstance(operators, OverEnemyPieceInstead.class);
         final boolean overOwnEndingNormal = hasInstance(operators, OverOwnPieceInsteadEndingNormally.class);
         final boolean overEnemyEndingNormal = hasInstance(operators, OverEnemyPieceInsteadEndingNormally.class);
+        final boolean withOneOwnPiece = hasInstance(operators, WithOneOwnPiece.class);
+        final boolean withOneEnemyPiece = hasInstance(operators, WithOneEnemyPiece.class);
 
         if (onlyCapture && !(overOwnEndingNormal || overEnemyEndingNormal || overOwn || overEnemy)) {
             builder.append(" capturing");
@@ -246,6 +303,14 @@ public class ReparingRun {
             builder.append(" only over opponent pieces capturing ");
         } else if (overEnemyEndingNormal) {
             builder.append(" only over opponent pieces and capturing opponent or staying on empty");
+        }
+
+        if (withOneEnemyPiece && withOneOwnPiece) {
+            builder.append(" with one enemy and own piece on the way");
+        } else if (withOneEnemyPiece) {
+            builder.append(" with one enemy piece on the way");
+        } else if (withOneOwnPiece) {
+            builder.append(" with one own piece on the way");
         }
         return builder.toString();
     }

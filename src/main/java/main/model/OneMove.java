@@ -68,7 +68,7 @@ public class OneMove {
 
     }
 
-    public void initializeParts() {
+    public void initializeParts2() {
         Pair<Integer, Integer> currPair = Pair.of(0, 0);
         Pair<Integer, Integer> previousVector = Pair.of(0, 0);
         Pair<Integer, Integer> currentVector = Pair.of(0, 0);
@@ -94,6 +94,56 @@ public class OneMove {
         OneMove part = OneMove.of(currentMoves);
         part.setVector(Pair.of(previousVector.getKey(), previousVector.getValue()));
         parts.add(part);
+    }
+
+    public void initializeParts() {
+
+        List<List<Move>> moveList = new ArrayList<>();
+
+        Move previous = null;
+        List<Move> currentList = new ArrayList<>();
+        for (Move current : this.getMoves()) {
+            if (previous == null || current.equalsWithoutType(previous)) {
+                currentList.add(current);
+            } else if (!current.equals(previous)) {
+                moveList.add(currentList);
+                currentList = new ArrayList<>();
+                currentList.add(current);
+            }
+            previous = current;
+        }
+        moveList.add(currentList);
+
+        int i = 1;
+        while (i < moveList.size()) {
+            final List<Move> single = moveList.get(i);
+
+            if (single.size() == 1) {
+                Pair<Integer, Integer> singlePair = Pair.of(single.get(0).getDx(), single.get(0).getDy());
+
+                final List<Move> prevList = moveList.get(i - 1);
+                Pair<Integer, Integer> anyPair = Pair.of(prevList.get(0).getDx(), prevList.get(0).getDy());
+
+                if (singlePair.equals(anyPair)) {
+                    prevList.addAll(single);
+                    moveList.remove(i);
+                }
+            } else {
+                i++;
+            }
+
+        }
+
+        Pair<Integer, Integer> curVector = Pair.of(0, 0);
+        for (List<Move> l : moveList) {
+            OneMove om = OneMove.of(l);
+            om.setVector(curVector);
+            curVector = Pair.of(
+                    curVector.getLeft() + l.stream().map(Move::getDx).reduce(0, Integer::sum),
+                    curVector.getRight() + l.stream().map(Move::getDy).reduce(0, Integer::sum)
+            );
+            this.parts.add(om);
+        }
     }
 
     public OneMove withoutPrefix(OneMove prefix) {

@@ -1,12 +1,7 @@
 package main.piececlass;
 
-import main.MoveUtil;
 import main.model.OneMove;
-import main.operator.Operator;
 import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.Collection;
-import java.util.Set;
 
 /**
  * Created by lukasz on 06.12.16.

@@ -6,6 +6,7 @@ import main.model.OneMove;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -23,7 +24,7 @@ public class OverEnemyPieceInsteadEndingNormally extends Operator {
     }
 
     @Override
-    public Function<OneMove, OneMove> map() {
+    public Function<OneMove, Set<OneMove>> map() {
         return move -> {
             OneMove om = new OneMove();
             List<Move> copiedList = new ArrayList<>();
@@ -40,7 +41,7 @@ public class OverEnemyPieceInsteadEndingNormally extends Operator {
                 }
             }
             om.setMoves(copiedList);
-            return om;
+            return setOf(om);
         };
     }
 

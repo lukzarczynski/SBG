@@ -50,3 +50,64 @@ fgame(pieces) = ((sum_p ( p.countOnBoard * p.value) ) / sum_p (p.countOnBoard) )
 
 
 		The findSimpleDescription(M,m) uses list of all possible operators and their combinations which are previously computed and sorted from the lowest sumaric value. Then it takes move m and recognizes vector (x_m, y_m) on which it moves. Next it creates a Simple Resolver for each Piece Class (with that vector) and
+
+
+
+
+Każdy ruch jest najpierw dzielony na kawałki po wektorze (nie są brane pod uwagę warunki {e,w,p})
+		    Dla przykładu: (0,1,e)^*(0,1,w)(0,1,e)^*(0,1,p) - to jest jeden kawałek
+		                   (0,1,e)^*(1,1,e)^*(0,1,p) - to są 3 kawałki
+
+W algorytmie zmieniły się kroki 5-11: findSimpleDescription oraz findCompositeDescription to jest teraz jedna metoda
+
+findDescription(M,m):
+    moves <- kroki z M które mają tą samą ilość kawałków
+
+    return findDescription(m, (emptyMove, moves), 0)
+
+// m <- aktualnie szukany ruch
+// movesByPrefix <- mapa, której kluczem są prefixy (kawałki ruchów), a wartościami listy całych ruchów
+// i <- numer aktualnie przetwarzanego kawałka
+findDescription(m, movesByPrefix, i):
+    (1) for os in SortedOperatorSets do
+        (2) for pc in PieceClasses do
+            (moves, description) <- getMoves(pc, os)
+
+            H <- {} // mapa movesByPrefix, której klucze będą rozszerzone o i-ty kawałek
+                    // a wartości będą przefiltrowane, aby pasowały do prefixów (i opisów)
+
+            (3) for (prefix, M) in movesByPrefix do:
+                    if moves zawiera całkowicie się w getParts(M, i) do:
+                        G <- zbiór ruchów z M (pełnych), których i-ty kawałek zawiera się w moves
+
+                        uaktualnij H o ruchy z G
+
+                    else:
+                        H = {}
+                        // (pc,os) źle dobrane
+                        continue (2)
+
+            if H nie zawiera m ():
+                continue (2)
+
+            if i < numberOfParts(m):
+                r <- findDescription(m, H, i+1) // rekurencyjnie dla kolejnego kawałka
+                if Fail:
+                    continue (2)
+                else:
+                    return description 'and then' r
+            else:
+                return description
+
+
+
+// lista i-tych kawałków ruchów z M
+getParts(M, i):
+    return { getPart(m, i) for m in M }
+
+// i-ty kawałek ruchu m
+getPart(m, i):
+    return 'i-ty kawałek ruchu m'
+
+
+

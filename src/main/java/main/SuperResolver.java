@@ -15,7 +15,7 @@ public class SuperResolver extends Resolver {
     private List<SimplePieceResolver> resolvers;
 
     public SuperResolver(List<SimplePieceResolver> resolvers, SimplePieceResolver r) {
-        super(0);
+        super(resolvers.stream().map(ParamsAndEvaluators::fko).reduce(1, (r1, r2) -> r1 * r2));
         this.resolvers = new ArrayList<>(resolvers);
         this.resolvers.add(r);
     }
@@ -23,5 +23,27 @@ public class SuperResolver extends Resolver {
     @Override
     public String getDescription() {
         return resolvers.stream().map(SimplePieceResolver::getDescription).collect(Collectors.joining(", "));
+    }
+
+    public List<SimplePieceResolver> getResolvers() {
+        return resolvers;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        SuperResolver that = (SuperResolver) o;
+
+        return resolvers.equals(that.resolvers);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + resolvers.hashCode();
+        return result;
     }
 }

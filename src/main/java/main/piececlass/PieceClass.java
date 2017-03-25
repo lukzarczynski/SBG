@@ -126,12 +126,19 @@ public abstract class PieceClass {
         return moves.stream()
                 .filter(m -> op.stream().allMatch(o -> o.matches().test(m)))
                 .map(m -> {
-                    OneMove r = m;
+                    Set<OneMove> r = new HashSet<>();
+                    r.add(m);
                     for (Operator o : op) {
-                        r = o.map().apply(r);
+                        if(o.isHasFunction()) {
+                            r = r.stream()
+                                    .map(c -> o.map().apply(c))
+                                    .flatMap(Collection::stream)
+                                    .collect(Collectors.toSet());
+                        }
                     }
                     return r;
                 })
+                .flatMap(Collection::stream)
                 .filter(om -> om.isValid(xy))
                 .collect(Collectors.toSet());
     }

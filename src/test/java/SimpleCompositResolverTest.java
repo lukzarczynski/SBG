@@ -1,4 +1,3 @@
-import main.PieceResolver;
 import main.PieceResolver2;
 import main.PieceResolverException;
 import main.model.Piece;
@@ -68,23 +67,29 @@ public class SimpleCompositResolverTest {
 //                "(-1,-1,e)^*(-1,-1,e)(0,-1,p) " +
 //                "&";
 
-        String pieceRegex = "E " +
-                "(1,1,e)^1(2,1,p)^1(0,2,e) + " +
-                "(1,1,e)^1(2,1,e)^1(0,2,e) + " +
-                "(-1,1,e)^1(-2,1,e)^1(0,2,e) + " +
-                "(-1,1,e)^1(-2,1,p)^1(0,2,e) " +
+        String pieceRegex = "O " +
+                "(0,1,e)(0,1,e)^* + " +
+                "(0,-1,e)(0,-1,e)^* + " +
+                "(1,0,e)(1,0,e)^* + " +
+                "(-1,0,e)(-1,0,e)^* + " +
+                "(1,0,e)^*(1,0,w)(1,0,e)^*(1,0,p) + " +
+                "(1,0,e)^*(1,0,p)(1,0,e)^*(1,0,p) + " +
+                "(-1,0,e)^*(-1,0,w)(-1,0,e)^*(-1,0,p) + " +
+                "(-1,0,e)^*(-1,0,p)(-1,0,e)^*(-1,0,p) + " +
+                "(0,1,e)^*(0,1,w)(0,1,e)^*(0,1,p)   + " +
+                "(0,1,e)^*(0,1,p)(0,1,e)^*(0,1,p) + " +
+                "(0,-1,e)^*(0,-1,w)(0,-1,e)^*(0,-1,p) + " +
+                "(0,-1,e)^*(0,-1,p)(0,-1,e)^*(0,-1,p) " +
                 "&";
-//        String pieceRegex = "E (0,-2,e)^1 + (2,0,e)^1 + (1,1,e)^1(2,1,p)^1 + (1,1,e)^1(2,1,e)^1 + (-1,1,e)^1(-2,1,e)^1 + (0,2,e)^1 + (-2,0,e)^1 + (-1,1,e)^1(-2,1,p)^1 &";
-//        String pieceRegex = "E (0,-2,e)(0,-1,e)(0,-3,e) + (0,-2,e)(0,-1,e)(0,-2,e)&";
 
-        Piece piece = Piece.parse(pieceRegex, 8, 8);
+        Piece piece = Piece.parse(pieceRegex, 7, 7);
 
 
-        Pair<String, Integer> resolve = PieceResolver.resolve(piece, Pair.of(8, 8));
+//        Pair<String, Integer> resolve = PieceResolver.resolve(piece, Pair.of(8, 8));
+//
+//        System.out.println(resolve);
 
-        System.out.println(resolve);
-
-        System.out.println(PieceResolver2.resolve(piece, Pair.of(8,8)));
+        System.out.println(PieceResolver2.resolve(piece, Pair.of(7, 7)));
     }
 
 }

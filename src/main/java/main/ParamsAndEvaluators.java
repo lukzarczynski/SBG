@@ -46,6 +46,8 @@ public final class ParamsAndEvaluators {
         ParamsAndEvaluators.OP_VALUE.put(Outwards.class, 2);
         ParamsAndEvaluators.OP_VALUE.put(OutwardsY.class, 2);
         ParamsAndEvaluators.OP_VALUE.put(OutwardsX.class, 2);
+        ParamsAndEvaluators.OP_VALUE.put(WithOneOwnPiece.class, 4);
+        ParamsAndEvaluators.OP_VALUE.put(WithOneEnemyPiece.class, 4);
     }
 
     /**
@@ -77,6 +79,15 @@ public final class ParamsAndEvaluators {
     public static int fko(PieceClass pieceClass, Set<Operator> operators) {
         int i = fk(pieceClass);
         int j = fo(operators);
+        return i * (j + FKO_P); // it was (i + FKO_Q) * (j + FKO_P);
+    } /**
+     * @param pieceClass
+     * @param operators
+     * @return fo(pieceClass) * fk(operators)
+     */
+    public static int fko(SimplePieceResolver r) {
+        int i = fk(r.getPieceClass());
+        int j = fo(r.getOperators());
         return i * (j + FKO_P); // it was (i + FKO_Q) * (j + FKO_P);
     }
 

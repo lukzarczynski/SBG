@@ -42,7 +42,7 @@ public class PieceResolver2 {
 
         for (OneMove om : sortedMoves) {
             if (checkTimeout(start, ParamsAndEvaluators.PIECE_TIMEOUT_MS)) {
-                break;
+//                break;
             }
 
             if (resultMap.containsKey(om)) {
@@ -50,14 +50,14 @@ public class PieceResolver2 {
                 continue;
             }
 
-
-            PieceResolveType type = PieceResolveType.forPiece(om);
-
-            if (type.equals(PieceResolveType.OTHER)) {
-                trySpecialCase(movesToInterpret, om, resultMap);
-            } else {
+//
+//            PieceResolveType type = PieceResolveType.forPiece(om);
+//
+//            if (type.equals(PieceResolveType.OTHER)) {
+//                trySpecialCase(movesToInterpret, om, resultMap);
+//            } else {
                 tryMultipleBent(movesToInterpret, om, xy, resultMap);
-            }
+//            }
 
             if (!resultMap.containsKey(om)) {
 //                System.out.println("Could not resolve " + om.toString() + ", trying special case");
@@ -122,7 +122,7 @@ public class PieceResolver2 {
 
                 if (byPrefix.values().stream().allMatch(moves -> r.isValidForPart(moves, size, part))) {
 
-                    final Map<OneMove, Set<OneMove>> grouppedBYPrefix = byPrefix.values().stream()
+                    final Map<OneMove, Set<OneMove>> groupedBYPrefix = byPrefix.values().stream()
                             .map(value -> r.filterForPart(value, part, size))
                             .flatMap(Collection::stream)
                             .collect(Collectors.groupingBy(oo -> {
@@ -133,12 +133,12 @@ public class PieceResolver2 {
                                 return OneMove.of(toJoin);
                             }, Collectors.toSet()));
 
-                    if (grouppedBYPrefix.values().stream().noneMatch(l -> l.contains(om))) {
+                    if (groupedBYPrefix.values().stream().noneMatch(l -> l.contains(om))) {
                         continue;
                     }
 
                     if (om.getParts().size() - 1 == part) {
-                        grouppedBYPrefix.values().stream().flatMap(Collection::stream)
+                        groupedBYPrefix.values().stream().flatMap(Collection::stream)
                                 .distinct()
                                 .forEach(o -> {
                                     resultMap.putIfAbsent(o, new ArrayList<>());
@@ -151,7 +151,7 @@ public class PieceResolver2 {
                         final boolean b = tryMultipleBent(om, part + 1, size,
                                 asd,
                                 resultMap,
-                                grouppedBYPrefix
+                                groupedBYPrefix
                         );
                         if (b) {
                             return true;

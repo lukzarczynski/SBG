@@ -4,6 +4,7 @@ import main.model.Move;
 import main.model.MoveType;
 import main.model.OneMove;
 
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -22,7 +23,7 @@ public class OverEnemyPieceInstead extends Operator {
     }
 
     @Override
-    public Function<OneMove, OneMove> map() {
+    public Function<OneMove, Set<OneMove>> map() {
         return move -> {
             OneMove om = new OneMove();
             om.setMoves(move.getMoves().stream().map(m -> {
@@ -32,7 +33,7 @@ public class OverEnemyPieceInstead extends Operator {
                 }
                 return copy;
             }).collect(Collectors.toList()));
-            return om;
+            return setOf(om);
         };
     }
 

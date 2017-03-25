@@ -20,7 +20,7 @@ import java.util.stream.Stream;
  */
 public class Main {
 
-    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\final\\test_pieces";
+    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\final\\test_pieces\\xxx";
 //    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\ng\\test";
     private static final AtomicInteger index = new AtomicInteger(0);
 
@@ -87,7 +87,7 @@ public class Main {
 
         for (Piece p : parseResult.getPieces()) {
 //                System.out.println("Parsing piece " + p.getName());
-            Pair<String, Integer> resolve = PieceResolver.resolve(p, parseResult.getXY());
+            Pair<String, Integer> resolve = PieceResolver2.resolve(p, parseResult.getXY());
 
             oneFileStat.addPiece(p, f, resolve.getKey(), resolve.getValue());
 

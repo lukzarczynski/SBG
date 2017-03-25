@@ -6,6 +6,7 @@ import main.model.OneMove;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -23,12 +24,12 @@ public class SelfCaptureInstead extends Operator {
     }
 
     @Override
-    public Function<OneMove, OneMove> map() {
+    public Function<OneMove, Set<OneMove>> map() {
         return move -> {
             OneMove om = new OneMove();
             List<Move> moves = new ArrayList<>(om.getMoves());
             if (moves.isEmpty()) {
-                return move;
+                return setOf(move);
             }
             Move lastMove = moves.get(moves.size() - 1).copy();
             if (lastMove.getMoveType().equals(MoveType.PIECE)) {
@@ -37,7 +38,7 @@ public class SelfCaptureInstead extends Operator {
             moves.set(moves.size() - 1, lastMove);
             om.setMoves(moves);
 
-            return om;
+            return setOf(om);
         };
     }
 
