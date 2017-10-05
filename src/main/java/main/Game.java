@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * Created by lukza on 17.01.2017.
  */
-public class ParseResult {
+public class Game {
 
     private Collection<Piece> pieces;
     private Map<String, Integer> piecesCount;

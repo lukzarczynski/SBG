@@ -9,7 +9,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -21,7 +24,7 @@ import java.util.stream.Stream;
 public class Main {
 
     private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\final\\test_pieces\\xxx";
-//    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\ng\\test";
+    //    private static final String DIRECTORY = "C:\\Users\\lukza\\Documents\\sbg_games\\ng\\test";
     private static final AtomicInteger index = new AtomicInteger(0);
 
     public static void main(String[] args) throws IOException {
@@ -80,14 +83,14 @@ public class Main {
         System.out.println(String.format("%s %s started file %s ", index.getAndIncrement(), new Date().toString(), f.getName()));
         long startFile = System.currentTimeMillis();
 
-        ParseResult parseResult = parseOneFile(f);
+        Game parseResult = parseOneFile(f);
         List<String> metaTags = new ArrayList<>();
 
         Map<String, Integer> pieceValues = new HashMap<>();
 
         for (Piece p : parseResult.getPieces()) {
 //                System.out.println("Parsing piece " + p.getName());
-            Pair<String, Integer> resolve = PieceResolver2.resolve(p, parseResult.getXY());
+            Pair<String, Integer> resolve = PieceResolver.resolve(p, parseResult.getXY());
 
             oneFileStat.addPiece(p, f, resolve.getKey(), resolve.getValue());
 
@@ -170,8 +173,8 @@ public class Main {
 
     }
 
-    private static ParseResult parseOneFile(File file) {
-        final ParseResult result = new ParseResult();
+    private static Game parseOneFile(File file) {
+        final Game result = new Game();
 
         final Scanner scanner;
         try {
@@ -231,7 +234,7 @@ public class Main {
     private static Collection<Piece> getPieces(String piecesSection, int x, int y) {
         return Stream.of(piecesSection.split("&"))
                 .filter(StringUtils::isNotBlank)
-                .map(s -> s.replaceAll("\n","") + " &")
+                .map(s -> s.replaceAll("\n", "") + " &")
                 .map(s -> Piece.parse(s, x, y))
                 .collect(Collectors.toList());
     }
@@ -265,57 +268,5 @@ public class Main {
         return table.toString();
     }
 
-    /**
-     * unused
-     *
-     * @param directory
-     * @throws FileNotFoundException
-     */
-    private static void parseDirAsPieces(String directory) throws FileNotFoundException {
-        File dir = new File(directory);
-        if (!dir.isDirectory()) {
-            throw new RuntimeException(directory + " is not a directory, aborting");
-        }
-
-        File[] sbgs = dir.listFiles((d, name) -> FilenameUtils.getExtension(name).equals("sbg"));
-        assert sbgs != null;
-
-
-        final List<File> fileList = new ArrayList<>();
-        Collections.addAll(fileList, sbgs);
-
-
-        new PrintWriter("src/main/resources/parsedMoves.sbg1").close();
-        new PrintWriter("src/main/resources/failedMoves.sbg1").close();
-        File parsedFile = new File("src/main/resources/parsedMoves.sbg1");
-        File failedFile = new File("src/main/resources/failedMoves.sbg1");
-
-        FileOutputStream parsedFOS = new FileOutputStream(parsedFile, true);
-        FileOutputStream failedFOS = new FileOutputStream(failedFile, true);
-
-
-        AtomicInteger index = new AtomicInteger(0);
-
-
-        fileList.parallelStream().forEach(f -> {
-            String filename = f.getName();
-            ParseResult parseResult = parseOneFile(f);
-
-            parseResult.getPieces().parallelStream().forEach(pa -> {
-                pa.setName(filename + pa.getName());
-                Pair<String, Integer> text = PieceResolver.resolve(pa, parseResult.getXY());
-                synchronized (parsedFOS) {
-                    try {
-                        parsedFOS.write(String.format("%s : %s \n", pa.getName(), text.getKey().replaceAll("\n", "")).getBytes());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                System.out.println("Piece no: " + index.getAndIncrement());
-            });
-
-        });
-
-    }
 
 }

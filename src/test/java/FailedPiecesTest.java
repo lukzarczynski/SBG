@@ -1,6 +1,5 @@
-import main.model.Piece;
 import main.PieceResolver;
-import main.PieceResolverException;
+import main.model.Piece;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 

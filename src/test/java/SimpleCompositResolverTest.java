@@ -1,4 +1,4 @@
-import main.PieceResolver2;
+import main.PieceResolver;
 import main.PieceResolverException;
 import main.model.Piece;
 import org.apache.commons.lang3.tuple.Pair;
@@ -89,7 +89,7 @@ public class SimpleCompositResolverTest {
 //
 //        System.out.println(resolve);
 
-        System.out.println(PieceResolver2.resolve(piece, Pair.of(7, 7)));
+        System.out.println(PieceResolver.resolve(piece, Pair.of(7, 7)));
     }
 
 }
