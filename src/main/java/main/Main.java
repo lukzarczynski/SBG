@@ -1,5 +1,6 @@
 package main;
 
+import main.model.Game;
 import main.model.Piece;
 import main.statistics.FileStatistic;
 import main.statistics.OneFileStats;

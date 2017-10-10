@@ -1,11 +1,10 @@
-package main;
+package main.model;
 
-import main.model.Piece;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by lukza on 17.01.2017.
@@ -17,6 +16,9 @@ public class Game {
     private int width;
     private int height;
 
+    private List<String> board;
+    private Goals goals;
+    private String content;
 
     public Collection<Piece> getPieces() {
         return pieces;
@@ -52,5 +54,29 @@ public class Game {
 
     public Pair<Integer, Integer> getXY() {
         return Pair.of(width, height);
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public List<String> getBoard() {
+        return board;
+    }
+
+    public void setBoard(List<String> board) {
+        this.board = board;
+    }
+
+    public Goals getGoals() {
+        return goals;
+    }
+
+    public void setGoals(Goals goals) {
+        this.goals = goals;
     }
 }
