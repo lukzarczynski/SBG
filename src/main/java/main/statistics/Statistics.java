@@ -27,8 +27,6 @@ public class Statistics {
     private final List<FileStatistic> worstRappFiles;
 
 
-
-
     public Statistics(List<OneFileStats> collect, long time) {
         timeInMs = time;
         filesParsed = collect.size();

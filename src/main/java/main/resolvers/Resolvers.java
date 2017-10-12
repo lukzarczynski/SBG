@@ -1,10 +1,35 @@
 package main.resolvers;
 
-import main.ParamsAndEvaluators;
-import main.operator.*;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import main.ParamsAndEvaluators;
+import main.operator.Backwards;
+import main.operator.ExactlyTimes;
+import main.operator.Forward;
+import main.operator.MaxTimes;
+import main.operator.MinTimes;
+import main.operator.None;
+import main.operator.NotHorizontal;
+import main.operator.OnlyCapture;
+import main.operator.OnlyEven;
+import main.operator.OnlyOdd;
+import main.operator.Operator;
+import main.operator.OverEnemyPieceInstead;
+import main.operator.OverEnemyPieceInsteadEndingNormally;
+import main.operator.OverOwnPieceInstead;
+import main.operator.OverOwnPieceInsteadEndingNormally;
+import main.operator.SelfCaptureInstead;
+import main.operator.Sideways;
+import main.operator.WithOneEnemyPiece;
+import main.operator.WithOneOwnPiece;
+import main.operator.WithoutCapture;
 
 /**
  * Created by lukasz on 10.12.16.
@@ -85,12 +110,12 @@ public final class Resolvers {
                 OverEnemyPieceInstead.class,
                 OverEnemyPieceInsteadEndingNormally.class,
                 None.class
-                );
+        );
         addRestrictions(WithOneOwnPiece.class,
                 OverOwnPieceInstead.class,
                 OverOwnPieceInsteadEndingNormally.class,
                 None.class
-                );
+        );
 
         allOperators.forEach(o1 -> {
             ops.add(setOf(o1));

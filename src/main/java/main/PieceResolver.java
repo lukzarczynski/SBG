@@ -1,5 +1,15 @@
 package main;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import main.model.Move;
 import main.model.OneMove;
 import main.model.Piece;
@@ -7,15 +17,15 @@ import main.operator.Operator;
 import main.operator.Outwards;
 import main.operator.OutwardsX;
 import main.operator.OutwardsY;
-import main.piececlass.*;
+import main.piececlass.PieceCache;
+import main.piececlass.PieceClass;
+import main.piececlass.XYLeaper;
+import main.piececlass.XYRider;
+import main.piececlass.XYYXLeaper;
 import main.resolvers.Resolver;
 import main.resolvers.Resolvers;
 import main.resolvers.SimplePieceResolver;
 import main.resolvers.SpecialCaseResolver;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by lukasz on 25.12.16.
@@ -24,7 +34,7 @@ public class PieceResolver {
 
     public static final Set<OneMove> failedMoves = new HashSet<>();
 
-    public static Pair<String, Integer> resolve(Piece piece, Pair<Integer, Integer> xy) {
+    public static Pair<String, Integer> resolve(Piece piece, Point xy) {
 
         long start = System.currentTimeMillis();
 
@@ -56,7 +66,7 @@ public class PieceResolver {
 //            if (type.equals(PieceResolveType.OTHER)) {
 //                trySpecialCase(movesToInterpret, om, resultMap);
 //            } else {
-                tryMultipleBent(movesToInterpret, om, xy, resultMap);
+            tryMultipleBent(movesToInterpret, om, xy, resultMap);
 //            }
 
             if (!resultMap.containsKey(om)) {
@@ -74,7 +84,7 @@ public class PieceResolver {
 
     private static boolean tryMultipleBent(Set<OneMove> moves,
                                            OneMove om,
-                                           Pair<Integer, Integer> size,
+                                           Point size,
                                            Map<OneMove, List<Resolver>> resultMap) {
         final HashMap<OneMove, Set<OneMove>> byPrefix = new HashMap<>();
         byPrefix.put(OneMove.EMPTY_MOVE, moves.stream().filter(m -> m.getParts().size() == om.getParts().size()).collect(Collectors.toSet()));
@@ -84,7 +94,7 @@ public class PieceResolver {
 
     private static boolean tryMultipleBent(OneMove om,
                                            int part,
-                                           Pair<Integer, Integer> size,
+                                           Point size,
                                            List<SimplePieceResolver> resolvers,
                                            Map<OneMove, List<Resolver>> resultMap,
                                            Map<OneMove, Set<OneMove>> byPrefix) {

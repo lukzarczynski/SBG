@@ -1,13 +1,11 @@
 package main.operator;
 
-import main.model.OneMove;
-
 import java.util.function.Predicate;
 
+import main.model.OneMove;
+
 /**
- * means that distance to (0,0) at each point is not decreasing
- * <p>
- * Created by lukza on 21.01.2017.
+ * means that distance to (0,0) at each point is not decreasing <p> Created by lukza on 21.01.2017.
  */
 public class Outwards extends Operator {
 

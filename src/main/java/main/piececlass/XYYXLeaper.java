@@ -1,12 +1,7 @@
 package main.piececlass;
 
-import main.MoveUtil;
+import main.Point;
 import main.model.OneMove;
-import main.operator.Operator;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.Collection;
-import java.util.Set;
 
 /**
  * Created by lukasz on 06.12.16.
@@ -17,7 +12,7 @@ public class XYYXLeaper extends PieceClass {
     private final boolean valid;
 
     public XYYXLeaper(int x, int y) {
-        super(Pair.of(x, y));
+        super(Point.of(x, y));
         this.valid = x != y;
         if (valid) {
             final String[] targets = {"e", "p"};

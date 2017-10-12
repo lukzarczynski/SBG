@@ -1,6 +1,7 @@
+import main.Pair;
 import main.PieceResolver;
+import main.Point;
 import main.model.Piece;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
 import java.io.File;
@@ -23,7 +24,7 @@ public class FailedPiecesTest {
         while (scanner.hasNextLine()) {
             String s = scanner.nextLine();
 
-            Pair<Integer, Integer> xy = extractXY(s);
+            Point xy = extractXY(s);
 
             Piece parse = Piece.parse(s, xy.getKey(), xy.getValue());
 
@@ -36,17 +37,17 @@ public class FailedPiecesTest {
 
     }
 
-    private Pair<Integer, Integer> extractXY(String s) {
+    private Point extractXY(String s) {
         try {
             String substring = s.substring(s.indexOf("["), s.indexOf("]"));
 
             String[] split = substring.split(",");
-            return Pair.of(
+            return Point.of(
                     Integer.parseInt(split[0]),
                     Integer.parseInt(split[1])
             );
         } catch (Exception e) {
-            return Pair.of(8, 8);
+            return Point.of(8, 8);
         }
 
     }

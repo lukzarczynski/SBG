@@ -1,14 +1,12 @@
 package main.operator;
 
+import java.util.function.Predicate;
+
 import main.model.MoveType;
 import main.model.OneMove;
 
-import java.util.function.Predicate;
-
 /**
- * moves that end with capturing enemy piece
- * <p>
- * Created by lukasz on 06.12.16.
+ * moves that end with capturing enemy piece <p> Created by lukasz on 06.12.16.
  */
 public class OnlyCapture extends Operator {
 

@@ -1,16 +1,38 @@
 package main;
 
-import main.model.Move;
-import main.model.OneMove;
-import main.operator.*;
-import main.piececlass.PieceClass;
-import main.resolvers.Resolver;
-import main.resolvers.SimplePieceResolver;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import main.model.Move;
+import main.model.OneMove;
+import main.operator.Backwards;
+import main.operator.ExactlyTimes;
+import main.operator.Forward;
+import main.operator.MaxTimes;
+import main.operator.MinTimes;
+import main.operator.None;
+import main.operator.NotHorizontal;
+import main.operator.OnlyCapture;
+import main.operator.OnlyEven;
+import main.operator.OnlyOdd;
+import main.operator.Operator;
+import main.operator.Outwards;
+import main.operator.OutwardsX;
+import main.operator.OutwardsY;
+import main.operator.OverEnemyPieceInstead;
+import main.operator.OverEnemyPieceInsteadEndingNormally;
+import main.operator.OverOwnPieceInstead;
+import main.operator.OverOwnPieceInsteadEndingNormally;
+import main.operator.SelfCaptureInstead;
+import main.operator.Sideways;
+import main.operator.WithOneEnemyPiece;
+import main.operator.WithOneOwnPiece;
+import main.operator.WithoutCapture;
+import main.piececlass.PieceClass;
+import main.resolvers.Resolver;
+import main.resolvers.SimplePieceResolver;
 
 /**
  * Created by lukza on 17.01.2017.
@@ -61,7 +83,6 @@ public final class ParamsAndEvaluators {
     /**
      * evaluates collection of operators
      *
-     * @param operators
      * @return sum of operator OP_VALUE
      */
     public static int fo(Set<Operator> operators) {
@@ -72,17 +93,15 @@ public final class ParamsAndEvaluators {
     }
 
     /**
-     * @param pieceClass
-     * @param operators
      * @return fo(pieceClass) * fk(operators)
      */
     public static int fko(PieceClass pieceClass, Set<Operator> operators) {
         int i = fk(pieceClass);
         int j = fo(operators);
         return i * (j + FKO_P); // it was (i + FKO_Q) * (j + FKO_P);
-    } /**
-     * @param pieceClass
-     * @param operators
+    }
+
+    /**
      * @return fo(pieceClass) * fk(operators)
      */
     public static int fko(SimplePieceResolver r) {
@@ -92,12 +111,9 @@ public final class ParamsAndEvaluators {
     }
 
     /**
-     * resolver is like a pair: (pieceClass, operators)
-     * <p>
-     * used for pieces with description: like (resolver1) and then (resolver2)
+     * resolver is like a pair: (pieceClass, operators) <p> used for pieces with description: like
+     * (resolver1) and then (resolver2)
      *
-     * @param resolver1
-     * @param resolver2
      * @return fko(resolver1) * fko(resolver2)
      */
     public static int fko1ko2(SimplePieceResolver resolver1, SimplePieceResolver resolver2) {
@@ -131,12 +147,8 @@ public final class ParamsAndEvaluators {
 
 
     /**
-     * calculates value of xy as a sum of:
-     * distance to (0,0) and a distance to the closest diagonal, vertical or horizontal
-     *
-     * @param x
-     * @param y
-     * @return
+     * calculates value of xy as a sum of: distance to (0,0) and a distance to the closest diagonal,
+     * vertical or horizontal
      */
     public static int fxy(int x, int y) {
         int absx = Math.abs(x);
@@ -152,10 +164,8 @@ public final class ParamsAndEvaluators {
     }
 
     /**
-     * piece class value is value of its (x,y) parameter
-     * like (2,1) rider etc.
+     * piece class value is value of its (x,y) parameter like (2,1) rider etc.
      *
-     * @param pieceClass
      * @return fxy(xy)
      */
     public static int fk(PieceClass pieceClass) {

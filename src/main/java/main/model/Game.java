@@ -1,13 +1,13 @@
 package main.model;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import main.Point;
+
 /**
- * Created by lukza on 17.01.2017.
+ * Created by lukzar on 17.01.2017.
  */
 public class Game {
 
@@ -16,7 +16,7 @@ public class Game {
     private int width;
     private int height;
 
-    private List<String> board;
+    private String[][] board;
     private Goals goals;
     private String content;
 
@@ -52,23 +52,23 @@ public class Game {
         this.height = height;
     }
 
-    public Pair<Integer, Integer> getXY() {
-        return Pair.of(width, height);
-    }
-
-    public void setContent(String content) {
-        this.content = content;
+    public Point getXY() {
+        return Point.of(width, height);
     }
 
     public String getContent() {
         return content;
     }
 
-    public List<String> getBoard() {
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String[][] getBoard() {
         return board;
     }
 
-    public void setBoard(List<String> board) {
+    public void setBoard(String[][] board) {
         this.board = board;
     }
 

@@ -1,8 +1,8 @@
 package main.operator;
 
-import main.model.OneMove;
-
 import java.util.function.Predicate;
+
+import main.model.OneMove;
 
 /**
  * Created by lukza on 28.12.2016.

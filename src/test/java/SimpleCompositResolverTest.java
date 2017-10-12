@@ -1,8 +1,9 @@
+import org.junit.Test;
+
 import main.PieceResolver;
 import main.PieceResolverException;
+import main.Point;
 import main.model.Piece;
-import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Test;
 
 /**
  * Created by lzarczynski on 30.12.2016.
@@ -89,7 +90,7 @@ public class SimpleCompositResolverTest {
 //
 //        System.out.println(resolve);
 
-        System.out.println(PieceResolver.resolve(piece, Pair.of(7, 7)));
+        System.out.println(PieceResolver.resolve(piece, Point.of(7, 7)));
     }
 
 }

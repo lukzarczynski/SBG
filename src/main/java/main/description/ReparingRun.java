@@ -1,7 +1,35 @@
 package main.description;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import main.Point;
+import main.StringUtils;
 import main.SuperResolver;
-import main.operator.*;
+import main.operator.Backwards;
+import main.operator.ExactlyTimes;
+import main.operator.Forward;
+import main.operator.MaxTimes;
+import main.operator.MinTimes;
+import main.operator.OnlyCapture;
+import main.operator.Operator;
+import main.operator.Outwards;
+import main.operator.OutwardsX;
+import main.operator.OutwardsY;
+import main.operator.OverEnemyPieceInstead;
+import main.operator.OverEnemyPieceInsteadEndingNormally;
+import main.operator.OverOwnPieceInstead;
+import main.operator.OverOwnPieceInsteadEndingNormally;
+import main.operator.WithOneEnemyPiece;
+import main.operator.WithOneOwnPiece;
+import main.operator.WithoutCapture;
 import main.piececlass.PieceClass;
 import main.piececlass.XYLeaper;
 import main.piececlass.XYRider;
@@ -10,11 +38,6 @@ import main.resolvers.Resolver;
 import main.resolvers.SimpleCompositeResolver;
 import main.resolvers.SimplePieceResolver;
 import main.resolvers.SpecialCaseResolver;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by lukza on 26.01.2017.
@@ -129,7 +152,7 @@ public class ReparingRun {
                 resolvers.stream()
                         .filter(r -> r.getPieceClass() instanceof XYYXLeaper)
                         .map(r -> {
-                            final Pair<Integer, Integer> xy = r.getPieceClass().getXy();
+                            final Point xy = r.getPieceClass().getXy();
                             SimplePieceResolver spr1 = new SimplePieceResolver(
                                     new XYLeaper(xy.getKey(), xy.getValue()), r.getOperators());
                             SimplePieceResolver spr2 = new SimplePieceResolver(
@@ -189,11 +212,11 @@ public class ReparingRun {
         builder.append(getCapturingIfPresent(operators));
 
 
-        final Map<Pair<Integer, Integer>, List<Pair<Integer, Integer>>> collectXys = new HashMap<>();
+        final Map<Point, List<Point>> collectXys = new HashMap<>();
 
 
         final List<String> collect = rider.stream().map(r -> {
-            if (r.getXy().equals(Pair.of(0, 1))) {
+            if (r.getXy().equals(Point.of(0, 1))) {
                 if (hasInstance(operators, Forward.class)) {
                     return " vertically forward";
                 } else if (hasInstance(operators, Backwards.class)) {
@@ -201,9 +224,9 @@ public class ReparingRun {
                 } else {
                     return " vertically";
                 }
-            } else if (r.getXy().equals(Pair.of(1, 0))) {
+            } else if (r.getXy().equals(Point.of(1, 0))) {
                 return " horizontally";
-            } else if (r.getXy().equals(Pair.of(1, 1))) {
+            } else if (r.getXy().equals(Point.of(1, 1))) {
                 if (hasInstance(operators, Forward.class)) {
                     return " diagonally forward";
                 } else if (hasInstance(operators, Backwards.class)) {
@@ -365,7 +388,7 @@ public class ReparingRun {
 
     private static String describeLeapXY(Set<XYLeaper> leaper, Set<Operator> operators) {
         StringBuilder builder = new StringBuilder();
-        final Set<Pair<Integer, Integer>> xys = leaper.stream().map(PieceClass::getXy).collect(Collectors.toSet());
+        final Set<Point> xys = leaper.stream().map(PieceClass::getXy).collect(Collectors.toSet());
 
         List<String> ors = new ArrayList<>();
         ors.add(tryValueOfXys(xys, 1, operators));
@@ -383,7 +406,7 @@ public class ReparingRun {
 
             xxx.append(" over vector ");
 
-            final Map<Pair<Integer, Integer>, List<Pair<Integer, Integer>>> collect
+            final Map<Point, List<Point>> collect
                     = xys.stream().collect(Collectors.groupingBy(ReparingRun::normalizePair));
 
             List<String> vectors = new ArrayList<>();
@@ -409,7 +432,7 @@ public class ReparingRun {
         return builder.toString();
     }
 
-    private static String tryValueOfXys(Set<Pair<Integer, Integer>> xys, int v, Set<Operator> operators) {
+    private static String tryValueOfXys(Set<Point> xys, int v, Set<Operator> operators) {
 
         StringBuilder builder = new StringBuilder();
         boolean valid = false;
@@ -421,36 +444,36 @@ public class ReparingRun {
             builder.append(" backwards");
         }
 
-        final List<Pair<Integer, Integer>> all = Arrays.asList(Pair.of(0, v), Pair.of(v, 0), Pair.of(v, v));
+        final List<Point> all = Arrays.asList(Point.of(0, v), Point.of(v, 0), Point.of(v, v));
         if (xys.containsAll(all)) {
             builder.append(" in every direction");
             xys.removeAll(all);
             valid = true;
         } else {
             boolean addOr = false;
-            if (xys.contains(Pair.of(0, v))) {
+            if (xys.contains(Point.of(0, v))) {
                 addOr = true;
                 builder.append(" vertically");
-                xys.remove(Pair.of(0, v));
+                xys.remove(Point.of(0, v));
                 valid = true;
             }
-            if (xys.contains(Pair.of(v, 0))) {
+            if (xys.contains(Point.of(v, 0))) {
                 if (addOr) {
                     builder.append(" or");
                 }
                 addOr = true;
                 builder.append(" horizontally");
-                xys.remove(Pair.of(v, 0));
+                xys.remove(Point.of(v, 0));
                 valid = true;
 
             }
 
-            if (xys.contains(Pair.of(v, v))) {
+            if (xys.contains(Point.of(v, v))) {
                 if (addOr) {
                     builder.append(" or");
                 }
                 builder.append(" diagonally");
-                xys.remove(Pair.of(v, v));
+                xys.remove(Point.of(v, v));
                 valid = true;
 
             }
@@ -470,11 +493,11 @@ public class ReparingRun {
         return operators.stream().filter(o -> o.getClass().equals(clazz)).findAny().map(o -> (T) o).get();
     }
 
-    private static Pair<Integer, Integer> normalizePair(Pair<Integer, Integer> xy) {
+    private static Point normalizePair(Point xy) {
         if (xy.getKey() > xy.getValue()) {
             return xy;
         }
-        return Pair.of(xy.getValue(), xy.getKey());
+        return Point.of(xy.getValue(), xy.getKey());
     }
 
 

@@ -1,11 +1,15 @@
 package main.model;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import main.Point;
+import main.StringUtils;
 
 /**
  * Created by lukasz on 06.10.17.
@@ -13,7 +17,7 @@ import java.util.stream.Stream;
 public class Goals {
 
     private int turnCount;
-    private Map<String, Set<Pair<Integer, Integer>>> pieceGoals = new HashMap<>();
+    private Map<String, Set<Point>> pieceGoals = new HashMap<>();
     private Map<String, Integer> minimumPiece = new HashMap<>();
 
     public int getTurnCount() {
@@ -24,11 +28,11 @@ public class Goals {
         this.turnCount = turnCount;
     }
 
-    public Map<String, Set<Pair<Integer, Integer>>> getPieceGoals() {
+    public Map<String, Set<Point>> getPieceGoals() {
         return pieceGoals;
     }
 
-    public void setPieceGoals(Map<String, Set<Pair<Integer, Integer>>> pieceGoals) {
+    public void setPieceGoals(Map<String, Set<Point>> pieceGoals) {
         this.pieceGoals = pieceGoals;
     }
 
@@ -81,7 +85,7 @@ public class Goals {
                             Stream.of(split[1].split(","))
                                     .map(String::trim)
                                     .map(s -> s.split(" "))
-                                    .map(s -> Pair.of(
+                                    .map(s -> Point.of(
                                             Integer.parseInt(s[0]),
                                             Integer.parseInt(s[1])
                                     )).collect(Collectors.toSet()));

@@ -1,17 +1,25 @@
 package main.parser;
 
-import main.model.Game;
-import main.model.Goals;
-import main.model.Piece;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import main.StringUtils;
+import main.model.Game;
+import main.model.Goals;
+import main.model.Piece;
 
 /**
  * Created by lukasz on 06.10.17.
@@ -56,9 +64,9 @@ public class FileParser {
         String size = split.get(0);
         split.remove(0);
 
-        game.setBoard(split);
         game.setWidth(Integer.parseInt(size.trim().split(" ")[0]));
         game.setHeight(Integer.parseInt(size.trim().split(" ")[1]));
+        game.setBoard(toArray(split, game.getWidth(), game.getHeight()));
 
         game.setPieces(getPieces(pieces, game.getWidth(), game.getHeight()));
 
@@ -73,6 +81,30 @@ public class FileParser {
         game.setPiecesCount(piecesCount);
 
         return game;
+    }
+
+    private String[][] toArray(List<String> split, int width, int height) {
+        split.removeIf(String::isEmpty);
+        String s = split.stream().collect(Collectors.joining())
+                .replaceAll("\\|", "")
+                .replaceAll("\\n", "");
+
+        int i = 0;
+
+        String[][] board = new String[height][width];
+
+        if (s.length() < width * height) {
+            throw new RuntimeException("Board has invalid size");
+        }
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                board[x][y] = String.valueOf(s.charAt(i++));
+            }
+        }
+
+        return board;
+
     }
 
     private Collection<Piece> getPieces(String piecesSection, int x, int y) {
@@ -97,7 +129,6 @@ public class FileParser {
                 .replaceAll("\\n\\n*", "\n");
 
     }
-
 
 
 }

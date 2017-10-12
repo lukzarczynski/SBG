@@ -1,11 +1,11 @@
 package main;
 
-import main.model.OneMove;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import main.model.OneMove;
 
 /**
  * Created by lukasz on 06.12.16.

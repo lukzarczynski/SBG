@@ -1,9 +1,9 @@
 package main.operator;
 
+import java.util.function.Predicate;
+
 import main.model.Move;
 import main.model.OneMove;
-
-import java.util.function.Predicate;
 
 /**
  * means that distance to (0,0) at each point is not decreasing
@@ -21,8 +21,8 @@ public class OutwardsX extends Operator {
 
                 x += m.getDx();
 
-                if(startX != 0){
-                    if(startX > 0 ? x < startX : x > startX){
+                if (startX != 0) {
+                    if (startX > 0 ? x < startX : x > startX) {
                         return false;
                     }
                 }

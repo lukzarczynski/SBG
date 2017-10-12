@@ -1,11 +1,5 @@
 package main.resolvers;
 
-import main.model.OneMove;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.Collection;
-import java.util.Set;
-
 /**
  * Created by lukasz on 07.12.16.
  */

@@ -1,7 +1,7 @@
 package main.piececlass;
 
+import main.Point;
 import main.model.OneMove;
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Created by lukasz on 06.12.16.
@@ -11,7 +11,7 @@ public class XYRider extends PieceClass {
     private final String description;
 
     public XYRider(int x, int y) {
-        super(Pair.of(x, y));
+        super(Point.of(x, y));
         addAnyNumberOf(x, y);
         addAnyNumberOf(-x, y);
         addAnyNumberOf(x, -y);

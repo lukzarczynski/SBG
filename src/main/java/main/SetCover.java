@@ -1,11 +1,16 @@
 package main;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import main.description.ReparingRun;
 import main.model.OneMove;
 import main.resolvers.Resolver;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.*;
 
 /**
  * Created by lukza on 31.12.2016.
@@ -15,7 +20,7 @@ public class SetCover {
     private static final Comparator<Map.Entry<Resolver, Set<OneMove>>> resolverValueComparator = (r1, r2) -> Integer.compare(r2.getValue().size(), r1.getValue().size());
 
 
-    public static Pair<String, Integer> getResult(Map<OneMove, List<Resolver>> map, Pair<Integer, Integer> xy) {
+    public static Pair<String, Integer> getResult(Map<OneMove, List<Resolver>> map, Point xy) {
         final Set<OneMove> movesToDescribe = new HashSet<>(map.keySet());
         final Map<Resolver, Set<OneMove>> resolverListMap = new HashMap<>();
         final List<Resolver> result = new ArrayList<>();

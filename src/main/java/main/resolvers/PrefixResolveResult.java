@@ -1,9 +1,9 @@
 package main.resolvers;
 
-import main.model.OneMove;
-
 import java.util.Map;
 import java.util.Set;
+
+import main.model.OneMove;
 
 /**
  * Created by lzarczynski on 30.12.2016.

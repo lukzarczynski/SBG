@@ -1,22 +1,21 @@
 package main;
 
-import main.model.Move;
-import main.model.OneMove;
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BinaryOperator;
 
+import main.model.Move;
+import main.model.OneMove;
+
 /**
  * Created by lukza on 21.01.2017.
  */
 public final class Utils {
 
-    public static final BinaryOperator<Pair<Integer, Integer>> PAIR_SUM
-            = (p1, p2) -> Pair.of(p1.getKey() + p2.getKey(), p1.getValue() + p2.getValue());
+    public static final BinaryOperator<Point> PAIR_SUM
+            = (p1, p2) -> Point.of(p1.getKey() + p2.getKey(), p1.getValue() + p2.getValue());
 
     public static <T> Set<T> setOf(T... o) {
         final Set<T> set = new HashSet<>();
@@ -43,29 +42,29 @@ public final class Utils {
         return om;
     }
 
-    public static Pair<Integer, Integer> asVector(OneMove omPrefix) {
+    public static Point asVector(OneMove omPrefix) {
         int x = 0;
         int y = 0;
         for (Move m : omPrefix.getMoves()) {
             x += m.getDx();
             y += m.getDy();
         }
-        return Pair.of(x, y);
+        return Point.of(x, y);
     }
 
-    public static Pair<Integer, Integer> getNewDimensions(Pair<Integer, Integer> oldXY, OneMove prefix) {
-        Pair<Integer, Integer> prefixAsVector = asVector(prefix);
-        return Pair.of(
+    public static Point getNewDimensions(Point oldXY, OneMove prefix) {
+        Point prefixAsVector = asVector(prefix);
+        return Point.of(
                 oldXY.getKey() - Math.abs(prefixAsVector.getKey()),
                 oldXY.getValue() - Math.abs(prefixAsVector.getValue())
         );
 
     }
 
-    public static Pair<Integer, Integer> sum(Pair<Integer, Integer> currentVector, Pair<Integer, Integer> of) {
-        return Pair.of(
-                currentVector.getKey() + of.getKey(),
-                currentVector.getValue() + of.getValue()
+    public static Point sum(Point currentVector, Point of) {
+        return Point.of(
+                currentVector.getX() + of.getX(),
+                currentVector.getY() + of.getY()
         );
     }
 }

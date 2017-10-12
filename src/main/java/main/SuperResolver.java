@@ -1,11 +1,11 @@
 package main;
 
-import main.resolvers.Resolver;
-import main.resolvers.SimplePieceResolver;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import main.resolvers.Resolver;
+import main.resolvers.SimplePieceResolver;
 
 /**
  * Created by lukza on 19.03.2017.

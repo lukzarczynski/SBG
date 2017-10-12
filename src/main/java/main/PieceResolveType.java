@@ -2,7 +2,6 @@ package main;
 
 import main.model.Move;
 import main.model.OneMove;
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Created by lukza on 17.01.2017.
@@ -16,10 +15,10 @@ enum PieceResolveType {
 
     public static PieceResolveType forPiece(OneMove om) {
         int types = 0;
-        Pair<Integer, Integer> currPair = Pair.of(0, 0);
+        Point currPair = Point.of(0, 0);
 
         for (Move m : om.getMoves()) {
-            Pair<Integer, Integer> of = Pair.of(m.getDx(), m.getDy());
+            Point of = Point.of(m.getDx(), m.getDy());
             if (!currPair.equals(of)) {
                 types++;
             }

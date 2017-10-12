@@ -1,11 +1,12 @@
 package main.resolvers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import main.ParamsAndEvaluators;
 import main.model.Move;
 import main.model.OneMove;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by lzarczynski on 30.12.2016.
@@ -37,7 +38,6 @@ public class SpecialCaseResolver extends Resolver {
                 conditions.stream().collect(Collectors.joining(",")));
 
     }
-
 
 
     @Override

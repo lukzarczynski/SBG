@@ -1,7 +1,13 @@
 package main.resolvers;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import main.MoveUtil;
 import main.ParamsAndEvaluators;
+import main.Point;
 import main.model.OneMove;
 import main.operator.ExactlyTimes;
 import main.operator.MaxTimes;
@@ -9,12 +15,6 @@ import main.operator.MinTimes;
 import main.operator.Operator;
 import main.piececlass.PieceClass;
 import main.piececlass.XYRider;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by lzarczynski on 30.12.2016.
@@ -39,32 +39,32 @@ public class SimplePieceResolver extends Resolver {
         return true;
     }
 
-    public boolean isValidFor(Collection<OneMove> moves, OneMove oneMove, Pair<Integer, Integer> xy) {
+    public boolean isValidFor(Collection<OneMove> moves, OneMove oneMove, Point xy) {
         return pieceClass.isSubsetAndContains(moves, operators, oneMove, xy);
     }
 
-    public boolean isValidForPart(Collection<OneMove> moves, Pair<Integer, Integer> xy, int part) {
-        final Pair<Integer, Integer> vector = moves.stream().map(m -> m.getParts().get(part))
+    public boolean isValidForPart(Collection<OneMove> moves, Point xy, int part) {
+        final Point vector = moves.stream().map(m -> m.getParts().get(part))
                 .findAny().get().getVector();
 
         return pieceClass.isSubset(moves, operators, xy, part, vector);
     }
 
-    public boolean isValidForWithVector(Collection<OneMove> moves, OneMove oneMove, Pair<Integer, Integer> xy, Pair<Integer, Integer> vector) {
+    public boolean isValidForWithVector(Collection<OneMove> moves, OneMove oneMove, Point xy, Point vector) {
         return pieceClass.isSubsetAndContainsWithVector(moves, operators, oneMove, xy, vector);
     }
 
-    public boolean isValidForWithVector(Collection<OneMove> moves, Pair<Integer, Integer> xy, Pair<Integer, Integer> vector) {
+    public boolean isValidForWithVector(Collection<OneMove> moves, Point xy, Point vector) {
         return pieceClass.isSubsetWithVector(moves, operators, xy, vector);
     }
 
-    public ResolveResult resolve(Collection<OneMove> moves, Pair<Integer, Integer> xy) {
+    public ResolveResult resolve(Collection<OneMove> moves, Point xy) {
         final Collection<OneMove> notMatchingMoves = pieceClass.getNotMatchingMoves(moves, operators, xy);
         return new ResolveResult(notMatchingMoves,
                 MoveUtil.subtract(moves, notMatchingMoves));
     }
 
-    public ResolveResult resolveWithVector(Collection<OneMove> moves, Pair<Integer, Integer> xy, Pair<Integer, Integer> vector) {
+    public ResolveResult resolveWithVector(Collection<OneMove> moves, Point xy, Point vector) {
         final Collection<OneMove> notMatchingMoves = pieceClass.getNotMatchingMovesWithVector(moves, operators, xy, vector);
         return new ResolveResult(notMatchingMoves,
                 MoveUtil.subtract(moves, notMatchingMoves));
@@ -104,11 +104,11 @@ public class SimplePieceResolver extends Resolver {
         return operators;
     }
 
-    public Set<OneMove> filterForPart(Set<OneMove> moves, int part, Pair<Integer, Integer> xy) {
+    public Set<OneMove> filterForPart(Set<OneMove> moves, int part, Point xy) {
         return pieceClass.filterForPart(moves, part, operators, xy);
     }
 
-    public PrefixResolveResult applyForPrefixes(Map<OneMove, OneMove> mapOfMovesAndItsPrefix, Pair<Integer, Integer> xy) {
+    public PrefixResolveResult applyForPrefixes(Map<OneMove, OneMove> mapOfMovesAndItsPrefix, Point xy) {
         final Map<OneMove, Set<OneMove>> resultMap
                 = pieceClass.getMapOfMatchedPrefixesAndItsSuffixes(mapOfMovesAndItsPrefix, operators, xy);
 

@@ -1,12 +1,12 @@
 package main.operator;
 
-import main.ParamsAndEvaluators;
-import main.model.OneMove;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import main.ParamsAndEvaluators;
+import main.model.OneMove;
 
 /**
  * Created by lukasz on 06.12.16.
@@ -58,7 +58,7 @@ public abstract class Operator {
         return hasFunction;
     }
 
-    protected Set<OneMove> setOf(OneMove m){
+    protected Set<OneMove> setOf(OneMove m) {
         final Set<OneMove> set = new HashSet<>();
         set.add(m);
         return set;

@@ -1,12 +1,16 @@
 package main.piececlass;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import main.MoveUtil;
+import main.Point;
 import main.model.OneMove;
 import main.operator.Operator;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by lukasz on 06.12.16.
@@ -14,16 +18,16 @@ import java.util.stream.Collectors;
 public abstract class PieceClass {
 
     protected Set<OneMove> moves = new HashSet<>();
-    private Pair<Integer, Integer> xy;
+    private Point xy;
 
-    protected PieceClass(Pair<Integer, Integer> xy) {
+    protected PieceClass(Point xy) {
         this.xy = xy;
     }
 
     public boolean isSubsetAndContains(Collection<OneMove> moves,
                                        Collection<Operator> operators,
                                        OneMove oneMove,
-                                       Pair<Integer, Integer> xy) {
+                                       Point xy) {
         final Set<OneMove> filteredMoves = filterMoves(operators, xy);
         return !filteredMoves.isEmpty()
                 && filteredMoves.contains(oneMove)
@@ -33,8 +37,8 @@ public abstract class PieceClass {
 
     public boolean isSubset(Collection<OneMove> moves,
                             Collection<Operator> operators,
-                            Pair<Integer, Integer> xy,
-                            int part, Pair<Integer, Integer> vector) {
+                            Point xy,
+                            int part, Point vector) {
         final Set<OneMove> filteredMoves = filterWithVector(operators, xy, vector);
         return !filteredMoves.isEmpty()
                 && MoveUtil.containsAllForPart(moves, filteredMoves, part);
@@ -42,7 +46,7 @@ public abstract class PieceClass {
     }
 
 
-    public boolean isSubsetWithVector(Collection<OneMove> moves, Set<Operator> operators, Pair<Integer, Integer> xy, Pair<Integer, Integer> vector) {
+    public boolean isSubsetWithVector(Collection<OneMove> moves, Set<Operator> operators, Point xy, Point vector) {
         final Set<OneMove> filteredMoves = filterWithVector(operators, xy, vector);
         return !filteredMoves.isEmpty()
                 && MoveUtil.containsAll(moves, filteredMoves);
@@ -51,8 +55,8 @@ public abstract class PieceClass {
     public boolean isSubsetAndContainsWithVector(Collection<OneMove> moves,
                                                  Collection<Operator> operators,
                                                  OneMove oneMove,
-                                                 Pair<Integer, Integer> xy,
-                                                 Pair<Integer, Integer> vector) {
+                                                 Point xy,
+                                                 Point vector) {
         final Set<OneMove> filteredMoves = filterWithVector(operators, xy, vector);
         return !filteredMoves.isEmpty()
                 && filteredMoves.contains(oneMove)
@@ -61,35 +65,31 @@ public abstract class PieceClass {
     }
 
     /**
-     * @param moves
-     * @param operators
-     * @param xy
      * @return all moves that did not match
      */
     public Collection<OneMove> getNotMatchingMoves(Collection<OneMove> moves,
                                                    Collection<Operator> operators,
-                                                   Pair<Integer, Integer> xy) {
+                                                   Point xy) {
         final Set<OneMove> filteredMoves = filterMoves(operators, xy);
         return filteredMoves.isEmpty() ? moves : MoveUtil.subtract(moves, filteredMoves);
     }
 
     public Collection<OneMove> getNotMatchingMovesWithVector(Collection<OneMove> moves,
                                                              Collection<Operator> operators,
-                                                             Pair<Integer, Integer> xy,
-                                                             Pair<Integer, Integer> vector) {
+                                                             Point xy,
+                                                             Point vector) {
         final Set<OneMove> filteredMoves = filterWithVector(operators, xy, vector);
         return filteredMoves.isEmpty() ? moves : MoveUtil.subtract(moves, filteredMoves);
     }
 
     /**
-     * @param prefixes  key: move, value: prefix(move)
-     * @param operators
-     * @param xy        board size
+     * @param prefixes key: move, value: prefix(move)
+     * @param xy       board size
      * @return key: prefix, value: set of suffixes
      */
     public Map<OneMove, Set<OneMove>> getMapOfMatchedPrefixesAndItsSuffixes(Map<OneMove, OneMove> prefixes,
                                                                             Set<Operator> operators,
-                                                                            Pair<Integer, Integer> xy) {
+                                                                            Point xy) {
         final Set<OneMove> filteredMoves = filterMoves(operators, xy);
 
         final Map<OneMove, Set<OneMove>> result = new HashMap<>();
@@ -105,7 +105,7 @@ public abstract class PieceClass {
     }
 
     public Set<OneMove> filterForPart(Set<OneMove> moves, int part, Set<Operator> operators,
-                                      Pair<Integer, Integer> xy) {
+                                      Point xy) {
         final Set<OneMove> filteredMoves = filterMoves(operators, xy);
 
         return moves.stream()
@@ -122,14 +122,14 @@ public abstract class PieceClass {
      * @param xy board size
      * @return moves that matches all operators
      */
-    public Set<OneMove> filterMoves(Collection<Operator> op, Pair<Integer, Integer> xy) {
+    public Set<OneMove> filterMoves(Collection<Operator> op, Point xy) {
         return moves.stream()
                 .filter(m -> op.stream().allMatch(o -> o.matches().test(m)))
                 .map(m -> {
                     Set<OneMove> r = new HashSet<>();
                     r.add(m);
                     for (Operator o : op) {
-                        if(o.isHasFunction()) {
+                        if (o.isHasFunction()) {
                             r = r.stream()
                                     .map(c -> o.map().apply(c))
                                     .flatMap(Collection::stream)
@@ -143,17 +143,17 @@ public abstract class PieceClass {
                 .collect(Collectors.toSet());
     }
 
-    public Set<OneMove> filterWithVector(Collection<Operator> op, Pair<Integer, Integer> xy, Pair<Integer, Integer> vector) {
+    public Set<OneMove> filterWithVector(Collection<Operator> op, Point xy, Point vector) {
         this.moves.forEach(m -> m.setVector(vector));
 
         final Set<OneMove> result = filterMoves(op, xy);
 
-        final Pair<Integer, Integer> zero = Pair.of(0, 0);
+        final Point zero = Point.of(0, 0);
         this.moves.forEach(m -> m.setVector(zero));
         return result;
     }
 
-    public Pair<Integer, Integer> getXy() {
+    public Point getXy() {
         return xy;
     }
 

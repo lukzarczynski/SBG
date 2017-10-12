@@ -1,10 +1,14 @@
 package main.model;
 
-import main.Utils;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import main.Point;
 
 /**
  * Created by lukasz on 26.11.16.
@@ -14,7 +18,7 @@ public class OneMove {
     public static final OneMove EMPTY_MOVE = new OneMove();
 
     private List<Move> moves = new ArrayList<>();
-    private Pair<Integer, Integer> vector = Pair.of(0, 0);
+    private Point vector = Point.of(0, 0);
     private List<OneMove> parts = new ArrayList<>();
 
     public static OneMove of(List<Move> moves) {
@@ -23,11 +27,10 @@ public class OneMove {
         return om;
     }
 
-    public static Set<OneMove> parse(String regex, Pair<Integer, Integer> vector) {
-        return parse(regex).stream().map(m -> {
-            m.setVector(vector);
-            return m;
-        }).collect(Collectors.toSet());
+    public static Set<OneMove> parse(String regex, Point vector) {
+        return parse(regex).stream()
+                .peek(m -> m.setVector(vector))
+                .collect(Collectors.toSet());
     }
 
     public static Set<OneMove> parse(String regex) {
@@ -49,8 +52,7 @@ public class OneMove {
                                 .collect(Collectors.toList());
             }
         }
-        return oneMoves.stream()
-                .collect(Collectors.toSet());
+        return new HashSet<>(oneMoves);
     }
 
     public static OneMove parse(int x, int y, String target) {
@@ -66,34 +68,6 @@ public class OneMove {
             return copy;
         }).collect(Collectors.toSet());
 
-    }
-
-    public void initializeParts2() {
-        Pair<Integer, Integer> currPair = Pair.of(0, 0);
-        Pair<Integer, Integer> previousVector = Pair.of(0, 0);
-        Pair<Integer, Integer> currentVector = Pair.of(0, 0);
-
-        List<Move> currentMoves = new ArrayList<>();
-
-        for (Move m : this.getMoves()) {
-            Pair<Integer, Integer> of = Pair.of(m.getDx(), m.getDy());
-            if (!currPair.equals(of)) {
-                if (!currentMoves.isEmpty()) {
-                    OneMove part = OneMove.of(currentMoves);
-                    part.setVector(Pair.of(previousVector.getKey(), previousVector.getValue()));
-                    previousVector = currentVector;
-                    this.parts.add(part);
-                    currentMoves = new ArrayList<>();
-                }
-            }
-            currentVector = Utils.sum(currentVector, of);
-            currentMoves.add(m);
-            currPair = of;
-        }
-
-        OneMove part = OneMove.of(currentMoves);
-        part.setVector(Pair.of(previousVector.getKey(), previousVector.getValue()));
-        parts.add(part);
     }
 
     public void initializeParts() {
@@ -119,10 +93,10 @@ public class OneMove {
             final List<Move> single = moveList.get(i);
 
             if (single.size() == 1) {
-                Pair<Integer, Integer> singlePair = Pair.of(single.get(0).getDx(), single.get(0).getDy());
+                Point singlePair = Point.of(single.get(0).getDx(), single.get(0).getDy());
 
                 final List<Move> prevList = moveList.get(i - 1);
-                Pair<Integer, Integer> anyPair = Pair.of(prevList.get(0).getDx(), prevList.get(0).getDy());
+                Point anyPair = Point.of(prevList.get(0).getDx(), prevList.get(0).getDy());
 
                 if (singlePair.equals(anyPair)) {
                     prevList.addAll(single);
@@ -134,13 +108,13 @@ public class OneMove {
 
         }
 
-        Pair<Integer, Integer> curVector = Pair.of(0, 0);
+        Point curVector = Point.of(0, 0);
         for (List<Move> l : moveList) {
             OneMove om = OneMove.of(l);
             om.setVector(curVector);
-            curVector = Pair.of(
-                    curVector.getLeft() + l.stream().map(Move::getDx).reduce(0, Integer::sum),
-                    curVector.getRight() + l.stream().map(Move::getDy).reduce(0, Integer::sum)
+            curVector = Point.of(
+                    curVector.getX() + l.stream().map(Move::getDx).reduce(0, Integer::sum),
+                    curVector.getY() + l.stream().map(Move::getDy).reduce(0, Integer::sum)
             );
             this.parts.add(om);
         }
@@ -163,7 +137,7 @@ public class OneMove {
 
         final OneMove result = new OneMove();
         result.setMoves(resultMoves);
-        result.setVector(Pair.of(x, y));
+        result.setVector(Point.of(x, y));
         return result;
     }
 
@@ -171,16 +145,16 @@ public class OneMove {
         return moves.isEmpty() ? Optional.empty() : Optional.of(moves.get(0));
     }
 
-    public Pair<Integer, Integer> getVector() {
+    public Point getVector() {
         return vector;
     }
 
-    public void setVector(Pair<Integer, Integer> vector) {
+    public void setVector(Point vector) {
         this.vector = vector;
     }
 
     public boolean isValid(int width, int height) {
-        return isValid(width, height, vector.getKey(), vector.getValue());
+        return isValid(width, height, vector.getX(), vector.getY());
     }
 
     public boolean isValid(int width, int height, int vectorX, int vectorY) {
@@ -241,7 +215,7 @@ public class OneMove {
         return moves.stream().map(Move::toString).collect(Collectors.joining());
     }
 
-    public boolean isValid(Pair<Integer, Integer> xy) {
+    public boolean isValid(Point xy) {
         return isValid(xy.getKey(), xy.getValue());
     }
 

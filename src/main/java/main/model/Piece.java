@@ -1,12 +1,13 @@
 package main.model;
 
-import main.MoveUtil;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import main.MoveUtil;
+import main.StringUtils;
 
 /**
  * Created by lukasz on 26.11.16.
@@ -32,6 +33,29 @@ public class Piece {
                 .collect(Collectors.toSet()));
 
         return piece;
+    }
+
+    public Piece mirror() {
+        Piece piece = new Piece();
+        piece.setMoves(this.getMoves().stream()
+                .map(m -> {
+                    OneMove mirror = new OneMove();
+                    mirror.setVector(m.getVector());
+                    mirror.setMoves(m.getMoves().stream().map(m1 -> {
+                        Move c = new Move(m1.getPower());
+                        c.setMoveType(m1.getMoveType());
+                        c.setDx(-m1.getDx());
+                        c.setDy(-m1.getDy());
+                        c.setRegex(m1.getRegex());
+                        return c;
+                    }).collect(Collectors.toList()));
+
+                    return mirror;
+                }).collect(Collectors.toSet()));
+        piece.setName(this.getName());
+        return piece;
+
+
     }
 
     public String getName() {

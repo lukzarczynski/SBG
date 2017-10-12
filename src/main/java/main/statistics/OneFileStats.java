@@ -1,10 +1,10 @@
 package main.statistics;
 
-import main.model.Piece;
-
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+
+import main.model.Piece;
 
 /**
  * Created by lukza on 24.01.2017.
